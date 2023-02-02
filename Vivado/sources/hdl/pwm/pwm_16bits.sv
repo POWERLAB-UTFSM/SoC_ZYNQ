@@ -67,10 +67,14 @@ module pwm_16bits  (
     input _count_mode count_mode,
     // event mask mode configuration bits (defined and packaged in PKG_pwm.sv)
     input _mask_mode mask_mode,
-    // ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    // PWM ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     input _pwm_onoff pwm_onoff,
-    // ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    // Interrupt ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     input _int_onoff int_onoff,
+    // pwm clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    input _clkdiv_onoff pwmclkdiv_onoff,
+    // dead time clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    input _clkdiv_onoff dtclkdiv_onoff,
     // logic value of PWM output A
     input logic_A,
     // logic value of PWM output B
@@ -138,6 +142,8 @@ module pwm_16bits  (
     _int_onoff int_onoff__masked;
     _mask_mode mask_mode__masked;
     _count_mode count_mode__masked;
+    _clkdiv_onoff pwmclkdiv_onoff__masked;
+    _clkdiv_onoff dtclkdiv_onoff__masked;
     logic[`PWMCOUNT_WIDTH-1:0] register_concat;
 
     //
@@ -147,6 +153,8 @@ module pwm_16bits  (
     configregpwm_concatenate CONCAT(
         .pwm_onoff,
         .int_onoff,
+        .pwmclkdiv_onoff,
+        .dtclkdiv_onoff,
         .mask_mode,
         .count_mode,
 	    .register_concat
@@ -156,6 +164,8 @@ module pwm_16bits  (
         .register_concat(register_concat__masked),
         .pwm_onoff(pwm_onoff__masked),
         .int_onoff(int_onoff__masked),
+        .pwmclkdiv_onoff(pwmclkdiv_onoff__masked),
+        .dtclkdiv_onoff(dtclkdiv_onoff__masked),
         .mask_mode(mask_mode__masked),
         .count_mode(count_mode__masked)
     );
@@ -228,6 +238,7 @@ module pwm_16bits  (
         .reset,
         .divider(pwmclk_divider),
         .pwm_onoff(pwm_onoff__masked),
+        .clkdiv_onoff(pwmclkdiv_onoff),
         .div_clk(pwm_clk)
     );
     
@@ -276,6 +287,7 @@ module pwm_16bits  (
         .reset,
         .divider(dtclk_divider),
         .pwm_onoff(pwm_onoff__masked),
+        .clkdiv_onoff(dtclkdiv_onoff),
         .div_clk(dt_clk)
     );
     

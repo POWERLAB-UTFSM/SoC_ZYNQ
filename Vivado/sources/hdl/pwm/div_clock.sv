@@ -23,27 +23,38 @@ import PKG_pwm::*;
 module div_clock(
     input clk,
     input reset,
-    input logic [`DIVCLK_WIDTH-1:0] divider,
+    input [`DIVCLK_WIDTH-1:0] divider,
     input _pwm_onoff pwm_onoff,
+    input _clkdiv_onoff clkdiv_onoff,
 	output logic div_clk
     );
-	
+    
+    logic div_clkaux;
 	logic [`DIVCLK_WIDTH-1:0] counter;
     
 	always_ff @(posedge clk,posedge reset) begin
 		if(reset || (pwm_onoff==PWM_OFF)) begin
 			counter <= 4'b0;
-			div_clk <= 1'b0;
+			div_clkaux <= 1'b0;
 		end
 		else begin
 			if(counter == divider) begin
 				counter <= 4'b0;
-				div_clk <= ~div_clk;
+				div_clkaux <= ~div_clkaux;
 			end
 			else begin
 				counter <= counter + 1'b1;
 			end
 		end
+	end
+	
+	always_comb begin  
+	   if(clkdiv_onoff == CLKDIV_ON) begin
+	       div_clk=div_clkaux;
+	   end
+	   else begin
+	       div_clk=clk;
+	   end	
 	end
     
 endmodule

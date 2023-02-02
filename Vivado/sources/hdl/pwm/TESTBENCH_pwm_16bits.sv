@@ -39,6 +39,8 @@ module TESTBENCH_pwm_16bits();
     _mask_mode mask_mode;
     _pwm_onoff pwm_onoff;
     _int_onoff int_onoff;
+    _clkdiv_onoff pwmclkdiv_onoff;
+    _clkdiv_onoff dtclkdiv_onoff;
     logic pwmout_1_A;
     logic pwmout_1_B;
     logic pwmout_2_A;
@@ -73,8 +75,10 @@ module TESTBENCH_pwm_16bits();
         compare_2 ='d1000; 
         compare_3 ='d1000; 
         compare_4 ='d1000; 
-        pwmclk_divider ='d2;
-        dtclk_divider ='d1;
+        pwmclkdiv_onoff = CLKDIV_OFF;
+        dtclkdiv_onoff = CLKDIV_OFF;
+        pwmclk_divider ='d0;
+        dtclk_divider ='d0;
         event_count ='d0;
         count_mode = COUNT_UPDOWN;
         mask_mode = MAX_MASK;
@@ -104,6 +108,9 @@ module TESTBENCH_pwm_16bits();
         repeat(18000) @(posedge clk);
         event_count ='d2;
         
+        repeat(23000) @(posedge clk);
+        pwmclkdiv_onoff = CLKDIV_ON;
+        
     end 
 //=============================================================
 //    Design Under Test
@@ -111,7 +118,7 @@ module TESTBENCH_pwm_16bits();
 
 
 pwm_16bits DUT1(
-            // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // INPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& 
     // system clock
@@ -138,7 +145,7 @@ pwm_16bits DUT1(
     .pwmclk_divider,
     // clock driver for the dead time generator
     .dtclk_divider,
-    
+    // clock driver for the dead time generator
     .event_count,
     // count mode configuration bits
     .count_mode,
@@ -148,6 +155,10 @@ pwm_16bits DUT1(
     .pwm_onoff,
     // ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     .int_onoff,
+    // pwm clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    .pwmclkdiv_onoff,
+    // dead time clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    .dtclkdiv_onoff,
     // logic value of PWM output A
     .logic_A,
     // logic value of PWM output B
