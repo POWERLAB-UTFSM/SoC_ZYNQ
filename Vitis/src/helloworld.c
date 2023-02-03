@@ -71,7 +71,7 @@ int main()
     pwm_reg1 = 1000 << 16 | 1000;
     pwm_reg2 = 1000 << 16 | 1000;
     pwm_reg3 = 0 << 24 | 0 << 16 | 0 << 11 | 0 << 6 | 0 << 3;
-    pwm_reg4 = 0 << 7 | 0 << 6 | 1 << 5 | 1 << 4 | 1 << 2 | 1 ;
+    pwm_reg4 = 0 << 9 | 0 << 8 | 0 << 7 | 0 << 6 | 1 << 5 | 1 << 4 | 1 << 2 | 1 ;
 
 	while (1) {
 		XGpio_WriteReg(XPAR_AXI_GPIO_0_BASEADDR, XGPIO_DATA_OFFSET, gpio_reg0);

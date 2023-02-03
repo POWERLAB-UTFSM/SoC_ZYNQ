@@ -41,4 +41,5 @@ package PKG_pwm;
     typedef enum logic [1:0] {NO_MASK,MIN_MASK,MAX_MASK,MINMAX_MASK} _mask_mode;
     typedef enum logic {PWM_OFF,PWM_ON} _pwm_onoff;
 	typedef enum logic {INT_OFF,INT_ON} _int_onoff;
+	typedef enum logic {CLKDIV_OFF,CLKDIV_ON} _clkdiv_onoff;
 endpackage

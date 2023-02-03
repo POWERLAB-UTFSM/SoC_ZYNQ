@@ -417,9 +417,9 @@
 	end    
 
 	// Add user logic here
-    // Add user logic here
+
     pwm_16bits CPWM1(
-            // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // INPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& 
     // system clock
@@ -456,10 +456,14 @@
     .pwm_onoff(slv_reg4[4]),
     // ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     .int_onoff(slv_reg4[5]),
+    // pwm clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    .pwmclkdiv_onoff(slv_reg4[6]),
+    // dead time clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    .dtclkdiv_onoff(slv_reg4[7]),
     // logic value of PWM output A
-    .logic_A(slv_reg4[6]),
+    .logic_A(slv_reg4[8]),
     // logic value of PWM output B
-    .logic_B(slv_reg4[7]),
+    .logic_B(slv_reg4[9]),
     // logic value of PWM output A
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS

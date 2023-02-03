@@ -24,12 +24,14 @@ import PKG_pwm::*;
 module configregpwm_concatenate(
     input _pwm_onoff pwm_onoff, //1 bit
     input _int_onoff int_onoff, //1 bit
+    input _clkdiv_onoff pwmclkdiv_onoff, //1 bit
+    input _clkdiv_onoff dtclkdiv_onoff, //1 bit
     input _mask_mode mask_mode, //1 bit
 	input _count_mode count_mode,
 	output[`PWMCOUNT_WIDTH-1:0] register_concat
     );
     
-    assign register_concat = {pwm_onoff,int_onoff,mask_mode,count_mode};
+    assign register_concat = {pwm_onoff,int_onoff,pwmclkdiv_onoff,dtclkdiv_onoff,mask_mode,count_mode};
     
 
 endmodule
