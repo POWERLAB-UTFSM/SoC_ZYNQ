@@ -15,6 +15,8 @@ Repositorio con archivos de proyectos de sistemas de control implementados en Sy
     * Vitis IDE.
 * Git, para control de versiones y manejo de repositorios.
 
+**Importante**: La carpeta en la que reside este repositorio, así como otras subcarpetas **NO** deben llevar espacios.
+
 ### Hardware
 
 Compatible, según proyecto.
