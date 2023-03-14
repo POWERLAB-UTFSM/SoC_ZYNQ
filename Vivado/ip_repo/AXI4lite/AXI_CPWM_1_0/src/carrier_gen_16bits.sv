@@ -40,13 +40,13 @@ module carrier_gen_16bits(
         
         if(reset==1'b1) begin
             state_carrier <= UP;
-            carrier <= 0;
-            carrier_mask <= 0;
+            carrier <= 15'b0;
+            carrier_mask <= 1'b0;
             mask_event <= 1'b0;
         end
         
         //PWM off
-        else if (pwm_onoff==PWM_OFF) begin
+        else if (pwm_onoff==PWM_OFF || period==0) begin
             carrier <= 15'b0;
             carrier_mask <= 1'b0;
         end
@@ -91,10 +91,10 @@ module carrier_gen_16bits(
                 end
             end
             
-            if(carrier == 1'b1 && (mask_mode==MIN_MASK || mask_mode==MINMAX_MASK) && state_carrier==DOWN) begin
+            if(carrier == 1'b0 && (mask_mode==MIN_MASK || mask_mode==MINMAX_MASK)) begin
                 mask_event <= 1'b1;
             end
-            else if(carrier == period-1'b1 && (mask_mode==MAX_MASK || mask_mode==MINMAX_MASK) && state_carrier==UP) begin
+            else if(carrier == period-1'b0 && (mask_mode==MAX_MASK || mask_mode==MINMAX_MASK)) begin
                 mask_event <= 1'b1;
             end
             else begin

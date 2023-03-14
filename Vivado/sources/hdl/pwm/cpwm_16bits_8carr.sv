@@ -5,7 +5,7 @@
 // 
 // Create Date: 01/23/2023 11:33:04 PM
 // Design Name: 
-// Module Name: pwm_16bits
+// Module Name: pwm_16bits_8carr
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -33,48 +33,206 @@
 // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 import PKG_pwm::*;
 
-module pwm_16bits  (
+module pwm_16bits_8carr  (
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // INPUTS
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& 
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+	// ------------------------------------------------
+	// common clock and reset
+	// ------------------------------------------------
     // system clock
     input clk,
     // system reset
     input reset,
-    // PWM carrier period
-    input [`PWMCOUNT_WIDTH-1:0] period,
-    // PWM initial carrier value
-    input [`PWMCOUNT_WIDTH-1:0] init_carr,
-    // PWM compare register 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1,
-    // PWM compare register 2
-    input [`PWMCOUNT_WIDTH-1:0] compare_2,
-    // PWM compare register 3
-    input [`PWMCOUNT_WIDTH-1:0] compare_3,
-    // PWM compare register 4
-    input [`PWMCOUNT_WIDTH-1:0] compare_4,
-    // dead time value for pulse A
-    input [`DTCOUNT_WIDTH-1:0] dtime_A,
-    // dead time value for pulse B
-    input [`DTCOUNT_WIDTH-1:0] dtime_B,
+	// ------------------------------------------------
+	// periods (8 x 16 bits)
+	// ------------------------------------------------
+    // PWM period  carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] period_c1,
+	// PWM period  carrier 2
+    input [`PWMCOUNT_WIDTH-1:0] period_c2,
+	// PWM period  carrier 3
+    input [`PWMCOUNT_WIDTH-1:0] period_c3,
+	// PWM period  carrier 4
+    input [`PWMCOUNT_WIDTH-1:0] period_c4,
+	// PWM period  carrier 5
+    input [`PWMCOUNT_WIDTH-1:0] period_c5,
+	// PWM period  carrier 6
+    input [`PWMCOUNT_WIDTH-1:0] period_c6,
+	// PWM period  carrier 7
+    input [`PWMCOUNT_WIDTH-1:0] period_c7,
+	// PWM period  carrier 8
+    input [`PWMCOUNT_WIDTH-1:0] period_c8,
+	// ------------------------------------------------
+	// initial carrier values (8 x 16 bits)
+	// ------------------------------------------------
+    // PWM initial value carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c1,
+	// PWM initial value carrier 2
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c2,
+	// PWM initial value carrier 3
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c3,
+	// PWM initial value carrier 4
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c4,
+	// PWM initial value carrier 5
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c5,
+	// PWM initial value carrier 6
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c6,
+	// PWM initial value carrier 7
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c7,
+	// PWM initial value carrier 8
+    input [`PWMCOUNT_WIDTH-1:0] initcarr_c8,
+	// ------------------------------------------------
+	// compare registers 1 (8 x 16 bits)
+	// ------------------------------------------------
+    // PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c1,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c2,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c3,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c4,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c5,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c6,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c7,
+	// PWM compare register 1 carrier 1
+    input [`PWMCOUNT_WIDTH-1:0] compare_1_c8,
+	// ------------------------------------------------
+	// dead time register A (8 x 8 bits)
+	// ------------------------------------------------
+    // dead time value for pulse A compare 1
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c1,
+	// dead time value for pulse A compare 2
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c2,
+	// dead time value for pulse A compare 3
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c3,
+	// dead time value for pulse A compare 4
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c4,
+	// dead time value for pulse A compare 5
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c5,
+	// dead time value for pulse A compare 6
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c6,
+	// dead time value for pulse A compare 7
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c7,
+	// dead time value for pulse A compare 8
+    input [`DTCOUNT_WIDTH-1:0] dtime_A_c8,
+	// ------------------------------------------------
+	// dead time register B (8 x 8 bits)
+	// ------------------------------------------------
+    // dead time value for pulse B compare 1
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c1,
+	// dead time value for pulse B compare 2
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c2,
+	// dead time value for pulse B compare 3
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c3,
+	// dead time value for pulse B compare 4
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c4,
+	// dead time value for pulse B compare 5
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c5,
+	// dead time value for pulse B compare 6
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c6,
+	// dead time value for pulse B compare 7
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c7,
+	// dead time value for pulse B compare 8
+    input [`DTCOUNT_WIDTH-1:0] dtime_B_c8,
+	// ------------------------------------------------
+	// GENERAL module clock dividers (2 x 5 bits)
+	// ------------------------------------------------
     // clock divider for PWM
     input [`DIVCLK_WIDTH-1:0] pwmclk_divider,
     // clock driver for the dead time generator
     input [`DIVCLK_WIDTH-1:0] dtclk_divider,
-    // clock driver for the dead time generator
-    input [`INTCOUNT_WIDTH-1:0] event_count,
-    // count mode configuration bits
-    input _count_mode count_mode,
-    // event mask mode configuration bits (defined and packaged in PKG_pwm.sv)
-    input _mask_mode mask_mode,
+	// ------------------------------------------------
+	// on-off clock dividers (2 x 1 bits)
+	// ------------------------------------------------
+	// pwm clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    input _clkdiv_onoff pwmclkdiv_onoff,
+    // dead time clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
+    input _clkdiv_onoff dtclkdiv_onoff,
+	// ------------------------------------------------
+	// event counters (8 x 3 bits)
+	// ------------------------------------------------
+    // event counter carrier 1
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c1,
+	// event counter carrier 2
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c2,
+	// event counter carrier 3
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c3,
+	// event counter carrier 4
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c4,
+	// event counter carrier 5
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c5,
+	// event counter carrier 6
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c6,
+	// event counter carrier 7
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c7,
+	// event counter carrier 8
+    input [`INTCOUNT_WIDTH-1:0] eventcount_c8,
+	// ------------------------------------------------
+	// count mode configuration (8 x 2 bits)
+	// ------------------------------------------------
+    // count mode carrier 1
+    input _count_mode countmode_c1,
+	// count mode carrier 2
+    input _count_mode countmode_c2,
+	// count mode carrier 3
+    input _count_mode countmode_c3,
+	// count mode carrier 4
+    input _count_mode countmode_c4,
+	// count mode carrier 5
+    input _count_mode countmode_c5,
+	// count mode carrier 6
+    input _count_mode countmode_c6,
+	// count mode carrier 7
+    input _count_mode countmode_c7,
+	// count mode carrier 8
+    input _count_mode countmode_c8,
+	// ------------------------------------------------
+	// mask mode configuration (8 x 2 bits)
+	// ------------------------------------------------
+    // event mask mode carrier 1
+    input _mask_mode maskmode_c1,
+	// event mask mode carrier 2
+    input _mask_mode maskmode_c2,
+	// event mask mode carrier 3
+    input _mask_mode maskmode_c3,
+	// event mask mode carrier 4
+    input _mask_mode maskmode_c4,
+	// event mask mode carrier 5
+    input _mask_mode maskmode_c5,
+	// event mask mode carrier 6
+    input _mask_mode maskmode_c6,
+	// event mask mode carrier 7
+    input _mask_mode maskmode_c7,
+	// event mask mode carrier 8
+    input _mask_mode maskmode_c8,
+	// ------------------------------------------------
+	// on-off counter carrier (8 x 2 bits)
+	// ------------------------------------------------
+	// Carrier count ON-OFF state carrier 1
+    input _carr_onoff carr_onoff_c1,
+	// Carrier count ON-OFF state carrier 2
+    input _carr_onoff carr_onoff_c2,
+	// Carrier count ON-OFF state carrier 3
+    input _carr_onoff carr_onoff_c3,
+	// Carrier count ON-OFF state carrier 4
+    input _carr_onoff carr_onoff_c4,
+	// Carrier count ON-OFF state carrier 5
+    input _carr_onoff carr_onoff_c5,
+	// Carrier count ON-OFF state carrier 6
+    input _carr_onoff carr_onoff_c6,
+	// Carrier count ON-OFF state carrier 7
+    input _carr_onoff carr_onoff_c7,
+	// Carrier count ON-OFF state carrier 8
+    input _carr_onoff carr_onoff_c8,
     // PWM ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     input _pwm_onoff pwm_onoff,
     // Interrupt ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     input _int_onoff int_onoff,
-    // pwm clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
-    input _clkdiv_onoff pwmclkdiv_onoff,
-    // dead time clock divider ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
-    input _clkdiv_onoff dtclkdiv_onoff,
     // logic value of PWM output A
     input logic_A,
     // logic value of PWM output B
@@ -91,14 +249,14 @@ module pwm_16bits  (
     output logic pwmout_2_A,
     // PWM output signal 2 B
     output logic pwmout_2_B,
-    // PWM output signal 3 A
+/*    // PWM output signal 3 A
     output logic pwmout_3_A,
     // PWM output signal 3 B
     output logic pwmout_3_B,
     // PWM output signal 4 A
     output logic pwmout_4_A,
     // PWM output signal 4 B
-    output logic pwmout_4_B,
+    output logic pwmout_4_B,*/
     // interrupt output signal
     output wire interrupt
     );
@@ -115,10 +273,10 @@ module pwm_16bits  (
     logic [`PWMCOUNT_WIDTH-1:0] compare_1__masked;
     // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] compare_2__masked;
-    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
+/*    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] compare_3__masked;
     // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_4__masked;
+    logic [`PWMCOUNT_WIDTH-1:0] compare_4__masked;*/
     // masked carrier initial value from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] init_carr__masked;
     //mask event trigger
@@ -131,10 +289,10 @@ module pwm_16bits  (
     logic pwm_1;
     //PWM master signal
     logic pwm_2;
-    //PWM master signal
+/*    //PWM master signal
     logic pwm_3;
     //PWM master signal
-    logic pwm_4;
+    logic pwm_4;*/
     //PWM clock
     logic pwm_clk;
     
@@ -212,7 +370,7 @@ module pwm_16bits  (
         .reg_out(compare_2__masked)       
     );
     
-    register_mask_16bits REG_COMP3(
+/*    register_mask_16bits REG_COMP3(
         .clk(clk),
         .reset,
         .mask_event,
@@ -228,7 +386,7 @@ module pwm_16bits  (
         .pwm_onoff(pwm_onoff__masked),
         .reg_in(compare_4),
         .reg_out(compare_4__masked)       
-    );
+    );*/
     
     register_mask_16bits REG_CARR(
         .clk(clk),
@@ -274,7 +432,7 @@ module pwm_16bits  (
         .pwm(pwm_2)
     );
     
-    compare_16bits COMP3(
+/*    compare_16bits COMP3(
         .carrier,
         .compare(compare_3__masked),
         .pwm_onoff(pwm_onoff__masked),
@@ -286,7 +444,7 @@ module pwm_16bits  (
         .compare(compare_4__masked),
         .pwm_onoff(pwm_onoff__masked),
         .pwm(pwm_4)
-    );
+    );*/
     
     div_clock DTCLK(
         .clk,
@@ -323,7 +481,7 @@ module pwm_16bits  (
 	   .pwmout_B(pwmout_2_B)
     );
     
-    dead_time DT3(
+/*    dead_time DT3(
        .clk(dt_clk),
 	   .reset,
 	   .pwm(pwm_3),
@@ -347,7 +505,7 @@ module pwm_16bits  (
 	   .pwm_onoff(pwm_onoff__masked),
 	   .pwmout_A(pwmout_4_A),
 	   .pwmout_B(pwmout_4_B)
-    );
+    );*/
     
     interrupt_counter INT1(
        .clk,

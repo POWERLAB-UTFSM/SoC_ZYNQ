@@ -28,10 +28,12 @@ module configregpwm_concatenate(
     input _clkdiv_onoff dtclkdiv_onoff, //1 bit
     input _mask_mode mask_mode, //1 bit
 	input _count_mode count_mode,
+	input logic_A,
+	input logic_B,
 	output[`PWMCOUNT_WIDTH-1:0] register_concat
     );
     
-    assign register_concat = {pwm_onoff,int_onoff,pwmclkdiv_onoff,dtclkdiv_onoff,mask_mode,count_mode};
+    assign register_concat = {logic_B,logic_A,pwm_onoff,int_onoff,pwmclkdiv_onoff,dtclkdiv_onoff,mask_mode,count_mode};
     
 
 endmodule

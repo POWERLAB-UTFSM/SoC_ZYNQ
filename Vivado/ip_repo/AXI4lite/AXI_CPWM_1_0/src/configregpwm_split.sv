@@ -28,7 +28,9 @@ module configregpwm_split(
 	output _clkdiv_onoff pwmclkdiv_onoff,
 	output _clkdiv_onoff dtclkdiv_onoff,
 	output _mask_mode mask_mode,
-	output _count_mode count_mode
+	output _count_mode count_mode,
+	output logic_A,
+	output logic_B
     );
 
     assign count_mode = _count_mode'(register_concat[1:0]);
@@ -37,5 +39,7 @@ module configregpwm_split(
     assign dtclkdiv_onoff = _clkdiv_onoff'(register_concat[5]);
     assign int_onoff = _int_onoff'(register_concat[6]);
     assign pwm_onoff = _pwm_onoff'(register_concat[7]);
-
+    assign logic_A = register_concat[8];
+    assign logic_B = register_concat[9];
+    
 endmodule

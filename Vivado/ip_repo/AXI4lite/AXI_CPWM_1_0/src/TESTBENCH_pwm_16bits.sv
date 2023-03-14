@@ -29,8 +29,8 @@ module TESTBENCH_pwm_16bits();
     logic [`PWMCOUNT_WIDTH-1:0] init_carr;
     logic [`PWMCOUNT_WIDTH-1:0] compare_1;
     logic [`PWMCOUNT_WIDTH-1:0] compare_2;
-//    logic [`PWMCOUNT_WIDTH-1:0] compare_3;
-//    logic [`PWMCOUNT_WIDTH-1:0] compare_4;
+    logic [`PWMCOUNT_WIDTH-1:0] compare_3;
+    logic [`PWMCOUNT_WIDTH-1:0] compare_4;
     logic [`DIVCLK_WIDTH-1:0] pwmclk_divider;
     logic [`DIVCLK_WIDTH-1:0] dtclk_divider;
     logic [`PWMCOUNT_WIDTH-1:0] carrier;
@@ -45,10 +45,10 @@ module TESTBENCH_pwm_16bits();
     logic pwmout_1_B;
     logic pwmout_2_A;
     logic pwmout_2_B;
-/*    logic pwmout_3_A;
+    logic pwmout_3_A;
     logic pwmout_3_B;
     logic pwmout_4_A;
-    logic pwmout_4_B;*/
+    logic pwmout_4_B;
     logic [`DTCOUNT_WIDTH-1:0] dtime_A;
     logic [`DTCOUNT_WIDTH-1:0] dtime_B;
     logic [`DTCOUNT_WIDTH-1:0] logic_A;
@@ -70,17 +70,17 @@ module TESTBENCH_pwm_16bits();
 //=============================================================
     initial begin 
         period ='d2000;
-        init_carr ='d0;
+        init_carr ='d500;
         compare_1 ='d1000; 
         compare_2 ='d1000; 
-/*        compare_3 ='d1000; 
-        compare_4 ='d1000; */
+        compare_3 ='d1000; 
+        compare_4 ='d1000; 
         pwmclkdiv_onoff = CLKDIV_OFF;
         dtclkdiv_onoff = CLKDIV_OFF;
         pwmclk_divider ='d0;
         dtclk_divider ='d0;
         event_count ='d0;
-        count_mode = COUNT_UP;
+        count_mode = COUNT_UPDOWN;
         mask_mode = MAX_MASK;
         pwm_onoff = PWM_OFF;
         int_onoff = INT_ON;
@@ -111,12 +111,6 @@ module TESTBENCH_pwm_16bits();
         repeat(23000) @(posedge clk);
         pwmclkdiv_onoff = CLKDIV_ON;
         
-        repeat(18000) @(posedge clk);
-        period = 'd0;
-        
-        repeat(18000) @(posedge clk);
-        period = 'd2000;
-        
     end 
 //=============================================================
 //    Design Under Test
@@ -139,10 +133,10 @@ pwm_16bits DUT1(
     .compare_1,
     // PWM compare register 2
     .compare_2,
-/*    // PWM compare register 3
+    // PWM compare register 3
     .compare_3,
     // PWM compare register 4
-    .compare_4,*/
+    .compare_4,
     // dead time value for pulse A
     .dtime_A,
     // dead time value for pulse B
@@ -181,14 +175,14 @@ pwm_16bits DUT1(
     .pwmout_2_A,
     // PWM output signal 2 B
     .pwmout_2_B,
-/*    // PWM output signal 3 A
+    // PWM output signal 3 A
     .pwmout_3_A,
     // PWM output signal 3 B
     .pwmout_3_B,
     // PWM output signal 4 A
     .pwmout_4_A,
     // PWM output signal 4 B
-    .pwmout_4_B,*/
+    .pwmout_4_B,
     // interrupt output signal
     .interrupt
     );	

@@ -49,10 +49,10 @@ module pwm_16bits  (
     input [`PWMCOUNT_WIDTH-1:0] compare_1,
     // PWM compare register 2
     input [`PWMCOUNT_WIDTH-1:0] compare_2,
-    // PWM compare register 3
+/*    // PWM compare register 3
     input [`PWMCOUNT_WIDTH-1:0] compare_3,
     // PWM compare register 4
-    input [`PWMCOUNT_WIDTH-1:0] compare_4,
+    input [`PWMCOUNT_WIDTH-1:0] compare_4,*/
     // dead time value for pulse A
     input [`DTCOUNT_WIDTH-1:0] dtime_A,
     // dead time value for pulse B
@@ -91,14 +91,14 @@ module pwm_16bits  (
     output logic pwmout_2_A,
     // PWM output signal 2 B
     output logic pwmout_2_B,
-    // PWM output signal 3 A
+/*    // PWM output signal 3 A
     output logic pwmout_3_A,
     // PWM output signal 3 B
     output logic pwmout_3_B,
     // PWM output signal 4 A
     output logic pwmout_4_A,
     // PWM output signal 4 B
-    output logic pwmout_4_B,
+    output logic pwmout_4_B,*/
     // interrupt output signal
     output wire interrupt
     );
@@ -115,10 +115,10 @@ module pwm_16bits  (
     logic [`PWMCOUNT_WIDTH-1:0] compare_1__masked;
     // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] compare_2__masked;
-    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
+/*    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] compare_3__masked;
     // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_4__masked;
+    logic [`PWMCOUNT_WIDTH-1:0] compare_4__masked;*/
     // masked carrier initial value from event mask handler (register_mask_16bits.sv) 
     logic [`PWMCOUNT_WIDTH-1:0] init_carr__masked;
     //mask event trigger
@@ -131,10 +131,10 @@ module pwm_16bits  (
     logic pwm_1;
     //PWM master signal
     logic pwm_2;
-    //PWM master signal
+/*    //PWM master signal
     logic pwm_3;
     //PWM master signal
-    logic pwm_4;
+    logic pwm_4;*/
     //PWM clock
     logic pwm_clk;
     
@@ -145,6 +145,8 @@ module pwm_16bits  (
     _clkdiv_onoff pwmclkdiv_onoff__masked;
     _clkdiv_onoff dtclkdiv_onoff__masked;
     logic[`PWMCOUNT_WIDTH-1:0] register_concat;
+    logic logic_A__masked;
+    logic logic_B__masked;
 
     //
     // Modules
@@ -157,6 +159,8 @@ module pwm_16bits  (
         .dtclkdiv_onoff,
         .mask_mode,
         .count_mode,
+        .logic_A,
+        .logic_B,
 	    .register_concat
     );
     
@@ -167,7 +171,9 @@ module pwm_16bits  (
         .pwmclkdiv_onoff(pwmclkdiv_onoff__masked),
         .dtclkdiv_onoff(dtclkdiv_onoff__masked),
         .mask_mode(mask_mode__masked),
-        .count_mode(count_mode__masked)
+        .count_mode(count_mode__masked),
+        .logic_A(logic_A__masked),
+        .logic_B(logic_B__masked)
     );
     
     register_mask_16bits REG_CONFIG(
@@ -206,7 +212,7 @@ module pwm_16bits  (
         .reg_out(compare_2__masked)       
     );
     
-    register_mask_16bits REG_COMP3(
+/*    register_mask_16bits REG_COMP3(
         .clk(clk),
         .reset,
         .mask_event,
@@ -222,7 +228,7 @@ module pwm_16bits  (
         .pwm_onoff(pwm_onoff__masked),
         .reg_in(compare_4),
         .reg_out(compare_4__masked)       
-    );
+    );*/
     
     register_mask_16bits REG_CARR(
         .clk(clk),
@@ -238,7 +244,7 @@ module pwm_16bits  (
         .reset,
         .divider(pwmclk_divider),
         .pwm_onoff(pwm_onoff__masked),
-        .clkdiv_onoff(pwmclkdiv_onoff),
+        .clkdiv_onoff(pwmclkdiv_onoff__masked),
         .div_clk(pwm_clk)
     );
     
@@ -268,7 +274,7 @@ module pwm_16bits  (
         .pwm(pwm_2)
     );
     
-    compare_16bits COMP3(
+/*    compare_16bits COMP3(
         .carrier,
         .compare(compare_3__masked),
         .pwm_onoff(pwm_onoff__masked),
@@ -280,14 +286,14 @@ module pwm_16bits  (
         .compare(compare_4__masked),
         .pwm_onoff(pwm_onoff__masked),
         .pwm(pwm_4)
-    );
+    );*/
     
     div_clock DTCLK(
         .clk,
         .reset,
         .divider(dtclk_divider),
         .pwm_onoff(pwm_onoff__masked),
-        .clkdiv_onoff(dtclkdiv_onoff),
+        .clkdiv_onoff(dtclkdiv_onoff__masked),
         .div_clk(dt_clk)
     );
     
@@ -297,8 +303,8 @@ module pwm_16bits  (
 	   .pwm(pwm_1),
 	   .dtime_A,
 	   .dtime_B,
-	   .logic_A,
-	   .logic_B,
+	   .logic_A(logic_A__masked),
+	   .logic_B(logic_B__masked),
 	   .pwm_onoff(pwm_onoff__masked),
 	   .pwmout_A(pwmout_1_A),
 	   .pwmout_B(pwmout_1_B)
@@ -310,21 +316,21 @@ module pwm_16bits  (
 	   .pwm(pwm_2),
 	   .dtime_A,
 	   .dtime_B,
-	   .logic_A,
-	   .logic_B,
+	   .logic_A(logic_A__masked),
+	   .logic_B(logic_B__masked),
 	   .pwm_onoff(pwm_onoff__masked),
 	   .pwmout_A(pwmout_2_A),
 	   .pwmout_B(pwmout_2_B)
     );
     
-    dead_time DT3(
+/*    dead_time DT3(
        .clk(dt_clk),
 	   .reset,
 	   .pwm(pwm_3),
 	   .dtime_A,
 	   .dtime_B,
-	   .logic_A,
-	   .logic_B,
+	   .logic_A(logic_A__masked),
+	   .logic_B(logic_B__masked),
 	   .pwm_onoff(pwm_onoff__masked),
 	   .pwmout_A(pwmout_3_A),
 	   .pwmout_B(pwmout_3_B)
@@ -336,12 +342,12 @@ module pwm_16bits  (
 	   .pwm(pwm_4),
 	   .dtime_A,
 	   .dtime_B,
-	   .logic_A,
-	   .logic_B,
+	   .logic_A(logic_A__masked),
+	   .logic_B(logic_B__masked),
 	   .pwm_onoff(pwm_onoff__masked),
 	   .pwmout_A(pwmout_4_A),
 	   .pwmout_B(pwmout_4_B)
-    );
+    );*/
     
     interrupt_counter INT1(
        .clk,

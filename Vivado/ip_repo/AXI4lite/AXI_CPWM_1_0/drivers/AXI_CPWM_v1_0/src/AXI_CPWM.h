@@ -13,7 +13,33 @@
 #define AXI_CPWM_S_AXI_SLV_REG3_OFFSET 12
 #define AXI_CPWM_S_AXI_SLV_REG4_OFFSET 16
 
+/****************** read/write register ********************/
+#define HWREG(x)                                                          \
+            (*((volatile u32 *)(x)))
 
+typedef enum
+{
+   COUNT_UP = 0,
+   COUNT_DOWN = 1,
+   COUNT_UP_DOWN = 2,
+} AXI_CPWM_count_mode;
+
+typedef enum
+{
+   NO_MASK = 0,
+   MIN_MASK = 1,
+   MAX_MASK = 2,
+   MINMAX_MASK = 3,
+} AXI_CPWM_mask_mode;
+
+typedef enum
+{
+   REG_OFF = 0,
+   REG_ON = 1,
+} AXI_CPWM_onoff;
+
+
+     
 /**************************** Type Definitions *****************************/
 /**
  *
@@ -76,5 +102,86 @@
  *
  */
 XStatus AXI_CPWM_Reg_SelfTest(void * baseaddr_p);
+
+/************************** User defined functions/macros ****************************/
+/**/
+/**/
+static inline void AXI_CPWM_mWrite_Period(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG0_OFFSET) & 0x0000FFFF) + (Value << 16);
+}
+
+static inline void AXI_CPWM_mWrite_InitCarrier(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG0_OFFSET) & 0xFFFF0000) + (Value);
+}
+
+static inline void AXI_CPWM_mWrite_Comp1(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG1_OFFSET) & 0x0000FFFF) + (Value << 16);
+}
+
+static inline void AXI_CPWM_mWrite_Comp2(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG1_OFFSET) & 0xFFFF0000) + (Value);
+}
+
+static inline void AXI_CPWM_mWrite_Comp3(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG2_OFFSET) & 0x0000FFFF) + (Value << 16);
+}
+
+static inline void AXI_CPWM_mWrite_Comp4(UINTPTR BaseAddress, u16 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG2_OFFSET) & 0xFFFF0000) + (Value);
+}
+
+static inline void AXI_CPWM_mWrite_DeadTimeA(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) & 0x00FFFFFF) + (Value << 24);
+}
+
+static inline void AXI_CPWM_mWrite_DeadTimeB(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) & 0xFF00FFFF) + (Value << 16);
+}
+
+static inline void AXI_CPWM_mWrite_CarrClkDiv(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) & 0b11111111111111110000011111111111) + (Value << 11);
+}
+
+static inline void AXI_CPWM_mWrite_DtimeClkDiv(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) & 0b11111111111111111111100000111111) + (Value << 6);
+}
+
+static inline void AXI_CPWM_mWrite_EventCount(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG3_OFFSET) & 0b11111111111111111111111111000111) + (Value << 3);
+}
+
+static inline void AXI_CPWM_mWrite_CountMode(UINTPTR BaseAddress, AXI_CPWM_count_mode Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111111111100) + ((u8)Value);
+}
+
+static inline void AXI_CPWM_mWrite_MaskMode(UINTPTR BaseAddress, AXI_CPWM_mask_mode Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111111110011) + ((u8)Value << 2);
+}
+
+static inline void AXI_CPWM_mWrite_PWMOnOff(UINTPTR BaseAddress, AXI_CPWM_onoff Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111111101111) + ((u8)Value << 4);
+}
+
+static inline void AXI_CPWM_mWrite_IntOnOff(UINTPTR BaseAddress, AXI_CPWM_onoff Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111111011111) + ((u8)Value << 5);
+}
+
+static inline void AXI_CPWM_mWrite_PWMClkDivOnOff(UINTPTR BaseAddress, AXI_CPWM_onoff Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111110111111) + ((u8)Value << 6);
+}
+
+static inline void AXI_CPWM_mWrite_DTClkDivOnOff(UINTPTR BaseAddress, AXI_CPWM_onoff Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111101111111) + ((u8)Value << 7);
+}
+
+static inline void AXI_CPWM_mWrite_LogicOutA(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111111011111111) + ((u8)Value << 8);
+}
+
+static inline void AXI_CPWM_mWrite_LogicOutB(UINTPTR BaseAddress, u8 Value){
+	HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) = (HWREG(BaseAddress + AXI_CPWM_S_AXI_SLV_REG4_OFFSET) & 0b11111111111111111111110111111111) + ((u8)Value << 9);
+}
+
+
 
 #endif // AXI_CPWM_H
