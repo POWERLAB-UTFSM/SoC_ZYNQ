@@ -30,6 +30,7 @@ Compatible, según proyecto.
         * [PS tcl](Vivado/sources/tcl): comandos *Tool Command language* (tcl) utilizables en distintos proyectos.
         * [xdc](Vivado/sources/xdc): archivos *Xilinx Design Constraints* (xdc) con restricciones y condicionantes de diseño.
     * [projects](Vivado/projects): Proyectos creados con Vivado.
+    * [xsa_hardware](Vivado/xsa_hardware): Archivos comprimidos con la descripción de hardware de un proyecto en Vivado para ser incluído en un proyecto de software Vitis.
 * [Vitis](Vitis): Carpeta con archivos para proyectos de desarrollo de software en Vitis.
 
 ## Más información de interés:
