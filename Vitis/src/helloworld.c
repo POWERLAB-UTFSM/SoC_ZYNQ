@@ -46,7 +46,7 @@
  */
 
 #include <stdio.h>
-#include "platform.h"
+//#include "platform.h"
 #include "xil_printf.h"
 #include "xil_io.h"
 #include "xparameters.h"
@@ -82,9 +82,9 @@ u8 pwm_logicB=0;
 
 int main()
 {
-    init_platform();
+//    init_platform();
 
-    print("Hello World\n\r");
+//    print("Hello World\n\r");
 
 //    pwm_reg0 = 2000 << 16 | 0;
 //    pwm_reg1 = 1000 << 16 | 1000;
@@ -130,6 +130,6 @@ int main()
 
 	}
 
-    cleanup_platform();
+//    cleanup_platform();
     return 0;
 }
