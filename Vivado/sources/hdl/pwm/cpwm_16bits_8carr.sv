@@ -35,7 +35,7 @@ import PKG_pwm::*;
 
 module pwm_16bits_8carr  (
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    // INPUTS
+    // Signal INPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	// ------------------------------------------------
 	// common clock and reset
@@ -44,6 +44,9 @@ module pwm_16bits_8carr  (
     input clk,
     // system reset
     input reset,
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // Register INPUTS
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 	// ------------------------------------------------
 	// periods (8 x 16 bits)
 	// ------------------------------------------------
@@ -86,21 +89,21 @@ module pwm_16bits_8carr  (
 	// compare registers 1 (8 x 16 bits)
 	// ------------------------------------------------
     // PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c1,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c1,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c2,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c2,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c3,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c3,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c4,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c4,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c5,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c5,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c6,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c6,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c7,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c7,
 	// PWM compare register 1 carrier 1
-    input [`PWMCOUNT_WIDTH-1:0] compare_1_c8,
+    input [`PWMCOUNT_WIDTH-1:0] compare_c8,
 	// ------------------------------------------------
 	// dead time register A (8 x 8 bits)
 	// ------------------------------------------------
@@ -233,83 +236,102 @@ module pwm_16bits_8carr  (
     input _pwm_onoff pwm_onoff,
     // Interrupt ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
     input _int_onoff int_onoff,
-    // logic value of PWM output A
-    input logic_A,
-    // logic value of PWM output B
-    input logic_B,
+    // ------------------------------------------------
+	// logic value of output A (8 x 1 bits)
+	// ------------------------------------------------
+    // logic value of PWM output A carrier 1
+    input logic_A_c1,
+    // logic value of PWM output A carrier 1
+    input logic_A_c2,
+    // logic value of PWM output A carrier 1
+    input logic_A_c3,
+    // logic value of PWM output A carrier 1
+    input logic_A_c4,
+    // logic value of PWM output A carrier 1
+    input logic_A_c5,
+    // logic value of PWM output A carrier 1
+    input logic_A_c6,
+    // logic value of PWM output A carrier 1
+    input logic_A_c7,
+    // logic value of PWM output A carrier 1
+    input logic_A_c8,
+    // ------------------------------------------------
+	// logic value of output B (8 x 1 bits)
+	// ------------------------------------------------
+    // logic value of PWM output B carrier 1
+    input logic_B_c1,
+    // logic value of PWM output B carrier 2
+    input logic_B_c2,
+    // logic value of PWM output B carrier 3
+    input logic_B_c3,
+    // logic value of PWM output B carrier 4
+    input logic_B_c4,
+    // logic value of PWM output B carrier 5
+    input logic_B_c5,
+    // logic value of PWM output B carrier 6
+    input logic_B_c6,
+    // logic value of PWM output B carrier 7
+    input logic_B_c7,
+    // logic value of PWM output B carrier 8
+    input logic_B_c8,
     // logic value of PWM output A
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS
-    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& 
-    // PWM output signal 1 A
-    output logic pwmout_1_A,
-    // PWM output signal 1 B
-    output logic pwmout_1_B,
-    // PWM output signal 2 A
-    output logic pwmout_2_A,
-    // PWM output signal 2 B
-    output logic pwmout_2_B,
-/*    // PWM output signal 3 A
-    output logic pwmout_3_A,
-    // PWM output signal 3 B
-    output logic pwmout_3_B,
-    // PWM output signal 4 A
-    output logic pwmout_4_A,
-    // PWM output signal 4 B
-    output logic pwmout_4_B,*/
-    // interrupt output signal
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // ------------------------------------------------
+	// PWM output signal A (8 x 1 bits)
+	// ------------------------------------------------ 
+    // PWM output signal A compare 1
+    output logic pwmout_A_c1,
+    // PWM output signal A compare 2
+    output logic pwmout_A_c2,
+    // PWM output signal A compare 3
+    output logic pwmout_A_c3,
+    // PWM output signal A compare 4
+    output logic pwmout_A_c4,
+    // PWM output signal A compare 5
+    output logic pwmout_A_c5,
+    // PWM output signal A compare 6
+    output logic pwmout_A_c6,
+    // PWM output signal A compare 7
+    output logic pwmout_A_c7,
+    // PWM output signal A compare 8
+    output logic pwmout_A_c8,
+    // ------------------------------------------------
+	// PWM output signal B (8 x 1 bits)
+	// ------------------------------------------------
+    // PWM output signal B compare 1
+    output logic pwmout_B_c1,
+    // PWM output signal B compare 2
+    output logic pwmout_B_c2,
+    // PWM output signal B compare 3
+    output logic pwmout_B_c3,
+    // PWM output signal B compare 4
+    output logic pwmout_B_c4,
+    // PWM output signal B compare 5
+    output logic pwmout_B_c5,
+    // PWM output signal B compare 6
+    output logic pwmout_B_c6,
+    // PWM output signal B compare 7
+    output logic pwmout_B_c7,
+    // PWM output signal B compare 8
+    output logic pwmout_B_c8,
+    // ------------------------------------------------
+	// main interrupt signal (1 bit)
+	// ------------------------------------------------
     output wire interrupt
     );
     
-    //
-    // Internal Signal definition
-    //
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // INTERNAL signal definitions
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    // masked period register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] period__masked;
-    // masked period register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] register_concat__masked;
-    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_1__masked;
-    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_2__masked;
-/*    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_3__masked;
-    // masked compare_1 register from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] compare_4__masked;*/
-    // masked carrier initial value from event mask handler (register_mask_16bits.sv) 
-    logic [`PWMCOUNT_WIDTH-1:0] init_carr__masked;
-    //mask event trigger
-    logic mask_event;
-    //dead time clock
-    logic dt_clk;
-    //PWM carrier signal
-    logic[`PWMCOUNT_WIDTH-1:0] carrier;
-    //PWM master signal
-    logic pwm_1;
-    //PWM master signal
-    logic pwm_2;
-/*    //PWM master signal
-    logic pwm_3;
-    //PWM master signal
-    logic pwm_4;*/
-    //PWM clock
-    logic pwm_clk;
     
-    _pwm_onoff pwm_onoff__masked;
-    _int_onoff int_onoff__masked;
-    _mask_mode mask_mode__masked;
-    _count_mode count_mode__masked;
-    _clkdiv_onoff pwmclkdiv_onoff__masked;
-    _clkdiv_onoff dtclkdiv_onoff__masked;
-    logic[`PWMCOUNT_WIDTH-1:0] register_concat;
-    logic logic_A__masked;
-    logic logic_B__masked;
 
-    //
-    // Modules
-    //
-    
+
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    // MODULES
+    // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     configregpwm_concatenate CONCAT(
         .pwm_onoff,
         .int_onoff,
@@ -370,24 +392,6 @@ module pwm_16bits_8carr  (
         .reg_out(compare_2__masked)       
     );
     
-/*    register_mask_16bits REG_COMP3(
-        .clk(clk),
-        .reset,
-        .mask_event,
-        .pwm_onoff(pwm_onoff__masked),
-        .reg_in(compare_3),
-        .reg_out(compare_3__masked)       
-    );
-    
-    register_mask_16bits REG_COMP4(
-        .clk(clk),
-        .reset,
-        .mask_event,
-        .pwm_onoff(pwm_onoff__masked),
-        .reg_in(compare_4),
-        .reg_out(compare_4__masked)       
-    );*/
-    
     register_mask_16bits REG_CARR(
         .clk(clk),
         .reset,
@@ -420,31 +424,10 @@ module pwm_16bits_8carr  (
     
     compare_16bits COMP1(
         .carrier,
-        .compare(compare_1__masked),
+        .compare(compare_c1__masked),
         .pwm_onoff(pwm_onoff__masked),
-        .pwm(pwm_1)
+        .pwm(pwm_out_c1)
     );
-    
-    compare_16bits COMP2(
-        .carrier,
-        .compare(compare_2__masked),
-        .pwm_onoff(pwm_onoff__masked),
-        .pwm(pwm_2)
-    );
-    
-/*    compare_16bits COMP3(
-        .carrier,
-        .compare(compare_3__masked),
-        .pwm_onoff(pwm_onoff__masked),
-        .pwm(pwm_3)
-    );
-    
-    compare_16bits COMP4(
-        .carrier,
-        .compare(compare_4__masked),
-        .pwm_onoff(pwm_onoff__masked),
-        .pwm(pwm_4)
-    );*/
     
     div_clock DTCLK(
         .clk,
