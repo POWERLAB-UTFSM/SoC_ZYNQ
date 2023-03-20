@@ -33,8 +33,8 @@ package PKG_pwm;
     `define PWMCOUNT_WIDTH 16
     `endif
     
-    `ifndef INTCOUNT_WIDTH
-    `define INTCOUNT_WIDTH 3
+    `ifndef EVTCOUNT_WIDTH
+    `define EVTCOUNT_WIDTH 3
     `endif
     
     typedef enum logic [1:0] {COUNT_UP,COUNT_DOWN,COUNT_UPDOWN} _count_mode;
