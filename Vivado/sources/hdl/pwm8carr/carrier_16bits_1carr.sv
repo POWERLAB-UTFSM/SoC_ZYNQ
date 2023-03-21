@@ -41,11 +41,13 @@ import PKG_pwm::*;
     input [`PWMCOUNT_WIDTH-1:0] period,
     input [`PWMCOUNT_WIDTH-1:0] initcarr,
     input [`EVTCOUNT_WIDTH-1:0] eventcount,
+    input [`DIVCLK_WIDTH-1:0] carrclkdivider,
     input _count_mode countmode,
     input _mask_mode maskmode,
     input _pwm_onoff pwm_onoff,
     input _int_onoff int_onoff,
     input _carr_onoff carr_onoff,
+    input _clkdiv_onoff carrclkdiv_onoff,
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -60,12 +62,14 @@ import PKG_pwm::*;
     logic [`PWMCOUNT_WIDTH-1:0] period__masked;
     logic [`PWMCOUNT_WIDTH-1:0] initcarr__masked;
     logic [`EVTCOUNT_WIDTH-1:0] eventcount__masked;
+    logic [`DIVCLK_WIDTH-1:0] carrclkdivider__masked;
     logic maskevent_single;
     _count_mode countmode__masked;
     _mask_mode maskmode__masked;
     _pwm_onoff pwm_onoff__masked;
     _carr_onoff carr_onoff__masked;
     _int_onoff int_onoff__masked;
+    _clkdiv_onoff carrclkdiv_onoff__masked;
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ASSIGN VARIABLES
@@ -73,16 +77,16 @@ import PKG_pwm::*;
     
     //assign countmode__masked = countmode;
     //assign maskmode__masked = maskmode;
-    assign pwm_onoff__masked = pwm_onoff;
-    assign carr_onoff__masked = carr_onoff;
-    assign int_onoff__masked = int_onoff;
+    //assign pwm_onoff__masked = pwm_onoff;
+    //assign carr_onoff__masked = carr_onoff;
+    //assign int_onoff__masked = int_onoff;
     //assign eventcount__masked = eventcount;
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // SUBMODULES
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     carrier_gen_16bits CARR(
-        .clk(clk),
+        .clk(pwm_clk),
         .reset(reset),
         .period(period__masked),
         .init_carr(initcarr__masked),
@@ -92,6 +96,15 @@ import PKG_pwm::*;
         .carr_onoff(carr_onoff__masked),
         .carrier(carrier),
         .maskevent(maskevent_single)
+    );
+    
+    div_clock DIVCLK_PWM(
+        .clk,
+        .reset,
+        .divider(carrclk_divider),
+        .pwm_onoff(pwm_onoff),
+        .clkdiv_onoff(carrclkdiv_onoff),
+        .div_clk(pwm_clk)
     );
     
     event_counter EVTCOUNT(
@@ -129,8 +142,8 @@ import PKG_pwm::*;
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff__masked),
-        .reg_in({countmode,maskmode,eventcount}),
-        .reg_out({countmode__masked,maskmode__masked,eventcount__masked})        
+        .reg_in({countmode,maskmode,eventcount,carrclkdivider,pwm_onoff,int_onoff,carr_onoff,carrclkdiv_onoff}),
+        .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrclkdivider__masked,pwm_onoff__masked,int_onoff__masked,carr_onoff__masked,carrclkdiv_onoff__masked})        
     );
     
 endmodule

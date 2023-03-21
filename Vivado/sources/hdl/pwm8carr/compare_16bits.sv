@@ -23,7 +23,6 @@ import PKG_pwm::*;
 module compare_16bits (
     // system clock
     input clk,
-    input dt_clk,
     // system reset
     input reset,
     input [`PWMCOUNT_WIDTH-1:0] carrier,
@@ -31,9 +30,12 @@ module compare_16bits (
     input [2:0] carrsel,
     input [`DTCOUNT_WIDTH-1:0] dtime_A,
     input [`DTCOUNT_WIDTH-1:0] dtime_B,
+    input [`DIVCLK_WIDTH-1:0] dtclkdivider,
     input logic_A,
 	input logic_B,
     input _pwm_onoff pwm_onoff,
+    input _dt_onoff dt_onoff,
+    input _clkdiv_onoff dtclkdiv_onoff,
     input maskevent,
     output pwmout_A,
     output pwmout_B,
@@ -43,6 +45,11 @@ module compare_16bits (
     logic [`PWMCOUNT_WIDTH-1:0] compare__masked;
     logic [`DTCOUNT_WIDTH-1:0] dtime_A__masked;
     logic [`DTCOUNT_WIDTH-1:0] dtime_B__masked;
+    logic [`DIVCLK_WIDTH-1:0] dtclkdivider__masked;
+    logic logic_A__masked;
+    logic logic_B__masked;
+    _clkdiv_onoff dtclkdiv_onoff__masked;
+    _dt_onoff dt_onoff__masked;
     logic pwm;
     
     register_mask_16bits REGMASK_INITCARR(
@@ -68,21 +75,31 @@ module compare_16bits (
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
-        .reg_in({logic_A,logic_B,carrsel}),
-        .reg_out({logic_A__masked,logic_B__masked,carrsel_out})        
+        .reg_in({logic_A,logic_B,carrsel,dtclkdiv_onoff,dtclkdivider,dt_onoff}),
+        .reg_out({logic_A__masked,logic_B__masked,carrsel_out,dtclkdiv_onoff__masked,dtclkdivider__masked,dt_onoff__masked})        
     );
     
     dead_time DT(
-        .clk(clk),
+        .clk(dt_clk),
         .reset(reset),
         .pwm(pwm),
         .dtime_A(dtime_A__masked),
         .dtime_B(dtime_B__masked),
         .logic_A(logic_A__masked),
         .logic_B(logic_B__masked),
+        .dt_onoff(dt_onoff__masked),
         .pwm_onoff(pwm_onoff),
         .pwmout_A(pwmout_A),
         .pwmout_B(pwmout_B)
+    );
+    
+    div_clock DIVCLK_PWM(
+        .clk,
+        .reset,
+        .divider(dtclkdivider__masked),
+        .pwm_onoff(pwm_onoff),
+        .clkdiv_onoff(dtclkdiv_onoff__masked),
+        .div_clk(dt_clk)
     );
     
     //-------------------

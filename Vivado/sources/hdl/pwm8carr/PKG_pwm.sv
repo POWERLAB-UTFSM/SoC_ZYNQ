@@ -21,8 +21,12 @@
 
 
 package PKG_pwm;
+    `ifndef PWM_WIDTH
+    `define PWM_WIDTH 8
+    `endif
+
     `ifndef DIVCLK_WIDTH
-    `define DIVCLK_WIDTH 5
+    `define DIVCLK_WIDTH 4
     `endif
     
     `ifndef DTCOUNT_WIDTH
@@ -41,6 +45,11 @@ package PKG_pwm;
     typedef enum logic [1:0] {NO_MASK,MIN_MASK,MAX_MASK,MINMAX_MASK} _mask_mode;
     typedef enum logic {PWM_OFF,PWM_ON} _pwm_onoff;
 	typedef enum logic {INT_OFF,INT_ON} _int_onoff;
+	typedef enum logic {DT_OFF,DT_ON} _dt_onoff;
 	typedef enum logic {CLKDIV_OFF,CLKDIV_ON} _clkdiv_onoff;
 	typedef enum logic {CARR_OFF,CARR_ON} _carr_onoff;
+	
+	typedef _count_mode [`PWM_WIDTH-1:0] _count_mode_t;
+	typedef _mask_mode [`PWM_WIDTH-1:0] _mask_mode_t;
+	typedef _pwm_onoff [`PWM_WIDTH-1:0] _pwm_onoff_t;
 endpackage
