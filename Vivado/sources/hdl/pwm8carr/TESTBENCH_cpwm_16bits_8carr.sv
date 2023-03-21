@@ -25,26 +25,27 @@ module TESTBENCH_cpwm_16bits_8carr();
 //=============================================================
 // Signal Definition
 //=============================================================
-    logic [`PWM_WIDTH-1:0][`PWMCOUNT_WIDTH-1:0] period_c;
-    logic [`PWM_WIDTH-1:0][`PWMCOUNT_WIDTH-1:0] compare_c;
-    logic [`PWM_WIDTH-1:0][`PWMCOUNT_WIDTH-1:0] initcarr_c;
-    logic [`PWM_WIDTH-1:0][`DTCOUNT_WIDTH-1:0] dtime_A_c;
-    logic [`PWM_WIDTH-1:0][`DTCOUNT_WIDTH-1:0] dtime_B_c;
-    logic [`PWM_WIDTH-1:0][`EVTCOUNT_WIDTH-1:0] eventcount_c;
-    _count_mode [`PWM_WIDTH-1:0] countmode_c;
-    _mask_mode  [`PWM_WIDTH-1:0] maskmode_c;
-    _carr_onoff [`PWM_WIDTH-1:0] carr_onoff_c;
-    _dt_onoff  [`PWM_WIDTH-1:0] dt_onoff_c;
-    logic [`PWM_WIDTH-1:0] [2:0] carrsel_c;
-    logic [`PWM_WIDTH-1:0] pwmout_A_c;
-    logic [`PWM_WIDTH-1:0] pwmout_B_c;
-    logic [`PWM_WIDTH-1:0] logic_A_c;
-    logic [`PWM_WIDTH-1:0] logic_B_c;
-    _clkdiv_onoff [`PWM_WIDTH-1:0] carrclkdiv_onoff_c;
-    _clkdiv_onoff [`PWM_WIDTH-1:0] dtclkdiv_onoff_c;
+    logic [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0] period_x;
+    logic [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0] initcarr_x;
+    logic [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0] compare_x;
+    logic [`PWMCOUNT_WIDTH-1:0] initcarr_c [`PWM_WIDTH-1:0];
+    logic [`DTCOUNT_WIDTH*`PWM_WIDTH-1:0] dtime_A_x ;
+    logic [`DTCOUNT_WIDTH*`PWM_WIDTH-1:0] dtime_B_x ;
+    logic [`EVTCOUNT_WIDTH*`PWM_WIDTH-1:0] eventcount_x;
+    logic [$bits(_count_mode)*`PWM_WIDTH-1:0] countmode_x;
+    logic [$bits(_mask_mode)*`PWM_WIDTH-1:0] maskmode_x;
+    logic [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carr_onoff_x;
+    logic [$bits(_dt_onoff)*`PWM_WIDTH-1:0] dt_onoff_x;
+    logic [3*`PWM_WIDTH-1:0] carrsel_x;
+    logic [`PWM_WIDTH-1:0] pwmout_A_x;
+    logic [`PWM_WIDTH-1:0] pwmout_B_x;
+    logic [`PWM_WIDTH-1:0] logic_A_x;
+    logic [`PWM_WIDTH-1:0] logic_B_x;
+    logic [1*`PWM_WIDTH-1:0] carrclkdiv_onoff_x;
+    logic [1*`PWM_WIDTH-1:0] dtclkdiv_onoff_x;
 
     logic interrupt;
-    logic [7:0] interrupt_matrix;
+    logic [7:0] interrupt_matrix ;
     
     _pwm_onoff pwm_onoff;
     _int_onoff int_onoff;
@@ -67,25 +68,26 @@ module TESTBENCH_cpwm_16bits_8carr();
         
         pwm_onoff = PWM_OFF;
         int_onoff = INT_ON;
-        interrupt_matrix= 8'b00000001;
+        interrupt_matrix[0]= 1'b1;
+        interrupt_matrix[1]= 1'b0;
         
-        for (i=0;i<8;i=i+1) begin
-            carr_onoff_c[i] = CARR_ON;
-            dt_onoff_c[i] = DT_ON;
-            countmode_c[i] = COUNT_UPDOWN;
-            maskmode_c[i] = MIN_MASK;
-            carrsel_c[i] = 'd0;
-            logic_A_c[i]=1;
-            logic_B_c[i]=1;
-            period_c ='d2000;
-            eventcount_c[i]='d0;
-            compare_c[i] ='d500;
-            initcarr_c[i] ='d0;
-            dtime_A_c[i] ='d0;
-            dtime_B_c[i] ='d0;
-            carrclkdiv_onoff_c[i]=CLKDIV_OFF;
-            dtclkdiv_onoff_c[i]=CLKDIV_OFF;
-        end
+
+        carr_onoff_x[0] = 1'(CARR_ON);
+        dt_onoff_x[0] = 1'(DT_ON);
+        countmode_x[1:0] = 2'(COUNT_UPDOWN);
+        maskmode_x[1:0] = 2'(MINMAX_MASK);
+        carrsel_x[2:0] = 'd0;
+        logic_A_x[0]=1;
+        logic_B_x[0]=1;
+        period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
+        initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd1000;
+        compare_x[`PWMCOUNT_WIDTH-1:0] = 'd500;
+        eventcount_x[`EVTCOUNT_WIDTH-1:0]='d0;
+        dtime_A_x[`DTCOUNT_WIDTH-1:0] ='d0;
+        dtime_B_x[`DTCOUNT_WIDTH-1:0] ='d0;
+        carrclkdiv_onoff_x[0]=CLKDIV_OFF;
+        dtclkdiv_onoff_x[0]=CLKDIV_OFF;
+  
         
         repeat(1) @(posedge clk);
                //One free clock cycle for the reset signal
@@ -93,25 +95,25 @@ module TESTBENCH_cpwm_16bits_8carr();
         pwm_onoff = PWM_ON;
             
         repeat(8040) @(posedge clk);
-        period_c[0] = 'd0;
+        period_x[`PWMCOUNT_WIDTH-1:0] = 'd0;
         
         repeat(8040) @(posedge clk);
-        period_c[0] = 'd1000;
+        period_x[`PWMCOUNT_WIDTH-1:0] = 'd1000;
         
         repeat(8040) @(posedge clk);
-        countmode_c[0] = COUNT_DOWN;
+        countmode_x[1:0] = 2'(COUNT_DOWN);
         
         repeat(8040) @(posedge clk);
-        countmode_c[0] = COUNT_UP;
+        countmode_x[1:0] = 2'(COUNT_UP);
         
         repeat(8040) @(posedge clk);
-        countmode_c[0] = COUNT_UP;
+        countmode_x[1:0] = 2'(COUNT_UP);
         
         repeat(8040) @(posedge clk);
-        initcarr_c[0] = 'd5000;
+        initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd5000;
         
         repeat(8040) @(posedge clk);
-        initcarr_c[0] = 'd600;
+        initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd600;
         
         repeat(8040) @(posedge clk);
         pwm_onoff = PWM_OFF;
@@ -120,14 +122,14 @@ module TESTBENCH_cpwm_16bits_8carr();
         pwm_onoff = PWM_ON;
         
         repeat(8040) @(posedge clk);
-        eventcount_c[0] = 1;
+        eventcount_x[`EVTCOUNT_WIDTH-1:0]='d1;
         
         repeat(8040) @(posedge clk);
-        maskmode_c[0] = NO_MASK;
+        maskmode_x = 2'(NO_MASK);
         //period ='d1500;
         
         repeat(8040) @(posedge clk);
-        dt_onoff_c[0] = DT_OFF;
+        dt_onoff_x[0] = 1'(DT_OFF);
         
         repeat(18000) @(posedge clk);
         //event_count ='d2;
@@ -151,23 +153,23 @@ cpwm_16bits_8carr DUT1 (
     .pwm_onoff(pwm_onoff),
     .int_onoff(int_onoff),
     .interrupt_matrix(interrupt_matrix),
-    .carrclkdiv_onoff_c(carrclkdiv_onoff_c),
-    .dtclkdiv_onoff_c(dtclkdiv_onoff_c),
-    .period_c(period_c),
-    .eventcount_c(eventcount_c),
-    .initcarr_c(initcarr_c),
-    .compare_c(compare_c),
-    .countmode_c(countmode_c),
-    .carrsel_c(carrsel_c),
-    .maskmode_c(maskmode_c),
-    .carr_onoff_c(carr_onoff_c),
-    .dt_onoff_c(dt_onoff_c),
-    .dtime_A_c(dtime_A_c),
-    .dtime_B_c(dtime_A_c),
-    .logic_A_c(logic_A_c),
-    .logic_B_c(logic_B_c),
-    .pwmout_A_c(pwmout_A_c),
-    .pwmout_B_c(pwmout_B_c),
+    .carrclkdiv_onoff_x(carrclkdiv_onoff_x),
+    .dtclkdiv_onoff_x(dtclkdiv_onoff_x),
+    .period_x(period_x),
+    .eventcount_x(eventcount_x),
+    .initcarr_x(initcarr_x),
+    .compare_x(compare_x),
+    .countmode_x(countmode_x),
+    .carrsel_x(carrsel_x),
+    .maskmode_x(maskmode_x),
+    .carr_onoff_x(carr_onoff_x),
+    .dt_onoff_x(dt_onoff_x),
+    .dtime_A_x(dtime_A_x),
+    .dtime_B_x(dtime_B_x),
+    .logic_A_x(logic_A_x),
+    .logic_B_x(logic_B_x),
+    .pwmout_A_x(pwmout_A_x),
+    .pwmout_B_x(pwmout_B_x),
     .interrupt(interrupt)
 );
 		
