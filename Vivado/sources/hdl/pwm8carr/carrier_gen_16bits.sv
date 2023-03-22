@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -37,16 +37,17 @@ module carrier_gen_16bits(
     logic carrier_mask;
     logic [`PWMCOUNT_WIDTH-1:0] init_carr_buff;
     logic init_carr_change;
-    logic init_carr_comp;
+    wire init_carr_comp;
     wire pwmcarr_onoff;
     
     assign pwmcarr_onoff = ((pwm_onoff==PWM_OFF)) | ((carr_onoff==CARR_OFF) | (period=='d0));
     
-    always_comb begin
-        init_carr_comp = init_carr_buff!=init_carr;
-    end 
+    //always_comb begin
+    assign  init_carr_comp = init_carr_buff!=init_carr;
+    //end 
     
-    always_ff @(posedge clk or posedge reset) begin
+    always_comb begin
+    //always_ff @(posedge clk or posedge reset) begin
         if(reset==1'b1) begin
             carrier_mask <= 1'b0;
             init_carr_change <= 0;
@@ -114,7 +115,7 @@ module carrier_gen_16bits(
         else if(carrier_mask==1'b1 && carrier>=period) begin
             if(count_mode==COUNT_UP) begin
                 carrier <= 0;
-                state_carrier<=UP;
+                //state_carrier<=UP;
             end
             if(count_mode==COUNT_DOWN || count_mode==COUNT_UPDOWN) begin
                 state_carrier<=DOWN;
@@ -123,7 +124,7 @@ module carrier_gen_16bits(
         else if(carrier_mask==1'b1 && carrier<=0) begin
             if(count_mode==COUNT_DOWN) begin
                 carrier <= period;
-                state_carrier<=DOWN;
+                //state_carrier<=DOWN;
             end
             if(count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) begin
                 state_carrier<=UP;

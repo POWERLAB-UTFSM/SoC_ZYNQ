@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -36,15 +36,15 @@ module mux_1bit_8x1 (
 
 always_comb begin
 	case (sel_0)
-		'd0 : out_0 = in_0;
-		'd1 : out_0 = in_1;
-		'd2 : out_0 = in_2;
-		'd3 : out_0 = in_3;
-		'd4 : out_0 = in_4;
-		'd5 : out_0 = in_5;
-		'd6 : out_0 = in_6;
-		'd7 : out_0 = in_7;
-		default : out_0 = in_0;
+		'd0 : out_0 <= in_0;
+		'd1 : out_0 <= in_1;
+		'd2 : out_0 <= in_2;
+		'd3 : out_0 <= in_3;
+		'd4 : out_0 <= in_4;
+		'd5 : out_0 <= in_5;
+		'd6 : out_0 <= in_6;
+		'd7 : out_0 <= in_7;
+		default : out_0 <= in_0;
 	endcase
 end
 	

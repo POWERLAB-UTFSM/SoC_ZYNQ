@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -49,7 +49,7 @@ package PKG_pwm;
 	typedef enum logic {CLKDIV_OFF,CLKDIV_ON} _clkdiv_onoff;
 	typedef enum logic {CARR_OFF,CARR_ON} _carr_onoff;
 	
-	typedef _count_mode [`PWM_WIDTH-1:0] _count_mode_t;
-	typedef _mask_mode [`PWM_WIDTH-1:0] _mask_mode_t;
-	typedef _pwm_onoff [`PWM_WIDTH-1:0] _pwm_onoff_t;
+	//typedef _count_mode [`PWM_WIDTH-1:0] _count_mode_t;
+	//typedef _mask_mode [`PWM_WIDTH-1:0] _mask_mode_t;
+	//typedef _pwm_onoff [`PWM_WIDTH-1:0] _pwm_onoff_t;
 endpackage

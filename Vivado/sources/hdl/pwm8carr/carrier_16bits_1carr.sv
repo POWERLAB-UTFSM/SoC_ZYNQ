@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -110,9 +110,9 @@ import PKG_pwm::*;
     div_clock DIVCLK_PWM(
         .clk,
         .reset,
-        .divider(carrclk_divider),
+        .divider(carrclkdivider__masked),
         .pwm_onoff(pwm_onoff),
-        .clkdiv_onoff(carrclkdiv_onoff),
+        .clkdiv_onoff(carrclkdiv_onoff__masked),
         .div_clk(pwm_clk)
     );
     
@@ -153,7 +153,7 @@ import PKG_pwm::*;
         .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
-        .pwm_onoff(pwm_onoff__masked),
+        .pwm_onoff(pwm_onoff),
         .reg_in({countmode,maskmode,eventcount,carrclkdivider,pwm_onoff,int_onoff,carr_onoff,carrclkdiv_onoff}),
         .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrclkdivider__masked,pwm_onoff__masked,int_onoff__masked,carr_onoff__masked,carrclkdiv_onoff__masked})        
     );

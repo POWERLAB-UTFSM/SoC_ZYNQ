@@ -1,4 +1,4 @@
-`timescale 10ns / 10ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -42,18 +42,18 @@ module register_mask_16bits(
     end*/
     
     
-    always_ff @(posedge clk, posedge reset) begin
+    /*always_ff @(posedge clk, posedge reset) begin
         if(reset) begin
             reg_out <= 0;
         end
         else if(maskevent==1'b1 | pwm_onoff==PWM_OFF) begin
             reg_out <= reg_in;
         end
-    end
+    endcase*/
     
-//    always_ff @(posedge reset) begin    
-//        if(reset) begin
-//            reg_out <= reg_in;
-//        end
-//    end
+    always_latch begin    
+        if(reset==1'b1 | pwm_onoff==PWM_OFF | maskevent==1'b1) begin
+            reg_out <= reg_in;
+        end
+    end
 endmodule

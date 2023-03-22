@@ -21,20 +21,15 @@
 
 import PKG_pwm::*;
 
-module mux_16bits_8x1 (
-    input wire [`PWMCOUNT_WIDTH-1:0] in_0,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_1,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_2,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_3,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_4,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_5,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_6,
-	input wire [`PWMCOUNT_WIDTH-1:0] in_7,
-	input wire [2:0] sel_0,
-	output logic [`PWMCOUNT_WIDTH-1:0] out_0 
+module mux_variable (
+    input wire [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0] in_carr,
+	input wire [`PWM_WIDTH-1:0] in_mask,
+	input wire [`PWM_WIDTH-1:0] sel_0,
+	output logic [`PWMCOUNT_WIDTH-1:0] out_carr,
+	output logic out_mask
 );
 
-always_comb begin
+/*always_comb begin
 	case (sel_0)
 		'd0 : out_0 <= in_0;
 		'd1 : out_0 <= in_1;
@@ -46,6 +41,10 @@ always_comb begin
 		'd7 : out_0 <= in_7;
 		default : out_0 <= in_0;
 	endcase
+end*/
+always_comb begin
+	out_carr = in_carr >> sel_0*(`PWMCOUNT_WIDTH);
+	out_mask = in_mask >> sel_0;
 end
 	
 endmodule

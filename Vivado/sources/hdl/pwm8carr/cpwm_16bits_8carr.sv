@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: Dr.-Ing. Alan Wilson
@@ -135,7 +135,7 @@ module cpwm_16bits_8carr (
 	// carrier selector (8 x 3 bits)
 	// ------------------------------------------------
 	// Carrier selector compare 1
-	input [3*`PWM_WIDTH-1:0] carrsel_x,
+	input [`PWM_WIDTH*`PWM_WIDTH-1:0] carrsel_x,
     //input [2:0] carrsel_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
     // PWM ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
@@ -168,51 +168,54 @@ module cpwm_16bits_8carr (
 	// PWM output signal A (8 x 1 bits)
 	// ------------------------------------------------ 
 	// PWM output signal A compare 1
-	output logic  [`PWM_WIDTH-1:0] pwmout_A_x,
+	output wire  [`PWM_WIDTH-1:0] pwmout_A_x,
     //output logic  pwmout_A_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
 	// PWM output signal B (8 x 1 bits)
 	// ------------------------------------------------
     // PWM output signal B compare 1
-    output logic  [`PWM_WIDTH-1:0] pwmout_B_x,
+    output wire  [`PWM_WIDTH-1:0] pwmout_B_x,
     //output logic  pwmout_B_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
 	// main interrupt signal (1 bit)
 	// ------------------------------------------------
-    output wire interrupt
+    output interrupt
     );
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // INTERNAL signal definitions
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    logic pwm_clk;
+    logic [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0]  carrier_x;
+    logic [`PWM_WIDTH-1:0] maskevent_x;
     
-    logic [`PWMCOUNT_WIDTH-1:0] carrier_c [`PWM_WIDTH-1:0];
-    logic [`PWMCOUNT_WIDTH-1:0] carriercomp_c [`PWM_WIDTH-1:0];
-    logic  [`PWM_WIDTH-1:0] maskeventcomp_c ;
-    logic  [`PWM_WIDTH-1:0] maskevent_c ;
-    logic  [2:0] carrsel_c__masked [`PWM_WIDTH-1:0];
+    //logic pwm_clk;
     
-    logic [`PWMCOUNT_WIDTH-1:0] period_c [`PWM_WIDTH-1:0];
-    logic [`PWMCOUNT_WIDTH-1:0] initcarr_c [`PWM_WIDTH-1:0];
-    logic [`PWMCOUNT_WIDTH-1:0] compare_c [`PWM_WIDTH-1:0];
-    logic [`DTCOUNT_WIDTH-1:0] dtime_A_c [`PWM_WIDTH-1:0];
-    logic [`DTCOUNT_WIDTH-1:0] dtime_B_c [`PWM_WIDTH-1:0];
-    logic [`DIVCLK_WIDTH-1:0] carrclkdivider_c [`PWM_WIDTH-1:0];
-    logic [`DIVCLK_WIDTH-1:0] dtclkdivider_c [`PWM_WIDTH-1:0];
+    wire [`PWMCOUNT_WIDTH-1:0] carrier_c [`PWM_WIDTH-1:0];
+    wire [`PWMCOUNT_WIDTH-1:0] carriercomp_c [`PWM_WIDTH-1:0];
+    wire  [`PWM_WIDTH-1:0] maskeventcomp_c ;
+    wire  [`PWM_WIDTH-1:0] maskevent_c ;
+    wire  [`PWM_WIDTH-1:0] carrsel_c__masked [`PWM_WIDTH-1:0];
+    
+    wire [`PWMCOUNT_WIDTH-1:0] period_c [`PWM_WIDTH-1:0];
+    wire [`PWMCOUNT_WIDTH-1:0] initcarr_c [`PWM_WIDTH-1:0];
+    wire [`PWMCOUNT_WIDTH-1:0] compare_c [`PWM_WIDTH-1:0];
+    wire [`DTCOUNT_WIDTH-1:0] dtime_A_c [`PWM_WIDTH-1:0];
+    wire [`DTCOUNT_WIDTH-1:0] dtime_B_c [`PWM_WIDTH-1:0];
+    wire [`DIVCLK_WIDTH-1:0] carrclkdivider_c [`PWM_WIDTH-1:0];
+    wire [`DIVCLK_WIDTH-1:0] dtclkdivider_c [`PWM_WIDTH-1:0];
     _clkdiv_onoff  carrclkdiv_onoff_c [`PWM_WIDTH-1:0];
     _clkdiv_onoff  dtclkdiv_onoff_c [`PWM_WIDTH-1:0];
-    logic [`EVTCOUNT_WIDTH-1:0] eventcount_c [`PWM_WIDTH-1:0];
+    wire [`EVTCOUNT_WIDTH-1:0] eventcount_c [`PWM_WIDTH-1:0];
     _count_mode  countmode_c [`PWM_WIDTH-1:0];
     _mask_mode  maskmode_c [`PWM_WIDTH-1:0];
     _carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0];
     _dt_onoff  dt_onoff_c [`PWM_WIDTH-1:0];
-    logic [2:0] carrsel_c [`PWM_WIDTH-1:0];
-    logic logic_A_c [`PWM_WIDTH-1:0];
-    logic logic_B_c [`PWM_WIDTH-1:0];
-    logic  pwmout_A_c [`PWM_WIDTH-1:0];
-    logic  pwmout_B_c [`PWM_WIDTH-1:0];
+    wire [`PWM_WIDTH-1:0] carrsel_c [`PWM_WIDTH-1:0];
+    wire logic_A_c [`PWM_WIDTH-1:0];
+    wire logic_B_c [`PWM_WIDTH-1:0];
+    wire  pwmout_A_c [`PWM_WIDTH-1:0];
+    wire  pwmout_B_c [`PWM_WIDTH-1:0];
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // auxilliary assign (comment if necessary)
@@ -236,11 +239,13 @@ module cpwm_16bits_8carr (
            assign maskmode_c[j]=_mask_mode'(maskmode_x[$bits(_mask_mode)*(j+1)-1:$bits(_mask_mode)*j]);
            assign carr_onoff_c[j]=_carr_onoff'(carr_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
            assign dt_onoff_c[j]=_dt_onoff'(dt_onoff_x[$bits(_dt_onoff)*(j+1)-1:$bits(_dt_onoff)*j]);
-           assign carrsel_c[j]=carrsel_x[3*(j+1)-1:3*j];
+           assign carrsel_c[j]=carrsel_x[`PWM_WIDTH*(j+1)-1:`PWM_WIDTH*j];
            assign logic_A_c[j]=logic_A_x[j];
            assign logic_B_c[j]=logic_B_x[j];
-           assign pwmout_A_c[j]=pwmout_A_x[j];
-           assign pwmout_B_c[j]=pwmout_B_x[j];
+           assign pwmout_A_x[j]=pwmout_A_c[j];
+           assign pwmout_B_x[j]=pwmout_B_c[j];
+           assign carrier_x[`PWMCOUNT_WIDTH*(j+1)-1:`PWMCOUNT_WIDTH*j] = carrier_c[j];
+           assign maskevent_x[j]=maskevent_c[j];
         end
     endgenerate
 
@@ -288,7 +293,15 @@ module cpwm_16bits_8carr (
                 .carrsel_out(carrsel_c__masked[i])
             );
             
-            mux_16bits_8x1 MUX_COMP(
+            mux_variable MUXVAR(
+                .in_carr(carrier_x),
+                .in_mask(maskevent_x),
+                .sel_0(carrsel_c__masked[i]),
+                .out_carr(carriercomp_c[i]),
+                .out_mask(maskeventcomp_c[i])
+            );
+            
+            /*mux_16bits_8x1 MUX_COMP(
                 .in_0(carrier_c[0]),
                 .in_1(carrier_c[1]),
                 .in_2(carrier_c[2]),
@@ -312,11 +325,12 @@ module cpwm_16bits_8carr (
                 .in_7(maskevent_c[7]),
                 .sel_0(carrsel_c__masked[i]),
                 .out_0(maskeventcomp_c[i])
-            );
+            );*/
         end 
     endgenerate
     
     interrupt_matrix INTMAT(
+        .reset,
         .interrupt_in(maskevent_c),
         .matrix(interrupt_matrix),
         .interrupt_out(interrupt)

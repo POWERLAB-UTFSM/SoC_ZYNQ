@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -36,7 +36,7 @@ module TESTBENCH_cpwm_16bits_8carr();
     logic [$bits(_mask_mode)*`PWM_WIDTH-1:0] maskmode_x;
     logic [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carr_onoff_x;
     logic [$bits(_dt_onoff)*`PWM_WIDTH-1:0] dt_onoff_x;
-    logic [3*`PWM_WIDTH-1:0] carrsel_x;
+    logic [`PWM_WIDTH*`PWM_WIDTH-1:0] carrsel_x;
     logic [`PWM_WIDTH-1:0] pwmout_A_x;
     logic [`PWM_WIDTH-1:0] pwmout_B_x;
     logic [`PWM_WIDTH-1:0] logic_A_x;
@@ -45,7 +45,7 @@ module TESTBENCH_cpwm_16bits_8carr();
     logic [1*`PWM_WIDTH-1:0] dtclkdiv_onoff_x;
 
     logic interrupt;
-    logic [7:0] interrupt_matrix ;
+    logic [`PWM_WIDTH-1:0] interrupt_matrix ;
     
     _pwm_onoff pwm_onoff;
     _int_onoff int_onoff;
@@ -63,7 +63,7 @@ module TESTBENCH_cpwm_16bits_8carr();
 //=============================================================
 //    Data Flow
 //=============================================================
-    integer i;
+    //integer i;
     initial begin 
         
         pwm_onoff = PWM_OFF;
@@ -76,7 +76,7 @@ module TESTBENCH_cpwm_16bits_8carr();
         dt_onoff_x[0] = 1'(DT_ON);
         countmode_x[1:0] = 2'(COUNT_UPDOWN);
         maskmode_x[1:0] = 2'(MINMAX_MASK);
-        carrsel_x[2:0] = 'd0;
+        carrsel_x[7:0] = 'd0;
         logic_A_x[0]=1;
         logic_B_x[0]=1;
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
@@ -87,7 +87,7 @@ module TESTBENCH_cpwm_16bits_8carr();
         dtime_B_x[`DTCOUNT_WIDTH-1:0] ='d0;
         carrclkdiv_onoff_x[0]=CLKDIV_OFF;
         dtclkdiv_onoff_x[0]=CLKDIV_OFF;
-  
+
         
         repeat(1) @(posedge clk);
                //One free clock cycle for the reset signal

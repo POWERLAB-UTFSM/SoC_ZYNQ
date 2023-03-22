@@ -1,4 +1,4 @@
-`timescale 1ns / 1ps
+`timescale 10ns / 100ps
 //////////////////////////////////////////////////////////////////////////////////
 // Company: 
 // Engineer: 
@@ -27,7 +27,7 @@ module compare_16bits (
     input reset,
     input [`PWMCOUNT_WIDTH-1:0] carrier,
     input [`PWMCOUNT_WIDTH-1:0] compare,
-    input [2:0] carrsel,
+    input [`PWM_WIDTH-1:0] carrsel,
     input [`DTCOUNT_WIDTH-1:0] dtime_A,
     input [`DTCOUNT_WIDTH-1:0] dtime_B,
     input [`DIVCLK_WIDTH-1:0] dtclkdivider,
@@ -39,7 +39,7 @@ module compare_16bits (
     input maskevent,
     output pwmout_A,
     output pwmout_B,
-    output [2:0] carrsel_out
+    output [`PWM_WIDTH-1:0] carrsel_out
     );
     
     logic [`PWMCOUNT_WIDTH-1:0] compare__masked;
@@ -62,7 +62,7 @@ module compare_16bits (
         .reg_out(compare__masked)        
     );
     
-    register_mask_16bits REGMASK_DTIME(
+    register_mask_16bits REGMASK_DT(
         .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
@@ -76,8 +76,8 @@ module compare_16bits (
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
-        .reg_in({logic_A,logic_B,carrsel,dtclkdiv_onoff,dtclkdivider,dt_onoff,pwm_onoff}),
-        .reg_out({logic_A__masked,logic_B__masked,carrsel_out,dtclkdiv_onoff__masked,dtclkdivider__masked,dt_onoff__masked,pwm_onoff__masked})        
+        .reg_in({logic_A,logic_B,dtclkdiv_onoff,dtclkdivider,dt_onoff,carrsel}),
+        .reg_out({logic_A__masked,logic_B__masked,dtclkdiv_onoff__masked,dtclkdivider__masked,dt_onoff__masked,carrsel_out})        
     );
     
     dead_time DT(
