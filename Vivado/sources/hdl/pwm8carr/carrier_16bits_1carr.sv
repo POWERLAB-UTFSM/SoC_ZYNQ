@@ -122,6 +122,7 @@ import PKG_pwm::*;
         .maskevent_input(maskevent_single),
         .event_count(eventcount__masked),
         .pwm_onoff(pwm_onoff),
+        .pwm_onoff(pwm_onoff),
         //.pwm_onoff(pwm_onoff),
         .int_onoff(int_onoff__masked),
         .carr_onoff(carr_onoff__masked),
@@ -134,6 +135,7 @@ import PKG_pwm::*;
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
+        .pwm_onoff(pwm_onoff),
         //.pwm_onoff(pwm_onoff),
         .reg_in(period),
         .reg_out(period__masked)        
@@ -143,6 +145,7 @@ import PKG_pwm::*;
         .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
+        .pwm_onoff(pwm_onoff),
         .pwm_onoff(pwm_onoff),
         //.pwm_onoff(pwm_onoff),
         .reg_in(initcarr),
