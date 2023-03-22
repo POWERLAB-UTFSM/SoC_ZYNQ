@@ -35,6 +35,7 @@ module event_counter (
 	logic[`EVTCOUNT_WIDTH-1:0] event_timer;
 	logic maskevent_buffer;
     
+    //always_latch begin
     always_ff @(posedge maskevent_input, posedge reset) begin
         if (reset) begin
             event_timer <= 0;

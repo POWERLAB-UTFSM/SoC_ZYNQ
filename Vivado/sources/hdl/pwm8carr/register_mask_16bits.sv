@@ -30,15 +30,24 @@ module register_mask_16bits(
     output logic [`PWMCOUNT_WIDTH-1:0] reg_out
     );
     
-    logic refresh;
+    //logic refresh;
+    
+    /*always_ff @(posedge maskevent, posedge reset) begin
+      if (maskevent==1'b1 | pwm_onoff==PWM_ON) begin
+         reg_out <= reg_in;
+      end
+      else if (reset) begin
+        reg_out <= 0; 
+      end
+    end*/
+    
     
     always_ff @(posedge clk, posedge reset) begin
-
-        if(maskevent==1'b1 || pwm_onoff==PWM_OFF) begin
-            reg_out <= reg_in;
-        end
-        else if(reset) begin
+        if(reset) begin
             reg_out <= 0;
+        end
+        else if(maskevent==1'b1 | pwm_onoff==PWM_OFF) begin
+            reg_out <= reg_in;
         end
     end
     
