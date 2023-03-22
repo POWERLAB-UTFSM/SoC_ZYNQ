@@ -80,7 +80,7 @@ module TESTBENCH_cpwm_16bits_8carr();
         logic_A_x[0]=1;
         logic_B_x[0]=1;
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
-        initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd1000;
+        initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd1500;
         compare_x[`PWMCOUNT_WIDTH-1:0] = 'd500;
         eventcount_x[`EVTCOUNT_WIDTH-1:0]='d0;
         dtime_A_x[`DTCOUNT_WIDTH-1:0] ='d0;

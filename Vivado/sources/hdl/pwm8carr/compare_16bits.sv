@@ -49,10 +49,11 @@ module compare_16bits (
     logic logic_A__masked;
     logic logic_B__masked;
     _clkdiv_onoff dtclkdiv_onoff__masked;
+    _pwm_onoff pwm_onoff__masked;
     _dt_onoff dt_onoff__masked;
     logic pwm;
     
-    register_mask_16bits REGMASK_INITCARR(
+    register_mask_16bits REGMASK_COMP(
         .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
@@ -75,8 +76,8 @@ module compare_16bits (
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
-        .reg_in({logic_A,logic_B,carrsel,dtclkdiv_onoff,dtclkdivider,dt_onoff}),
-        .reg_out({logic_A__masked,logic_B__masked,carrsel_out,dtclkdiv_onoff__masked,dtclkdivider__masked,dt_onoff__masked})        
+        .reg_in({logic_A,logic_B,carrsel,dtclkdiv_onoff,dtclkdivider,dt_onoff,pwm_onoff}),
+        .reg_out({logic_A__masked,logic_B__masked,carrsel_out,dtclkdiv_onoff__masked,dtclkdivider__masked,dt_onoff__masked,pwm_onoff__masked})        
     );
     
     dead_time DT(
