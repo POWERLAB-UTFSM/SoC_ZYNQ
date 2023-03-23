@@ -41,7 +41,7 @@ package PKG_pwm;
     `define EVTCOUNT_WIDTH 3
     `endif
     
-    typedef enum logic [1:0] {COUNT_UP,COUNT_DOWN,COUNT_UPDOWN} _count_mode;
+    typedef enum logic [1:0] {NO_COUNT,COUNT_UP,COUNT_DOWN,COUNT_UPDOWN} _count_mode;
     typedef enum logic [1:0] {NO_MASK,MIN_MASK,MAX_MASK,MINMAX_MASK} _mask_mode;
     typedef enum logic {PWM_OFF,PWM_ON} _pwm_onoff;
 	typedef enum logic {INT_OFF,INT_ON} _int_onoff;

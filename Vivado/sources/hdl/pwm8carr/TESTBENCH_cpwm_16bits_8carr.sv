@@ -162,7 +162,7 @@ cpwm_16bits_8carr DUT1 (
     .countmode_x(countmode_x),
     .carrsel_x(carrsel_x),
     .maskmode_x(maskmode_x),
-    .carr_onoff_x(carr_onoff_x),
+    //.carr_onoff_x(carr_onoff_x),
     .dt_onoff_x(dt_onoff_x),
     .dtime_A_x(dtime_A_x),
     .dtime_B_x(dtime_B_x),

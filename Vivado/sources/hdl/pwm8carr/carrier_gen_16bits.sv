@@ -28,7 +28,7 @@ module carrier_gen_16bits(
     input _count_mode count_mode,
     //input _mask_mode mask_mode,
     input _pwm_onoff pwm_onoff,
-    input _carr_onoff carr_onoff,
+    //input _carr_onoff carr_onoff,
     output logic [`PWMCOUNT_WIDTH-1:0] carrier
     //output logic maskevent
     );
@@ -40,13 +40,37 @@ module carrier_gen_16bits(
     wire init_carr_comp;
     wire pwmcarr_onoff;
     
-    assign pwmcarr_onoff = ((pwm_onoff==PWM_OFF)) | ((carr_onoff==CARR_OFF) | (period=='d0));
+    assign pwmcarr_onoff = ((pwm_onoff==PWM_OFF)) | ((count_mode==NO_COUNT) | (period=='d0));
     
     //always_comb begin
     assign  init_carr_comp = init_carr_buff!=init_carr;
     //end 
+    always_ff @(posedge reset or posedge pwmcarr_onoff) begin
+        if(reset==1'b1) begin
+            carrier_mask <= 1'b0;
+            init_carr_change <= 0;
+            init_carr_buff <= 1'b0;
+        end
+    end
+    
+    typedef enum logic [2:0] {S_RESET0,S_UP,S_DOWN,S_RESETP,S_STOP} _state_counter;
+    _state_counter counter_state_k0;
+    _state_counter counter_state_k1;
     
     always_comb begin
+        counter_state_k1=counter_state_k0;
+        case(counter_state_k0) 
+            S_RESET0: begin
+                if(count_mode==COUNT_DOWN) begin
+                    carrier = 0;
+                end
+                else if(count_mode==COUNT_UP || count_mode==COUNT_UPDOWN);
+            end
+        endcase      
+    end
+    
+    
+    /*always_comb begin
     //always_ff @(posedge clk or posedge reset) begin
         if(reset==1'b1) begin
             carrier_mask <= 1'b0;
@@ -67,6 +91,13 @@ module carrier_gen_16bits(
         else begin
             carrier_mask <= 1'b1;
             init_carr_change <= 0;
+        end
+    end*/
+    
+    always_ff @(posedge clk or posedge reset) begin
+        if(init_carr_comp) begin
+            init_carr_change <= 1;
+            init_carr_buff <= init_carr;
         end
     end
     
@@ -95,7 +126,7 @@ module carrier_gen_16bits(
             carrier <=0;
             state_carrier<=UP;
         end
-        else if(carrier_mask==1'b0) begin
+        /*                                                                                       else if(carrier_mask==1'b0) begin
             if((init_carr_change)) begin
                 carrier <= init_carr;
             end
@@ -103,7 +134,7 @@ module carrier_gen_16bits(
                 carrier <= 0;
             end
             //state_carrier <= UP;
-        end
+        end*/
         
         else if(carrier_mask==1'b1 && carrier<period && state_carrier==UP) begin
             carrier <= carrier + 'd1;
@@ -117,7 +148,7 @@ module carrier_gen_16bits(
                 carrier <= 0;
                 //state_carrier<=UP;
             end
-            if(count_mode==COUNT_DOWN || count_mode==COUNT_UPDOWN) begin
+            else if(count_mode==COUNT_DOWN || count_mode==COUNT_UPDOWN) begin
                 state_carrier<=DOWN;
             end
         end
@@ -126,7 +157,7 @@ module carrier_gen_16bits(
                 carrier <= period;
                 //state_carrier<=DOWN;
             end
-            if(count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) begin
+            else if(count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) begin
                 state_carrier<=UP;
             end
         end

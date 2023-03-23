@@ -46,7 +46,7 @@ import PKG_pwm::*;
     input _mask_mode maskmode,
     input _pwm_onoff pwm_onoff,
     input _int_onoff int_onoff,
-    input _carr_onoff carr_onoff,
+    //input _carr_onoff carr_onoff,
     input _clkdiv_onoff carrclkdiv_onoff,
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS
@@ -67,7 +67,7 @@ import PKG_pwm::*;
     _count_mode countmode__masked;
     _mask_mode maskmode__masked;
     _pwm_onoff pwm_onoff__masked;
-    _carr_onoff carr_onoff__masked;
+    //_carr_onoff carr_onoff__masked;
     _int_onoff int_onoff__masked;
     _clkdiv_onoff carrclkdiv_onoff__masked;
     
@@ -93,7 +93,7 @@ import PKG_pwm::*;
         .count_mode(countmode__masked),
         //.mask_mode(maskmode__masked),
         .pwm_onoff(pwm_onoff),
-        .carr_onoff(carr_onoff__masked),
+        //.carr_onoff(carr_onoff__masked),
         .carrier(carrier)
         //.maskevent(maskevent_single)
     );
@@ -124,7 +124,7 @@ import PKG_pwm::*;
         .pwm_onoff(pwm_onoff),
         //.pwm_onoff(pwm_onoff),
         .int_onoff(int_onoff__masked),
-        .carr_onoff(carr_onoff__masked),
+        .countmode(countmode__masked),
         .maskmode(maskmode__masked),
         .maskevent_output(maskevent)
     );
@@ -154,8 +154,8 @@ import PKG_pwm::*;
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
-        .reg_in({countmode,maskmode,eventcount,carrclkdivider,pwm_onoff,int_onoff,carr_onoff,carrclkdiv_onoff}),
-        .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrclkdivider__masked,pwm_onoff__masked,int_onoff__masked,carr_onoff__masked,carrclkdiv_onoff__masked})        
+        .reg_in({countmode,maskmode,eventcount,carrclkdivider,int_onoff,carrclkdiv_onoff}),
+        .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrclkdivider__masked,int_onoff__masked,carrclkdiv_onoff__masked})        
     );
     
 endmodule

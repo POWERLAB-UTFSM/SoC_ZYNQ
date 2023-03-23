@@ -26,7 +26,7 @@ module event_counter (
 	input maskevent_input,
 	input _pwm_onoff pwm_onoff,
 	input _int_onoff int_onoff,
-	input _carr_onoff carr_onoff,
+	input _count_mode countmode,
 	input _mask_mode maskmode,
 	input[`EVTCOUNT_WIDTH-1:0] event_count,
 	output logic maskevent_output
@@ -53,7 +53,7 @@ module event_counter (
 		   maskevent_output = 1;
 	   end
 	   else if(event_timer == event_count) begin
-	       maskevent_output = maskevent_input & int_onoff & pwm_onoff & carr_onoff;
+	       maskevent_output = (maskevent_input) & (int_onoff) & (pwm_onoff) & (countmode!=NO_COUNT);
 	   end
 	   else begin
 	       maskevent_output = 0;

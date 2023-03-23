@@ -123,7 +123,7 @@ module cpwm_16bits_8carr (
 	// on-off counter carrier (8 x 1 bits)
 	// ------------------------------------------------
 	// Carrier count ON-OFF state carrier 1
-	input [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carr_onoff_x,
+	//input [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carr_onoff_x,
     //input _carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
 	// on-off dead time (8 x 1 bits)
@@ -209,7 +209,7 @@ module cpwm_16bits_8carr (
     wire [`EVTCOUNT_WIDTH-1:0] eventcount_c [`PWM_WIDTH-1:0];
     _count_mode  countmode_c [`PWM_WIDTH-1:0];
     _mask_mode  maskmode_c [`PWM_WIDTH-1:0];
-    _carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0];
+    //_carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0];
     _dt_onoff  dt_onoff_c [`PWM_WIDTH-1:0];
     wire [`PWM_WIDTH-1:0] carrsel_c [`PWM_WIDTH-1:0];
     wire logic_A_c [`PWM_WIDTH-1:0];
@@ -237,7 +237,7 @@ module cpwm_16bits_8carr (
            assign eventcount_c[j] = eventcount_x[`EVTCOUNT_WIDTH*(j+1)-1:`EVTCOUNT_WIDTH*j];
            assign countmode_c[j]=_count_mode'(countmode_x[$bits(_count_mode)*(j+1)-1:$bits(_count_mode)*j]);
            assign maskmode_c[j]=_mask_mode'(maskmode_x[$bits(_mask_mode)*(j+1)-1:$bits(_mask_mode)*j]);
-           assign carr_onoff_c[j]=_carr_onoff'(carr_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
+           //assign carr_onoff_c[j]=_carr_onoff'(carr_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
            assign dt_onoff_c[j]=_dt_onoff'(dt_onoff_x[$bits(_dt_onoff)*(j+1)-1:$bits(_dt_onoff)*j]);
            assign carrsel_c[j]=carrsel_x[`PWM_WIDTH*(j+1)-1:`PWM_WIDTH*j];
            assign logic_A_c[j]=logic_A_x[j];
@@ -268,7 +268,7 @@ module cpwm_16bits_8carr (
                 .carrclkdiv_onoff(carrclkdiv_onoff_c[i]),
                 .countmode(countmode_c[i]),
                 .maskmode(maskmode_c[i]),
-                .carr_onoff(carr_onoff_c[i]),
+                //.carr_onoff(carr_onoff_c[i]),
                 .carrier(carrier_c[i]),
                 .maskevent(maskevent_c[i])
             );
