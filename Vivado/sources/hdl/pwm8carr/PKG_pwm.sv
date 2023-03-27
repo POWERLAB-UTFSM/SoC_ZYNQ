@@ -48,6 +48,7 @@ package PKG_pwm;
 	typedef enum logic {DT_OFF,DT_ON} _dt_onoff;
 	typedef enum logic {CLKDIV_OFF,CLKDIV_ON} _clkdiv_onoff;
 	typedef enum logic {CARR_OFF,CARR_ON} _carr_onoff;
+	typedef enum logic {CARR_MASTER1=0,CARR_LOCAL=1} _carr_sel;
 	
 	//typedef _count_mode [`PWM_WIDTH-1:0] _count_mode_t;
 	//typedef _mask_mode [`PWM_WIDTH-1:0] _mask_mode_t;

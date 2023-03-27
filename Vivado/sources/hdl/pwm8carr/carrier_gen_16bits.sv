@@ -21,7 +21,7 @@
 import PKG_pwm::*;
 
 module carrier_gen_16bits(
-    (* gated_clock = "yes" *) input clk,
+    input clk,
     input reset,
     input [`PWMCOUNT_WIDTH-1:0] period,
     input [`PWMCOUNT_WIDTH-1:0] init_carr,

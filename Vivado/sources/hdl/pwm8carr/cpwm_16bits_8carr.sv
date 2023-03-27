@@ -41,12 +41,21 @@ module cpwm_16bits_8carr (
 	// common clock and reset
 	// ------------------------------------------------
     // system clock
-    input clk,
+    //input clk,
+    // system pwm clock
+    input pwm0_clk,
+    // system pwm clock
+    input pwm1_clk,
+    // system pwm clock
+    input pwm2_clk,
+    // system pwm clock
+    input pwm3_clk,
     // system reset
     input reset,
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // Register INPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    input [1:0] clk_sel,
 	// ------------------------------------------------
 	// periods (8 x 16 bits)
 	// ------------------------------------------------
@@ -81,25 +90,25 @@ module cpwm_16bits_8carr (
 	// PWM carrier clock dividers (8 x 4 bits)
 	// ------------------------------------------------
 	// clock divider for PWM carrier 1
-	input [`DIVCLK_WIDTH*`PWM_WIDTH-1:0] carrclkdivider_x,
+	//input [`DIVCLK_WIDTH*`PWM_WIDTH-1:0] carrclkdivider_x,
     //input [`DIVCLK_WIDTH-1:0] carrclkdivider_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
 	// Dead time clock dividers (8 x 4 bits)
 	// ------------------------------------------------
 	// clock driver for the dead time generator compare 1
-	input [`DIVCLK_WIDTH*`PWM_WIDTH-1:0] dtclkdivider_x,
+	//input [`DIVCLK_WIDTH*`PWM_WIDTH-1:0] dtclkdivider_x,
     //input [`DIVCLK_WIDTH-1:0] dtclkdivider_c [`PWM_WIDTH-1:0],
 	// ------------------------------------------------
 	// Carrier on-off clock divider (8 x 1 bits)
 	// ------------------------------------------------
 	// pwm carrier clock divider ON-OFF state bit carrier 1
-    input [$bits(_clkdiv_onoff)*`PWM_WIDTH-1:0] carrclkdiv_onoff_x,
+    //input [$bits(_clkdiv_onoff)*`PWM_WIDTH-1:0] carrclkdiv_onoff_x,
     //input  _clkdiv_onoff  carrclkdiv_onoff_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
 	// Dead time on-off clock divider (8 x 1 bits)
 	// ------------------------------------------------
 	// dead time clock divider ON-OFF state configuration bit
-    input [$bits(_clkdiv_onoff)*`PWM_WIDTH-1:0] dtclkdiv_onoff_x,
+    //input [$bits(_clkdiv_onoff)*`PWM_WIDTH-1:0] dtclkdiv_onoff_x,
     //input _clkdiv_onoff  dtclkdiv_onoff_c [`PWM_WIDTH-1:0],
 	// ------------------------------------------------
 	// event counters (8 x 3 bits)
@@ -134,8 +143,8 @@ module cpwm_16bits_8carr (
     // ------------------------------------------------
 	// carrier selector (8 x 3 bits)
 	// ------------------------------------------------
-	// Carrier selector compare 1
-	input [`PWM_WIDTH*`PWM_WIDTH-1:0] carrsel_x,
+	// master carrier selector compare 1
+	input _carr_sel carrsel,
     //input [2:0] carrsel_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
     // PWM ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
@@ -144,7 +153,7 @@ module cpwm_16bits_8carr (
 	// ------------------------------------------------
     input _pwm_onoff pwm_onoff,
     // Interrupt ON-OFF state configuration bit (defined and packaged in PKG_pwm.sv)
-    input _int_onoff int_onoff,
+    //input _int_onoff int_onoff,
     // ------------------------------------------------
 	// interrupt matrix (1 x 8 bits)
 	// ------------------------------------------------
@@ -186,8 +195,10 @@ module cpwm_16bits_8carr (
     // INTERNAL signal definitions
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    logic [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0]  carrier_x;
-    logic [`PWM_WIDTH-1:0] maskevent_x;
+    logic clk;
+    
+    wire [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0]  carrier_x;
+    wire [`PWM_WIDTH-1:0] maskevent_x;
     
     //logic pwm_clk;
     
@@ -195,7 +206,9 @@ module cpwm_16bits_8carr (
     wire [`PWMCOUNT_WIDTH-1:0] carriercomp_c [`PWM_WIDTH-1:0];
     wire  [`PWM_WIDTH-1:0] maskeventcomp_c ;
     wire  [`PWM_WIDTH-1:0] maskevent_c ;
-    wire  [`PWM_WIDTH-1:0] carrsel_c__masked [`PWM_WIDTH-1:0];
+    _carr_sel carrsel__masked;
+    //wire  [`PWM_WIDTH-1:0] carrsel_c__masked [`PWM_WIDTH-1:0];
+    //wire  [1:0] clk_sel__masked;
     
     wire [`PWMCOUNT_WIDTH-1:0] period_c [`PWM_WIDTH-1:0];
     wire [`PWMCOUNT_WIDTH-1:0] initcarr_c [`PWM_WIDTH-1:0];
@@ -211,11 +224,12 @@ module cpwm_16bits_8carr (
     _mask_mode  maskmode_c [`PWM_WIDTH-1:0];
     //_carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0];
     _dt_onoff  dt_onoff_c [`PWM_WIDTH-1:0];
-    wire [`PWM_WIDTH-1:0] carrsel_c [`PWM_WIDTH-1:0];
+    //wire [`PWM_WIDTH-1:0] carrsel_c [`PWM_WIDTH-1:0];
     wire logic_A_c [`PWM_WIDTH-1:0];
     wire logic_B_c [`PWM_WIDTH-1:0];
     wire  pwmout_A_c [`PWM_WIDTH-1:0];
     wire  pwmout_B_c [`PWM_WIDTH-1:0];
+    _carr_sel carrsel_c [`PWM_WIDTH-1:0];
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // auxilliary assign (comment if necessary)
@@ -230,16 +244,16 @@ module cpwm_16bits_8carr (
            assign compare_c[j]=compare_x[`PWMCOUNT_WIDTH*(j+1)-1:`PWMCOUNT_WIDTH*j];
            assign dtime_A_c[j]=dtime_A_x[`DTCOUNT_WIDTH*(j+1)-1:`DTCOUNT_WIDTH*j];
            assign dtime_B_c[j]=dtime_B_x[`DTCOUNT_WIDTH*(j+1)-1:`DTCOUNT_WIDTH*j];
-           assign carrclkdivider_c[j]=carrclkdivider_x[`DIVCLK_WIDTH*(j+1)-1:`DIVCLK_WIDTH*j];
-           assign dtclkdivider_c[j]=dtclkdivider_x[`DIVCLK_WIDTH*(j+1)-1:`DIVCLK_WIDTH*j];
-           assign carrclkdiv_onoff_c[j]=_clkdiv_onoff'(carrclkdiv_onoff_x[$bits(_clkdiv_onoff)*(j+1)-1:$bits(_clkdiv_onoff)*j]);
-           assign dtclkdiv_onoff_c[j]=_clkdiv_onoff'(dtclkdiv_onoff_x[$bits(_clkdiv_onoff)*(j+1)-1:$bits(_clkdiv_onoff)*j]);
+           //assign carrclkdivider_c[j]=carrclkdivider_x[`DIVCLK_WIDTH*(j+1)-1:`DIVCLK_WIDTH*j];
+           //assign dtclkdivider_c[j]=dtclkdivider_x[`DIVCLK_WIDTH*(j+1)-1:`DIVCLK_WIDTH*j];
+           //assign carrclkdiv_onoff_c[j]=_clkdiv_onoff'(carrclkdiv_onoff_x[$bits(_clkdiv_onoff)*(j+1)-1:$bits(_clkdiv_onoff)*j]);
+           //assign dtclkdiv_onoff_c[j]=_clkdiv_onoff'(dtclkdiv_onoff_x[$bits(_clkdiv_onoff)*(j+1)-1:$bits(_clkdiv_onoff)*j]);
            assign eventcount_c[j] = eventcount_x[`EVTCOUNT_WIDTH*(j+1)-1:`EVTCOUNT_WIDTH*j];
            assign countmode_c[j]=_count_mode'(countmode_x[$bits(_count_mode)*(j+1)-1:$bits(_count_mode)*j]);
            assign maskmode_c[j]=_mask_mode'(maskmode_x[$bits(_mask_mode)*(j+1)-1:$bits(_mask_mode)*j]);
            //assign carr_onoff_c[j]=_carr_onoff'(carr_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
            assign dt_onoff_c[j]=_dt_onoff'(dt_onoff_x[$bits(_dt_onoff)*(j+1)-1:$bits(_dt_onoff)*j]);
-           assign carrsel_c[j]=carrsel_x[`PWM_WIDTH*(j+1)-1:`PWM_WIDTH*j];
+           //assign carrsel_c[j]=carrsel_x[`PWM_WIDTH*(j+1)-1:`PWM_WIDTH*j];
            assign logic_A_c[j]=logic_A_x[j];
            assign logic_B_c[j]=logic_B_x[j];
            assign pwmout_A_x[j]=pwmout_A_c[j];
@@ -248,10 +262,22 @@ module cpwm_16bits_8carr (
            assign maskevent_x[j]=maskevent_c[j];
         end
     endgenerate
+    
 
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // MODULES
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+    
+    clk_sel CLKSEL(
+        .pwm0_clk(pwm0_clk),
+        .pwm1_clk(pwm1_clk),
+        .pwm2_clk(pwm2_clk),
+        .pwm3_clk(pwm3_clk),
+        .reset,
+        .pwm_onoff(pwm_onoff),
+        .clk_sel(clk_sel),
+        .clk_out(clk)
+    );
     
     genvar i;
         generate
@@ -260,17 +286,18 @@ module cpwm_16bits_8carr (
                 .clk,
                 .reset,
                 .pwm_onoff(pwm_onoff),
-                .int_onoff(int_onoff),
+                .carrsel(carrsel),
                 .period(period_c[i]),
                 .initcarr(initcarr_c[i]),
                 .eventcount(eventcount_c[i]),
-                .carrclkdivider(carrclkdivider_c[i]),
-                .carrclkdiv_onoff(carrclkdiv_onoff_c[i]),
+                //.carrclkdivider(carrclkdivider_c[i]),
+                //.carrclkdiv_onoff(carrclkdiv_onoff_c[i]),
                 .countmode(countmode_c[i]),
                 .maskmode(maskmode_c[i]),
                 //.carr_onoff(carr_onoff_c[i]),
                 .carrier(carrier_c[i]),
-                .maskevent(maskevent_c[i])
+                .maskevent(maskevent_c[i]),
+                .carrsel_out(carrsel_c[i])
             );
             
             compare_16bits COMP(
@@ -278,21 +305,22 @@ module cpwm_16bits_8carr (
                 .reset,
                 //.carrier(carriercomp_c[i]),
                 .carrier(carrier_c[i]),
+                .carrier_master(carrier_c[0]),
                 .carrsel(carrsel_c[i]),
                 .compare(compare_c[i]),
-                .dtclkdivider(dtclkdivider_c[i]),
+                //.dtclkdivider(dtclkdivider_c[i]),
                 .dt_onoff(dt_onoff_c[i]),
                 .dtime_A(dtime_A_c[i]),
                 .dtime_B(dtime_B_c[i]),
                 .logic_A(logic_A_c[i]),
                 .logic_B(logic_B_c[i]),
                 .pwm_onoff(pwm_onoff),
-                .dtclkdiv_onoff(dtclkdiv_onoff_c[i]),
+                //.dtclkdiv_onoff(dtclkdiv_onoff_c[i]),
                 //.maskevent(maskeventcomp_c[i]),
                 .maskevent(maskevent_c[i]),
                 .pwmout_A(pwmout_A_c[i]),
-                .pwmout_B(pwmout_B_c[i]),
-                .carrsel_out(carrsel_c__masked[i])
+                .pwmout_B(pwmout_B_c[i])
+                //.carrsel_out(carrsel_c__masked[i])
             );
             
             /*mux_variable MUXVAR(

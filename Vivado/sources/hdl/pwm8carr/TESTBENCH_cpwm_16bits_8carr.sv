@@ -36,13 +36,14 @@ module TESTBENCH_cpwm_16bits_8carr();
     logic [$bits(_mask_mode)*`PWM_WIDTH-1:0] maskmode_x;
     logic [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carr_onoff_x;
     logic [$bits(_dt_onoff)*`PWM_WIDTH-1:0] dt_onoff_x;
-    logic [`PWM_WIDTH*`PWM_WIDTH-1:0] carrsel_x;
     logic [`PWM_WIDTH-1:0] pwmout_A_x;
     logic [`PWM_WIDTH-1:0] pwmout_B_x;
     logic [`PWM_WIDTH-1:0] logic_A_x;
     logic [`PWM_WIDTH-1:0] logic_B_x;
     logic [1*`PWM_WIDTH-1:0] carrclkdiv_onoff_x;
     logic [1*`PWM_WIDTH-1:0] dtclkdiv_onoff_x;
+    logic [1:0] clk_sel;
+    _carr_sel carrsel;
 
     logic interrupt;
     logic [`PWM_WIDTH-1:0] interrupt_matrix ;
@@ -55,9 +56,17 @@ module TESTBENCH_cpwm_16bits_8carr();
 //=============================================================
 
 	bit clk = 1'b0;
+	bit pwm0_clk = 1'b0;
+	bit pwm1_clk = 1'b0;
+	bit pwm2_clk = 1'b0;
+	bit pwm3_clk = 1'b0;
 	bit rst = 1'b1;
 
-	always #1 clk = ~clk;
+    always #1 clk = ~clk;
+	always #1 pwm0_clk = ~pwm0_clk;
+	always #2 pwm1_clk = ~pwm1_clk;
+	always #4 pwm2_clk = ~pwm2_clk;
+	always #8 pwm3_clk = ~pwm3_clk;
 	always_ff @(posedge clk) rst <= 1'b0;
     
 //=============================================================
@@ -67,6 +76,7 @@ module TESTBENCH_cpwm_16bits_8carr();
     initial begin 
         
         pwm_onoff = PWM_OFF;
+        clk_sel = 2'b00;
         int_onoff = INT_ON;
         interrupt_matrix[0]= 1'b1;
         interrupt_matrix[1]= 1'b0;
@@ -76,15 +86,15 @@ module TESTBENCH_cpwm_16bits_8carr();
         dt_onoff_x[0] = 1'(DT_ON);
         countmode_x[1:0] = 2'(COUNT_UPDOWN);
         maskmode_x[1:0] = 2'(MINMAX_MASK);
-        carrsel_x[7:0] = 'd0;
+        carrsel = CARR_MASTER1;
         logic_A_x[0]=1;
         logic_B_x[0]=1;
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
         initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd1500;
         compare_x[`PWMCOUNT_WIDTH-1:0] = 'd500;
         eventcount_x[`EVTCOUNT_WIDTH-1:0]='d0;
-        dtime_A_x[`DTCOUNT_WIDTH-1:0] ='d0;
-        dtime_B_x[`DTCOUNT_WIDTH-1:0] ='d0;
+        dtime_A_x[`DTCOUNT_WIDTH-1:0] ='d10;
+        dtime_B_x[`DTCOUNT_WIDTH-1:0] ='d10;
         carrclkdiv_onoff_x[0]=CLKDIV_OFF;
         dtclkdiv_onoff_x[0]=CLKDIV_OFF;
 
@@ -131,6 +141,15 @@ module TESTBENCH_cpwm_16bits_8carr();
         repeat(8040) @(posedge clk);
         dt_onoff_x[0] = 1'(DT_OFF);
         
+        repeat(8040) @(posedge clk);
+        clk_sel = 2'b01;
+        
+        repeat(8040) @(posedge clk);
+        pwm_onoff = PWM_OFF;
+        
+        repeat(8040) @(posedge clk);
+        pwm_onoff = PWM_ON;
+        
         repeat(18000) @(posedge clk);
         //event_count ='d2;
         
@@ -148,19 +167,23 @@ module TESTBENCH_cpwm_16bits_8carr();
 //    Design Under Test
 //=============================================================
 cpwm_16bits_8carr DUT1 (
-    .clk,
+    .pwm0_clk,
+    .pwm1_clk,
+    .pwm2_clk,
+    .pwm3_clk,
     .reset(rst),
+    .clk_sel,
     .pwm_onoff(pwm_onoff),
-    .int_onoff(int_onoff),
+    //.int_onoff(int_onoff),
     .interrupt_matrix(interrupt_matrix),
-    .carrclkdiv_onoff_x(carrclkdiv_onoff_x),
-    .dtclkdiv_onoff_x(dtclkdiv_onoff_x),
+    //.carrclkdiv_onoff_x(carrclkdiv_onoff_x),
+    //.dtclkdiv_onoff_x(dtclkdiv_onoff_x),
     .period_x(period_x),
     .eventcount_x(eventcount_x),
     .initcarr_x(initcarr_x),
     .compare_x(compare_x),
     .countmode_x(countmode_x),
-    .carrsel_x(carrsel_x),
+    .carrsel(carrsel),
     .maskmode_x(maskmode_x),
     //.carr_onoff_x(carr_onoff_x),
     .dt_onoff_x(dt_onoff_x),

@@ -22,7 +22,7 @@
 import PKG_pwm::*;
 
 module dead_time (
-    (* gated_clock = "yes" *) input clk,
+    input clk,
 	input reset,
 	input pwm,
 	input [`DTCOUNT_WIDTH-1:0] dtime_A,
@@ -31,26 +31,26 @@ module dead_time (
 	input logic_B,
 	input _pwm_onoff pwm_onoff,
 	input _dt_onoff dt_onoff,
-	output logic pwmout_A,
-	output logic pwmout_B
+	output wire pwmout_A,
+	output wire pwmout_B
     );
     
     logic [`DTCOUNT_WIDTH-1:0] dtcounter_A;
     logic [`DTCOUNT_WIDTH-1:0] dtcounter_B;
     logic pwmaux_A;
     logic pwmaux_B;
-    logic pwm_A;
-    logic pwm_B;
+    wire pwm_A;
+    wire pwm_B;
     
-    always_comb begin
-        pwm_A=pwm;
-        pwm_B=~pwm;
-    end
+    //always_comb begin
+    assign    pwm_A=pwm;
+    assign    pwm_B=~pwm;
+   // end
     
-    always_comb begin
-        pwmout_A=(pwmaux_A ^ ~logic_A) && pwm_onoff;
-        pwmout_B=(pwmaux_B ^ ~logic_B) && pwm_onoff;
-   end
+    //always_comb begin
+    assign    pwmout_A=(pwmaux_A ^ ~logic_A) && pwm_onoff;
+    assign    pwmout_B=(pwmaux_B ^ ~logic_B) && pwm_onoff;
+   //end
 
     
     always_ff  @(posedge clk, posedge reset) begin

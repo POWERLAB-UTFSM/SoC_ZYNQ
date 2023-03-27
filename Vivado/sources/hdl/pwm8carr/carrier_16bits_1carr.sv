@@ -41,35 +41,37 @@ import PKG_pwm::*;
     input [`PWMCOUNT_WIDTH-1:0] period,
     input [`PWMCOUNT_WIDTH-1:0] initcarr,
     input [`EVTCOUNT_WIDTH-1:0] eventcount,
-    input [`DIVCLK_WIDTH-1:0] carrclkdivider,
+    input _carr_sel carrsel,
     input _count_mode countmode,
     input _mask_mode maskmode,
     input _pwm_onoff pwm_onoff,
     input _int_onoff int_onoff,
     //input _carr_onoff carr_onoff,
-    input _clkdiv_onoff carrclkdiv_onoff,
+    //input _clkdiv_onoff carrclkdiv_onoff,
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    output [`PWMCOUNT_WIDTH-1:0] carrier,
-    output maskevent
+    output wire [`PWMCOUNT_WIDTH-1:0] carrier,
+    output _carr_sel carrsel_out,
+    output wire maskevent
     
  );
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // DEFINITION OF INTERNAL VARIABLES
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    logic [`PWMCOUNT_WIDTH-1:0] period__masked;
-    logic [`PWMCOUNT_WIDTH-1:0] initcarr__masked;
-    logic [`EVTCOUNT_WIDTH-1:0] eventcount__masked;
-    logic [`DIVCLK_WIDTH-1:0] carrclkdivider__masked;
-    logic maskevent_single;
+    wire [`PWMCOUNT_WIDTH-1:0] period__masked;
+    wire [`PWMCOUNT_WIDTH-1:0] initcarr__masked;
+    wire [`EVTCOUNT_WIDTH-1:0] eventcount__masked;
+    //wire [`DIVCLK_WIDTH-1:0] carrclkdivider__masked;
+    wire maskevent_single;
+    //wire carrsel__masked;
     _count_mode countmode__masked;
     _mask_mode maskmode__masked;
     _pwm_onoff pwm_onoff__masked;
     //_carr_onoff carr_onoff__masked;
-    _int_onoff int_onoff__masked;
-    _clkdiv_onoff carrclkdiv_onoff__masked;
+    //_int_onoff int_onoff__masked;
+    //_clkdiv_onoff carrclkdiv_onoff__masked;
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // ASSIGN VARIABLES
@@ -124,14 +126,14 @@ import PKG_pwm::*;
         .event_count(eventcount__masked),
         .pwm_onoff(pwm_onoff),
         //.pwm_onoff(pwm_onoff),
-        .int_onoff(int_onoff__masked),
+        //.int_onoff(int_onoff__masked),
         .countmode(countmode__masked),
         .maskmode(maskmode__masked),
         .maskevent_output(maskevent)
     );
     
     register_mask_16bits REGMASK_PERIOD(
-        //.clk(clk),
+        .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -141,7 +143,7 @@ import PKG_pwm::*;
     );
     
     register_mask_16bits REGMASK_INITCARR(
-        //.clk(clk),
+        .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -151,12 +153,12 @@ import PKG_pwm::*;
     );
     
     register_mask_16bits REGMASK_CONF(
-        //.clk(clk),
+        .clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
-        .reg_in({countmode,maskmode,eventcount,carrclkdivider,int_onoff,carrclkdiv_onoff}),
-        .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrclkdivider__masked,int_onoff__masked,carrclkdiv_onoff__masked})        
+        .reg_in({countmode,maskmode,eventcount,carrsel}),
+        .reg_out({countmode__masked,maskmode__masked,eventcount__masked,carrsel_out})        
     );
     
 endmodule
