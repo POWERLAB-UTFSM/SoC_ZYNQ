@@ -276,7 +276,8 @@ module cpwm_16bits_8carr (
             compare_16bits COMP(
                 .clk,
                 .reset,
-                .carrier(carriercomp_c[i]),
+                //.carrier(carriercomp_c[i]),
+                .carrier(carrier_c[i]),
                 .carrsel(carrsel_c[i]),
                 .compare(compare_c[i]),
                 .dtclkdivider(dtclkdivider_c[i]),
@@ -287,19 +288,20 @@ module cpwm_16bits_8carr (
                 .logic_B(logic_B_c[i]),
                 .pwm_onoff(pwm_onoff),
                 .dtclkdiv_onoff(dtclkdiv_onoff_c[i]),
-                .maskevent(maskeventcomp_c[i]),
+                //.maskevent(maskeventcomp_c[i]),
+                .maskevent(maskevent_c[i]),
                 .pwmout_A(pwmout_A_c[i]),
                 .pwmout_B(pwmout_B_c[i]),
                 .carrsel_out(carrsel_c__masked[i])
             );
             
-            mux_variable MUXVAR(
+            /*mux_variable MUXVAR(
                 .in_carr(carrier_x),
                 .in_mask(maskevent_x),
                 .sel_0(carrsel_c__masked[i]),
                 .out_carr(carriercomp_c[i]),
                 .out_mask(maskeventcomp_c[i])
-            );
+            );*/
             
             /*mux_16bits_8x1 MUX_COMP(
                 .in_0(carrier_c[0]),

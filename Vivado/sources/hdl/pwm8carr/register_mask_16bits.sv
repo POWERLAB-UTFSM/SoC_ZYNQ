@@ -22,7 +22,7 @@
 import PKG_pwm::*;
 
 module register_mask_16bits(
-    input clk,
+    //input clk,
     input reset,
     input logic maskevent,
     input _pwm_onoff pwm_onoff,
@@ -52,7 +52,7 @@ module register_mask_16bits(
     endcase*/
     
     always_latch begin    
-        if(reset==1'b1 | pwm_onoff==PWM_OFF | maskevent==1'b1) begin
+        if(reset==1'b1 || pwm_onoff==PWM_OFF || maskevent==1'b1) begin
             reg_out <= reg_in;
         end
     end

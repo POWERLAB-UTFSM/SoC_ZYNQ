@@ -54,7 +54,7 @@ module compare_16bits (
     logic pwm;
     
     register_mask_16bits REGMASK_COMP(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -63,7 +63,7 @@ module compare_16bits (
     );
     
     register_mask_16bits REGMASK_DT(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -72,7 +72,7 @@ module compare_16bits (
     );
     
     register_mask_16bits REGMASK_CONF(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -81,7 +81,8 @@ module compare_16bits (
     );
     
     dead_time DT(
-        .clk(dt_clk),
+        //.clk(dt_clk),
+        .clk(clk),
         .reset(reset),
         .pwm(pwm),
         .dtime_A(dtime_A__masked),
@@ -94,14 +95,14 @@ module compare_16bits (
         .pwmout_B(pwmout_B)
     );
     
-    div_clock DIVCLK_PWM(
+    /*div_clock DIVCLK_PWM(
         .clk,
         .reset,
         .divider(dtclkdivider__masked),
         .pwm_onoff(pwm_onoff),
         .clkdiv_onoff(dtclkdiv_onoff__masked),
         .div_clk(dt_clk)
-    );
+    );*/
     
     //-------------------
     // PWM

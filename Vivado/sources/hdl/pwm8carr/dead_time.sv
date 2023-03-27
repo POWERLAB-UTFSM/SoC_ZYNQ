@@ -22,7 +22,7 @@
 import PKG_pwm::*;
 
 module dead_time (
-    input clk,
+    (* gated_clock = "yes" *) input clk,
 	input reset,
 	input pwm,
 	input [`DTCOUNT_WIDTH-1:0] dtime_A,

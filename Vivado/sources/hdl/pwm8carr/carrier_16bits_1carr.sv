@@ -86,7 +86,8 @@ import PKG_pwm::*;
     // SUBMODULES
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     carrier_gen_16bits CARR(
-        .clk(pwm_clk),
+        //.clk(pwm_clk),
+        .clk(clk),
         .reset(reset),
         .period(period__masked),
         .init_carr(initcarr__masked),
@@ -107,14 +108,14 @@ import PKG_pwm::*;
 	    .maskevent(maskevent_single)
     );
     
-    div_clock DIVCLK_PWM(
+    /*div_clock DIVCLK_PWM(
         .clk,
         .reset,
         .divider(carrclkdivider__masked),
         .pwm_onoff(pwm_onoff),
         .clkdiv_onoff(carrclkdiv_onoff__masked),
         .div_clk(pwm_clk)
-    );
+    );*/
     
     event_counter EVTCOUNT(
         .clk(clk),
@@ -130,7 +131,7 @@ import PKG_pwm::*;
     );
     
     register_mask_16bits REGMASK_PERIOD(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -140,7 +141,7 @@ import PKG_pwm::*;
     );
     
     register_mask_16bits REGMASK_INITCARR(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),
@@ -150,7 +151,7 @@ import PKG_pwm::*;
     );
     
     register_mask_16bits REGMASK_CONF(
-        .clk(clk),
+        //.clk(clk),
         .reset(reset),
         .maskevent(maskevent),
         .pwm_onoff(pwm_onoff),

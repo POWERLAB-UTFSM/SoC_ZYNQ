@@ -21,7 +21,7 @@
 import PKG_pwm::*;
 
 module carrier_gen_16bits(
-    input clk,
+    (* gated_clock = "yes" *) input clk,
     input reset,
     input [`PWMCOUNT_WIDTH-1:0] period,
     input [`PWMCOUNT_WIDTH-1:0] init_carr,
@@ -52,17 +52,17 @@ module carrier_gen_16bits(
     end
     
     //always_comb begin
-    always_ff @(posedge clk) begin
+    /*always_ff @(posedge clk) begin
         if(init_carr !=init_carr_buffer) begin
             new_carrier=1;
         end
-    end
+    end*/
     
-    //always_comb begin
-    always_ff @(posedge clk) begin
+    always_comb begin
+    //always_ff @(posedge clk) begin
     //------------------------------------
     //Conditional state transition
-        //counter_state_next=counter_state;
+        counter_state_next=counter_state;
         case(counter_state) 
             S_RESET0: begin
                 if(stop_status==1) begin
@@ -77,7 +77,7 @@ module carrier_gen_16bits(
                     counter_state_next = S_RESETP;
                 end
                 else
-                if((count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) && carrier < period) begin
+                if((count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) && carrier < (period-1)) begin
                     counter_state_next = S_UP;
                 end
                 
@@ -91,7 +91,7 @@ module carrier_gen_16bits(
                     counter_state_next = S_NEWCARR;
                 end
                 else
-                if(count_mode==COUNT_DOWN && carrier > 0) begin
+                if(count_mode==COUNT_DOWN && carrier > 1) begin
                     counter_state_next = S_DOWN;
                 end
                 else 
@@ -109,11 +109,11 @@ module carrier_gen_16bits(
                     counter_state_next = S_NEWCARR;
                 end
                 else 
-                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN) && carrier >= period) begin
+                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN) && carrier >= (period-1)) begin
                     counter_state_next = S_DOWN;
                 end
                 else 
-                if(count_mode==COUNT_UP && carrier >= period) begin
+                if(count_mode==COUNT_UP && carrier >= (period-1)) begin
                     counter_state_next = S_RESET0;
                 end
                 
@@ -127,11 +127,11 @@ module carrier_gen_16bits(
                     counter_state_next = S_NEWCARR;
                 end
                 else 
-                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier <=0) begin
+                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier <=1) begin
                     counter_state_next = S_UP;
                 end
                 else 
-                if(count_mode==COUNT_DOWN && carrier <= 0) begin
+                if(count_mode==COUNT_DOWN && carrier <= 1) begin
                     counter_state_next = S_RESETP;
                 end
                 
@@ -140,29 +140,31 @@ module carrier_gen_16bits(
                 if(stop_status==1) begin
                     counter_state_next = S_STOP;
                 end
-                else
-                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < period) begin
+                else begin 
+                    counter_state_next = S_NEWCARR;
+                end
+                /*if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (period-1)) begin
                     counter_state_next = S_UP;
                 end
                 else 
-                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN ) && carrier > 0) begin
+                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN ) && carrier > 1) begin
                     counter_state_next = S_DOWN;
                 end
                 else 
-                if(carrier >= period && stop_status==0) begin
+                if(carrier >= (period-1) && stop_status==0) begin
                     counter_state_next = S_RESETP;
                 end
                 else 
-                if(carrier <= 0 && stop_status==0) begin
+                if(carrier <= 1 && stop_status==0) begin
                     counter_state_next = S_RESET0;
-                end
+                end*/
             end
             S_NEWCARR: begin
                 if(stop_status==1) begin
                     counter_state_next = S_STOP;
                 end
                 else 
-                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < period) begin
+                if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (period-1)) begin
                     counter_state_next = S_UP;
                 end
                 else 
@@ -170,11 +172,11 @@ module carrier_gen_16bits(
                     counter_state_next = S_DOWN;
                 end
                 else 
-                if(carrier >= period && stop_status==0) begin
+                if(carrier >= (period-1) && stop_status==0) begin
                     counter_state_next = S_RESETP;
                 end
                 else 
-                if(carrier <= 0 && stop_status==0) begin
+                if(carrier <= 1 && stop_status==0) begin
                     counter_state_next = S_RESET0;
                 end
             end
@@ -196,7 +198,10 @@ module carrier_gen_16bits(
     always_ff @(posedge clk) begin
         //------------------------------------
         //State actions
-        case(counter_state_next) 
+        if(init_carr !=init_carr_buffer) begin
+            new_carrier=1;
+        end
+        case(counter_state) 
             S_RESET0: begin
                 carrier = 0;
             end
