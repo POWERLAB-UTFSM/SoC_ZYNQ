@@ -4,8 +4,7 @@
 	module axi_cpwm8c_v1_0_S_AXI #
 	(
 		// Users to add parameters here
-        parameter integer PWM_WIDTH = 8,
-        parameter integer PWMCOUNT_WIDTH = 16,
+
 		// User parameters ends
 		// Do not modify the parameters beyond this line
 
@@ -16,9 +15,7 @@
 	)
 	(
 		// Users to add ports here
-        output wire interrupt,
-        output wire [PWM_WIDTH-1 : 0] pwmout_A_x,
-        output wire [PWM_WIDTH-1 : 0] pwmout_B_x, 
+
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -106,7 +103,7 @@
 	//----------------------------------------------
 	//-- Signals for user logic register space example
 	//------------------------------------------------
-	//-- Number of Slave Registers 25
+	//-- Number of Slave Registers 24
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg0;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg1;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg2;
@@ -131,7 +128,6 @@
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg21;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg22;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg23;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg24;
 	wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	 reg_data_out;
@@ -268,7 +264,6 @@
 	      slv_reg21 <= 0;
 	      slv_reg22 <= 0;
 	      slv_reg23 <= 0;
-	      slv_reg24 <= 0;
 	    end 
 	  else begin
 	    if (slv_reg_wren)
@@ -442,13 +437,6 @@
 	                // Slave register 23
 	                slv_reg23[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
 	              end  
-	          5'h18:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                // Respective byte enables are asserted as per write strobes 
-	                // Slave register 24
-	                slv_reg24[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
 	          default : begin
 	                      slv_reg0 <= slv_reg0;
 	                      slv_reg1 <= slv_reg1;
@@ -474,7 +462,6 @@
 	                      slv_reg21 <= slv_reg21;
 	                      slv_reg22 <= slv_reg22;
 	                      slv_reg23 <= slv_reg23;
-	                      slv_reg24 <= slv_reg24;
 	                    end
 	        endcase
 	      end
@@ -607,7 +594,6 @@
 	        5'h15   : reg_data_out <= slv_reg21;
 	        5'h16   : reg_data_out <= slv_reg22;
 	        5'h17   : reg_data_out <= slv_reg23;
-	        5'h18   : reg_data_out <= slv_reg24;
 	        default : reg_data_out <= 0;
 	      endcase
 	end
@@ -632,35 +618,7 @@
 	end    
 
 	// Add user logic here
-    // Add user logic here
-    cpwm_16bits_8carr CPWM8 (
-        //clk+rst
-        .clk(S_AXI_ACLK),
-        .reset(~S_AXI_ARESETN),
-        //register
-        .period_x({slv_reg0,slv_reg1,slv_reg2,slv_reg3}),
-        .initcarr_x({slv_reg4,slv_reg5,slv_reg6,slv_reg7}),
-        .compare_x({slv_reg8,slv_reg9,slv_reg10,slv_reg11}),
-        .carrclkdivider_x({slv_reg12}),
-        .dtclkdivider_x({slv_reg13}),
-        .carrclkdiv_onoff_x({slv_reg14[31:24]}),
-        .dtclkdiv_onoff_x({slv_reg14[23:16]}),
-        .carr_onoff_x({slv_reg14[15:8]}),
-        .dt_onoff_x({slv_reg14[7:0]}),
-        .carrsel_x(slv_reg15[31:16]),
-        .dtime_A_x({slv_reg16,slv_reg17}),
-        .dtime_B_x({slv_reg18,slv_reg19}),
-        .eventcount_x(slv_reg20),
-        .countmode_x(slv_reg21[31:16]),
-        .logic_A_x(slv_reg21[15:8]),
-        .logic_B_x(slv_reg21[7:0]),
-        .pwm_onoff(slv_reg22[0]),
-        .int_onoff(slv_reg22[1]),
-        //output
-        .pwmout_A_x(pwmout_A_x),
-        .pwmout_B_x(pwmout_B_x),
-        .interrupt(interrupt)
-    );
+
 	// User logic ends
 
 	endmodule

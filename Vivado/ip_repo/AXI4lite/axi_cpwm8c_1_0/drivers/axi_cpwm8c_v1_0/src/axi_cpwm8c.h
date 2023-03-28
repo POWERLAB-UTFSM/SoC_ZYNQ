@@ -31,7 +31,6 @@
 #define AXI_CPWM8C_S_AXI_SLV_REG21_OFFSET 84
 #define AXI_CPWM8C_S_AXI_SLV_REG22_OFFSET 88
 #define AXI_CPWM8C_S_AXI_SLV_REG23_OFFSET 92
-#define AXI_CPWM8C_S_AXI_SLV_REG24_OFFSET 96
 
 
 /**************************** Type Definitions *****************************/
