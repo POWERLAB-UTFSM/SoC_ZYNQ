@@ -618,9 +618,9 @@
         ,
         .compare_x({slv_reg8,slv_reg9,slv_reg10,slv_reg11})
         ,
-        .dtime_A({slv_reg12,slv_reg13})
+        .dtime_A_x({slv_reg12,slv_reg13})
         ,
-        .dtime_B({slv_reg14,slv_reg15})
+        .dtime_B_x({slv_reg14,slv_reg15})
         ,
         .eventcount_x(slv_reg16[31:8])
         ,
@@ -632,9 +632,9 @@
         ,
         .dt_onoff_x(slv_reg18[31:24])
         ,
-        .logic_A(slv_reg18[23:16])
+        .logic_A_x(slv_reg18[23:16])
         ,
-        .logic_B(slv_reg18[15:8])
+        .logic_B_x(slv_reg18[15:8])
         ,
         .carrsel_x(slv_reg18[7:0])
         ,
