@@ -4,10 +4,9 @@
 	module axi_cpwm8c_v1_0 #
 	(
 		// Users to add parameters here
-
+        parameter integer PWM_WIDTH = 8,
 		// User parameters ends
 		// Do not modify the parameters beyond this line
-
 
 		// Parameters of Axi Slave Bus Interface S_AXI
 		parameter integer C_S_AXI_DATA_WIDTH	= 32,
@@ -15,7 +14,12 @@
 	)
 	(
 		// Users to add ports here
-
+        input wire [0:0] pwm1_clk,
+        input wire [0:0] pwm2_clk,
+        input wire [0:0] pwm3_clk,
+        output wire [PWM_WIDTH-1:0] pwmout_A,
+        output wire [PWM_WIDTH-1:0] pwmout_B,
+        output wire interrupt,
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -45,9 +49,16 @@
 	);
 // Instantiation of Axi Bus Interface S_AXI
 	axi_cpwm8c_v1_0_S_AXI # ( 
+	    .PWM_WIDTH(PWM_WIDTH),
 		.C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH)
 	) axi_cpwm8c_v1_0_S_AXI_inst (
+	    .pwm1_clk(pwm1_clk),
+        .pwm2_clk(pwm2_clk),
+        .pwm3_clk(pwm3_clk),
+        .pwmout_A(pwmout_A),
+        .pwmout_B(pwmout_B),
+        .interrupt(interrupt),
 		.S_AXI_ACLK(s_axi_aclk),
 		.S_AXI_ARESETN(s_axi_aresetn),
 		.S_AXI_AWADDR(s_axi_awaddr),

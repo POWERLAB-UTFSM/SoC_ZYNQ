@@ -43,7 +43,7 @@ module TESTBENCH_cpwm_16bits_8carr();
     logic [1*`PWM_WIDTH-1:0] carrclkdiv_onoff_x;
     logic [1*`PWM_WIDTH-1:0] dtclkdiv_onoff_x;
     logic [1:0] clk_sel;
-    _carr_sel carrsel;
+    logic [$bits(_carr_sel)*`PWM_WIDTH-1:0] carrsel_x;
 
     logic interrupt;
     logic [`PWM_WIDTH-1:0] interrupt_matrix ;
@@ -86,7 +86,7 @@ module TESTBENCH_cpwm_16bits_8carr();
         dt_onoff_x[0] = 1'(DT_ON);
         countmode_x[1:0] = 2'(COUNT_UPDOWN);
         maskmode_x[1:0] = 2'(MINMAX_MASK);
-        carrsel = CARR_MASTER1;
+        carrsel_x[0] = CARR_MASTER1;
         logic_A_x[0]=1;
         logic_B_x[0]=1;
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
@@ -183,7 +183,7 @@ cpwm_16bits_8carr DUT1 (
     .initcarr_x(initcarr_x),
     .compare_x(compare_x),
     .countmode_x(countmode_x),
-    .carrsel(carrsel),
+    .carrsel_x(carrsel_x),
     .maskmode_x(maskmode_x),
     //.carr_onoff_x(carr_onoff_x),
     .dt_onoff_x(dt_onoff_x),
