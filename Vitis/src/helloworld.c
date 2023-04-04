@@ -51,8 +51,8 @@
 #include "xil_io.h"
 #include "xparameters.h"
 #include "sleep.h"
-#include "xgpio.h"
-#include "AXI_CPWM.h"
+//#include "xgpio.h"
+#include "axi_cpwm8c.h"
 
 u32 gpio_reg0=0;
 u32 pwm_reg0=0;
@@ -67,16 +67,16 @@ u16 pwm_comp2=1000;
 u16 pwm_comp3=0;
 u16 pwm_comp4=0;
 u8 pwm_eventcount=0;
-AXI_CPWM_count_mode pwm_countmode=COUNT_UP_DOWN;
-AXI_CPWM_mask_mode pwm_maskmode=MIN_MASK;
+//AXI_CPWM_count_mode pwm_countmode=COUNT_UP_DOWN;
+//AXI_CPWM_mask_mode pwm_maskmode=MIN_MASK;
 u8 pwm_dtimeA=0;
 u8 pwm_dtimeB=0;
 u8 pwm_carrclkdiv=0;
 u8 pwm_dtclkdiv=0;
-AXI_CPWM_onoff pwm_pwmonoff=REG_ON;
-AXI_CPWM_onoff pwm_intonoff=REG_ON;
-AXI_CPWM_onoff pwm_pwmclkdivonoff=REG_OFF;
-AXI_CPWM_onoff pwm_dtclkdivonoff=REG_OFF;
+//AXI_CPWM_onoff pwm_pwmonoff=REG_ON;
+//AXI_CPWM_onoff pwm_intonoff=REG_ON;
+//AXI_CPWM_onoff pwm_pwmclkdivonoff=REG_OFF;
+//AXI_CPWM_onoff pwm_dtclkdivonoff=REG_OFF;
 u8 pwm_logicA=0;
 u8 pwm_logicB=0;
 
@@ -102,6 +102,9 @@ int main()
 //	pwm_eventcount=0;
 
 	while (1) {
+
+		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+		/*
 		XGpio_WriteReg(XPAR_AXI_GPIO_0_BASEADDR, XGPIO_DATA_OFFSET, gpio_reg0);
 		AXI_CPWM_mWrite_Period(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_period);
 		AXI_CPWM_mWrite_InitCarrier(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_init);
@@ -122,6 +125,7 @@ int main()
 		AXI_CPWM_mWrite_DTClkDivOnOff(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_dtclkdivonoff);
 		AXI_CPWM_mWrite_LogicOutA(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_logicA);
 		AXI_CPWM_mWrite_LogicOutB(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_logicB);
+		*/
 		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG0_OFFSET, pwm_reg0);
 		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG1_OFFSET, pwm_reg1);
 		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG2_OFFSET, pwm_reg2);
