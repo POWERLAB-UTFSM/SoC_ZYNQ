@@ -52,7 +52,7 @@ module clk_sel (
 	// on-off general registers (2 x 2 bits)
 	// ------------------------------------------------
     input _pwm_onoff pwm_onoff,
-    input clk_sel,
+    input [1:0] clk_sel,
     output logic clk_out
     );
     

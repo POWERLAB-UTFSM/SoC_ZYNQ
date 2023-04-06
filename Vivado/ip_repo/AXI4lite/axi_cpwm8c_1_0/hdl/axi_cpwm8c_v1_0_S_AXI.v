@@ -612,15 +612,15 @@
         ,
         .reset(~S_AXI_ARESETN)
         ,
-        .period_x({slv_reg0,slv_reg1,slv_reg2,slv_reg3})
+        .period_x({slv_reg3,slv_reg2,slv_reg1,slv_reg0})
         ,
-        .initcarr_x({slv_reg4,slv_reg5,slv_reg6,slv_reg7})
+        .initcarr_x({slv_reg7,slv_reg6,slv_reg5,slv_reg4})
         ,
-        .compare_x({slv_reg8,slv_reg9,slv_reg10,slv_reg11})
+        .compare_x({slv_reg11,slv_reg10,slv_reg9,slv_reg8})
         ,
-        .dtime_A_x({slv_reg12,slv_reg13})
+        .dtime_A_x({slv_reg13,slv_reg12})
         ,
-        .dtime_B_x({slv_reg14,slv_reg15})
+        .dtime_B_x({slv_reg15,slv_reg14})
         ,
         .eventcount_x(slv_reg16[31:8])
         ,
@@ -641,6 +641,12 @@
         .pwm_onoff(slv_reg19[0])
         ,
         .clk_sel(slv_reg19[2:1])
+        ,
+        .pwmout_A_x(pwmout_A)
+        ,
+        .pwmout_B_x(pwmout_B)
+        ,
+        .interrupt(interrupt)
    );
 	// User logic ends
 

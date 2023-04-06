@@ -142,7 +142,7 @@ module TESTBENCH_cpwm_16bits_8carr();
         dt_onoff_x[0] = 1'(DT_OFF);
         
         repeat(8040) @(posedge clk);
-        clk_sel = 2'b01;
+        clk_sel = 2'b10;
         
         repeat(8040) @(posedge clk);
         pwm_onoff = PWM_OFF;
