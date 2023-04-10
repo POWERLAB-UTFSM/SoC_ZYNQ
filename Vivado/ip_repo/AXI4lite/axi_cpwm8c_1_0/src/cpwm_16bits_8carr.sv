@@ -41,21 +41,21 @@ module cpwm_16bits_8carr (
 	// common clock and reset
 	// ------------------------------------------------
     // system clock
-    //input clk,
+    input clk,
     // system pwm clock
-    input pwm0_clk,
+    //input pwm0_clk,
     // system pwm clock
-    input pwm1_clk,
+    //input pwm1_clk,
     // system pwm clock
-    input pwm2_clk,
+    //input pwm2_clk,
     // system pwm clock
-    input pwm3_clk,
+    //input pwm3_clk,
     // system reset
     input reset,
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // Register INPUTS
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
-    input [1:0] clk_sel,
+    //input [1:0] clk_sel,
 	// ------------------------------------------------
 	// periods (8 x 16 bits)
 	// ------------------------------------------------
@@ -157,6 +157,10 @@ module cpwm_16bits_8carr (
     // ------------------------------------------------
 	// interrupt matrix (1 x 8 bits)
 	// ------------------------------------------------
+	input [$bits(_carr_onoff)*`PWM_WIDTH-1:0] carrier_onoff_x,
+    // ------------------------------------------------
+	// interrupt matrix (1 x 8 bits)
+	// ------------------------------------------------
 	input [`PWM_WIDTH-1:0] interrupt_matrix,
     // ------------------------------------------------
 	// logic value of output A (8 x 1 bits)
@@ -169,6 +173,11 @@ module cpwm_16bits_8carr (
 	// ------------------------------------------------
 	// logic value of PWM output A carrier 1
     input [`PWM_WIDTH-1:0] logic_B_x,
+    // ------------------------------------------------
+	// interrupt acknowledgment
+	// ------------------------------------------------
+	// logic value of PWM output A carrier 1
+    input int_ack,
     //input  logic_B_c [`PWM_WIDTH-1:0],
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // OUTPUTS
@@ -186,6 +195,10 @@ module cpwm_16bits_8carr (
     output wire  [`PWM_WIDTH-1:0] pwmout_B_x,
     //output logic  pwmout_B_c [`PWM_WIDTH-1:0],
     // ------------------------------------------------
+	// main trigger event signal (1 bit)
+	// ------------------------------------------------
+    output trigger,
+    // ------------------------------------------------
 	// main interrupt signal (1 bit)
 	// ------------------------------------------------
     output interrupt
@@ -195,7 +208,7 @@ module cpwm_16bits_8carr (
     // INTERNAL signal definitions
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    logic clk;
+    //logic clk;
     
     wire [`PWMCOUNT_WIDTH*`PWM_WIDTH-1:0]  carrier_x;
     wire [`PWM_WIDTH-1:0] maskevent_x;
@@ -225,11 +238,13 @@ module cpwm_16bits_8carr (
     //_carr_onoff  carr_onoff_c [`PWM_WIDTH-1:0];
     _dt_onoff  dt_onoff_c [`PWM_WIDTH-1:0];
     //wire [`PWM_WIDTH-1:0] carrsel_c [`PWM_WIDTH-1:0];
-    wire logic_A_c [`PWM_WIDTH-1:0];
-    wire logic_B_c [`PWM_WIDTH-1:0];
+    _logic_pwm logic_A_c [`PWM_WIDTH-1:0];
+    _carr_onoff carrier_onoff_c [`PWM_WIDTH-1:0];
+    _logic_pwm logic_B_c [`PWM_WIDTH-1:0];
     wire  pwmout_A_c [`PWM_WIDTH-1:0];
     wire  pwmout_B_c [`PWM_WIDTH-1:0];
     _carr_sel carrsel_c [`PWM_WIDTH-1:0];
+    //wire clk;
     
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     // auxilliary assign (comment if necessary)
@@ -254,8 +269,9 @@ module cpwm_16bits_8carr (
            //assign carr_onoff_c[j]=_carr_onoff'(carr_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
            assign dt_onoff_c[j]=_dt_onoff'(dt_onoff_x[$bits(_dt_onoff)*(j+1)-1:$bits(_dt_onoff)*j]);
            assign carrsel_c[j]=_carr_sel'(carrsel_x[$bits(_carr_sel)*(j+1)-1:$bits(_carr_sel)*j]);
-           assign logic_A_c[j]=logic_A_x[j];
-           assign logic_B_c[j]=logic_B_x[j];
+           assign logic_A_c[j]=_logic_pwm'(logic_A_x[$bits(_logic_pwm)*(j+1)-1:$bits(_logic_pwm)*j]);
+           assign logic_B_c[j]=_logic_pwm'(logic_B_x[$bits(_logic_pwm)*(j+1)-1:$bits(_logic_pwm)*j]);
+           assign carrier_onoff_c[j]=_carr_onoff'(carrier_onoff_x[$bits(_carr_onoff)*(j+1)-1:$bits(_carr_onoff)*j]);
            assign pwmout_A_x[j]=pwmout_A_c[j];
            assign pwmout_B_x[j]=pwmout_B_c[j];
            assign carrier_x[`PWMCOUNT_WIDTH*(j+1)-1:`PWMCOUNT_WIDTH*j] = carrier_c[j];
@@ -268,7 +284,7 @@ module cpwm_16bits_8carr (
     // MODULES
     // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
     
-    clk_sel CLKSEL(
+    /*clk_sel CLKSEL(
         .pwm0_clk(pwm0_clk),
         .pwm1_clk(pwm1_clk),
         .pwm2_clk(pwm2_clk),
@@ -277,7 +293,7 @@ module cpwm_16bits_8carr (
         .pwm_onoff(pwm_onoff),
         .clk_sel(clk_sel),
         .clk_out(clk)
-    );
+    );*/
     
     genvar i;
         generate
@@ -290,6 +306,7 @@ module cpwm_16bits_8carr (
                 .period(period_c[i]),
                 .initcarr(initcarr_c[i]),
                 .eventcount(eventcount_c[i]),
+                .carrier_onoff(carrier_onoff_c[i]),
                 //.carrclkdivider(carrclkdivider_c[i]),
                 //.carrclkdiv_onoff(carrclkdiv_onoff_c[i]),
                 .countmode(countmode_c[i]),
@@ -315,6 +332,7 @@ module cpwm_16bits_8carr (
                 .logic_A(logic_A_c[i]),
                 .logic_B(logic_B_c[i]),
                 .pwm_onoff(pwm_onoff),
+                .carrier_onoff(carrier_onoff_c[i]),
                 //.dtclkdiv_onoff(dtclkdiv_onoff_c[i]),
                 //.maskevent(maskeventcomp_c[i]),
                 .maskevent(maskevent_c[i]),
@@ -360,9 +378,12 @@ module cpwm_16bits_8carr (
     endgenerate
     
     interrupt_matrix INTMAT(
-        .reset,
+        .clk(clk),
+        .reset(reset),
         .interrupt_in(maskevent_c),
+        .int_ack(int_ack),
         .matrix(interrupt_matrix),
+        .trigger_out(trigger),
         .interrupt_out(interrupt)
     );
     

@@ -27,8 +27,9 @@ module deadtime_single (
 	input pwmin_X,
 	input [`DTCOUNT_WIDTH-1:0] dtime_X,
 	//input [`DTCOUNT_WIDTH-1:0] dtime_B,
-	input logic_X,
+	input _logic_pwm logic_X,
 	//input logic_B,
+	input _carr_onoff carr_onoff,
 	input _pwm_onoff pwm_onoff,
 	input _dt_onoff dt_onoff,
 	output wire pwmout_X
@@ -105,7 +106,7 @@ module deadtime_single (
         end 
     end
     
-    assign pwmout_X = (dt_onoff==DT_ON) ?  (pwm_X ^ ~logic_X) & pwm_onoff: (pwmin_X ^ ~logic_X) & pwm_onoff;
+    assign pwmout_X = (dt_onoff==DT_ON) ?  (pwm_X ^ logic_X) & pwm_onoff & carr_onoff: (pwmin_X ^ logic_X) & pwm_onoff & carr_onoff;
     //always_ff @(posedge clk or posedge reset) begin
 
     /*always_comb begin

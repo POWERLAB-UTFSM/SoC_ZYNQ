@@ -14,11 +14,13 @@
 	)
 	(
 		// Users to add ports here
-        input wire [0:0] pwm1_clk,
+        /*input wire [0:0] pwm1_clk,
         input wire [0:0] pwm2_clk,
-        input wire [0:0] pwm3_clk,
+        input wire [0:0] pwm3_clk,*/
+        input wire pwm_clk,
         output wire [PWM_WIDTH-1:0] pwmout_A,
         output wire [PWM_WIDTH-1:0] pwmout_B,
+        output wire trigger,
         output wire interrupt,
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -53,11 +55,13 @@
 		.C_S_AXI_DATA_WIDTH(C_S_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S_AXI_ADDR_WIDTH)
 	) axi_cpwm8c_v1_0_S_AXI_inst (
-	    .pwm1_clk(pwm1_clk),
+	    /*.pwm1_clk(pwm1_clk),
         .pwm2_clk(pwm2_clk),
-        .pwm3_clk(pwm3_clk),
+        .pwm3_clk(pwm3_clk),*/
+        .pwm_clk(pwm_clk),
         .pwmout_A(pwmout_A),
         .pwmout_B(pwmout_B),
+        .trigger(trigger),
         .interrupt(interrupt),
 		.S_AXI_ACLK(s_axi_aclk),
 		.S_AXI_ARESETN(s_axi_aresetn),

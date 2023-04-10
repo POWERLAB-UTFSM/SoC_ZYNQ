@@ -28,7 +28,7 @@ module carrier_gen_16bits(
     input _count_mode count_mode,
     //input _mask_mode mask_mode,
     input _pwm_onoff pwm_onoff,
-    //input _carr_onoff carr_onoff,
+    input _carr_onoff carr_onoff,
     output logic [`PWMCOUNT_WIDTH-1:0] carrier
     //output logic maskevent
     );
@@ -43,7 +43,7 @@ module carrier_gen_16bits(
     logic new_carrier;
     
     always_comb begin
-        if(count_mode==NO_COUNT || period == 0 || pwm_onoff == PWM_OFF) begin
+        if(count_mode==NO_COUNT || period == 0 || pwm_onoff == PWM_OFF || carr_onoff==CARR_OFF) begin
             stop_status=1;
         end
         else begin

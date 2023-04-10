@@ -1,12 +1,25 @@
+# project name
+set proyName "test_zedboard"
+puts $proyName
 set savedDir [pwd]
 set savedDir [file dirname $savedDir]
 puts $savedDir
-set stringSource ${savedDir}/src/helloworld.c
+# main source file
+set includeSource "helloworld.c"
+puts $includeSource
+set stringSource ${savedDir}/src/$includeSource
 puts $stringSource
+# hardware file
+set savedHardware "cpwm8c_gpio_clkwiz__zedboard.xsa"
+puts $savedHardware
+
 setws ./workspace
 cd ./workspace
-file copy -force {../../../Vivado/xsa_hardware/cpwm8c_gpio__zedboard.xsa} ./
-app create -name test_2 -hw {cpwm8c_gpio__zedboard.xsa} -os standalone -proc ps7_cortexa9_0 -template {Empty Application}
-# app build -name test_2
-importsources -name test_2 -path $stringSource -soft-link
-closehw {cpwm8c_gpio__zedboard.xsa}
+
+file copy -force ../../../Vivado/xsa_hardware/$savedHardware ./
+app create -name $proyName -hw $savedHardware -os standalone -proc ps7_cortexa9_0 -template {Empty Application}
+# app build -name $proyName
+importsources -name $proyName -path $stringSource -soft-link
+closehw $savedHardware
+
+

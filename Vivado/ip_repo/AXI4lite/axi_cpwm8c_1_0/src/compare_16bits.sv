@@ -32,9 +32,10 @@ module compare_16bits (
     input [`DTCOUNT_WIDTH-1:0] dtime_A,
     input [`DTCOUNT_WIDTH-1:0] dtime_B,
     //input [`DIVCLK_WIDTH-1:0] dtclkdivider,
-    input logic_A,
-	input logic_B,
+    input _logic_pwm logic_A,
+	input _logic_pwm logic_B,
     input _pwm_onoff pwm_onoff,
+    input _carr_onoff carrier_onoff,
     input _dt_onoff dt_onoff,
     //input _clkdiv_onoff dtclkdiv_onoff,
     input maskevent,
@@ -47,8 +48,8 @@ module compare_16bits (
     logic [`DTCOUNT_WIDTH-1:0] dtime_A__masked;
     logic [`DTCOUNT_WIDTH-1:0] dtime_B__masked;
     //logic [`DIVCLK_WIDTH-1:0] dtclkdivider__masked;
-    logic logic_A__masked;
-    logic logic_B__masked;
+    _logic_pwm logic_A__masked;
+    _logic_pwm logic_B__masked;
     //_clkdiv_onoff dtclkdiv_onoff__masked;
     _pwm_onoff pwm_onoff__masked;
     _dt_onoff dt_onoff__masked;
@@ -102,6 +103,7 @@ module compare_16bits (
         .dtime_X(dtime_A__masked),
         .logic_X(logic_A__masked),
         .pwm_onoff(pwm_onoff),
+        .carr_onoff(carrier_onoff),
         .dt_onoff(dt_onoff__masked),
         .pwmout_X(pwmout_A)
     );
@@ -113,6 +115,7 @@ module compare_16bits (
         .dtime_X(dtime_B__masked),
         .logic_X(logic_B__masked),
         .pwm_onoff(pwm_onoff),
+        .carr_onoff(carrier_onoff),
         .dt_onoff(dt_onoff__masked),
         .pwmout_X(pwmout_B)
     );

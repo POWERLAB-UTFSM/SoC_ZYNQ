@@ -15,11 +15,13 @@
 	)
 	(
 		// Users to add ports here
-        input wire [0:0] pwm1_clk,
+        /*input wire [0:0] pwm1_clk,
         input wire [0:0] pwm2_clk,
-        input wire [0:0] pwm3_clk,
+        input wire [0:0] pwm3_clk,*/
+        input wire pwm_clk,
         output wire [PWM_WIDTH-1:0] pwmout_A,
         output wire [PWM_WIDTH-1:0] pwmout_B,
+        output wire trigger,
         output wire interrupt,
 		// User ports ends
 		// Do not modify the ports beyond this line
@@ -108,7 +110,7 @@
 	//----------------------------------------------
 	//-- Signals for user logic register space example
 	//------------------------------------------------
-	//-- Number of Slave Registers 22
+	//-- Number of Slave Registers 19
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg0;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg1;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg2;
@@ -129,8 +131,6 @@
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg17;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg18;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg19;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg20;
-	reg [C_S_AXI_DATA_WIDTH-1:0]	slv_reg21;
 	wire	 slv_reg_rden;
 	wire	 slv_reg_wren;
 	reg [C_S_AXI_DATA_WIDTH-1:0]	 reg_data_out;
@@ -263,8 +263,6 @@
 	      slv_reg17 <= 0;
 	      slv_reg18 <= 0;
 	      slv_reg19 <= 0;
-	      slv_reg20 <= 0;
-	      slv_reg21 <= 0;
 	    end 
 	  else begin
 	    if (slv_reg_wren)
@@ -410,20 +408,6 @@
 	                // Slave register 19
 	                slv_reg19[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
 	              end  
-	          5'h14:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                // Respective byte enables are asserted as per write strobes 
-	                // Slave register 20
-	                slv_reg20[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
-	          5'h15:
-	            for ( byte_index = 0; byte_index <= (C_S_AXI_DATA_WIDTH/8)-1; byte_index = byte_index+1 )
-	              if ( S_AXI_WSTRB[byte_index] == 1 ) begin
-	                // Respective byte enables are asserted as per write strobes 
-	                // Slave register 21
-	                slv_reg21[(byte_index*8) +: 8] <= S_AXI_WDATA[(byte_index*8) +: 8];
-	              end  
 	          default : begin
 	                      slv_reg0 <= slv_reg0;
 	                      slv_reg1 <= slv_reg1;
@@ -445,8 +429,6 @@
 	                      slv_reg17 <= slv_reg17;
 	                      slv_reg18 <= slv_reg18;
 	                      slv_reg19 <= slv_reg19;
-	                      slv_reg20 <= slv_reg20;
-	                      slv_reg21 <= slv_reg21;
 	                    end
 	        endcase
 	      end
@@ -575,8 +557,6 @@
 	        5'h11   : reg_data_out <= slv_reg17;
 	        5'h12   : reg_data_out <= slv_reg18;
 	        5'h13   : reg_data_out <= slv_reg19;
-	        5'h14   : reg_data_out <= slv_reg20;
-	        5'h15   : reg_data_out <= slv_reg21;
 	        default : reg_data_out <= 0;
 	      endcase
 	end
@@ -602,13 +582,15 @@
 
 	// Add user logic here
    cpwm_16bits_8carr CPWM8C(
-        .pwm0_clk(S_AXI_ACLK)
+        /*.pwm0_clk(S_AXI_ACLK)
         ,
         .pwm1_clk(pwm1_clk)
         ,
         .pwm2_clk(pwm2_clk)
         ,
         .pwm3_clk(pwm3_clk)
+        ,*/
+        .clk(pwm_clk)
         ,
         .reset(~S_AXI_ARESETN)
         ,
@@ -640,11 +622,20 @@
         ,
         .pwm_onoff(slv_reg19[0])
         ,
-        .clk_sel(slv_reg19[2:1])
+        .carrier_onoff_x(slv_reg19[8:1])
+        ,
+        .int_ack(slv_reg19[9])
+        //,
+        //.clk_sel(slv_reg19[2:1])
+        //--------------------------------
+        //Outputs
+        //--------------------------------
         ,
         .pwmout_A_x(pwmout_A)
         ,
         .pwmout_B_x(pwmout_B)
+        ,
+        .trigger(trigger)
         ,
         .interrupt(interrupt)
    );

@@ -38,14 +38,16 @@ module TESTBENCH_cpwm_16bits_8carr();
     logic [$bits(_dt_onoff)*`PWM_WIDTH-1:0] dt_onoff_x;
     logic [`PWM_WIDTH-1:0] pwmout_A_x;
     logic [`PWM_WIDTH-1:0] pwmout_B_x;
-    logic [`PWM_WIDTH-1:0] logic_A_x;
-    logic [`PWM_WIDTH-1:0] logic_B_x;
+    logic [$bits(_logic_pwm)*`PWM_WIDTH-1:0] logic_A_x;
+    logic [$bits(_logic_pwm)*`PWM_WIDTH-1:0] logic_B_x;
     logic [1*`PWM_WIDTH-1:0] carrclkdiv_onoff_x;
     logic [1*`PWM_WIDTH-1:0] dtclkdiv_onoff_x;
     logic [1:0] clk_sel;
     logic [$bits(_carr_sel)*`PWM_WIDTH-1:0] carrsel_x;
+    logic int_ack;
 
     logic interrupt;
+    logic trigger;
     logic [`PWM_WIDTH-1:0] interrupt_matrix ;
     
     _pwm_onoff pwm_onoff;
@@ -56,6 +58,7 @@ module TESTBENCH_cpwm_16bits_8carr();
 //=============================================================
 
 	bit clk = 1'b0;
+	bit pwm_clk =1'b0;
 	bit pwm0_clk = 1'b0;
 	bit pwm1_clk = 1'b0;
 	bit pwm2_clk = 1'b0;
@@ -63,6 +66,7 @@ module TESTBENCH_cpwm_16bits_8carr();
 	bit rst = 1'b1;
 
     always #1 clk = ~clk;
+    always #1 pwm_clk = ~pwm_clk;
 	always #1 pwm0_clk = ~pwm0_clk;
 	always #2 pwm1_clk = ~pwm1_clk;
 	always #4 pwm2_clk = ~pwm2_clk;
@@ -78,8 +82,8 @@ module TESTBENCH_cpwm_16bits_8carr();
         pwm_onoff = PWM_OFF;
         clk_sel = 2'b00;
         int_onoff = INT_ON;
-        interrupt_matrix[0]= 1'b1;
-        interrupt_matrix[1]= 1'b0;
+        interrupt_matrix[`PWMCOUNT_WIDTH-1:0]= 8'b00000001;
+        int_ack=0;
         
 
         carr_onoff_x[0] = 1'(CARR_ON);
@@ -87,8 +91,8 @@ module TESTBENCH_cpwm_16bits_8carr();
         countmode_x[1:0] = 2'(COUNT_UPDOWN);
         maskmode_x[1:0] = 2'(MINMAX_MASK);
         carrsel_x[0] = CARR_MASTER1;
-        logic_A_x[0]=1;
-        logic_B_x[0]=1;
+        logic_A_x[0]=LOGIC_POS;
+        logic_B_x[0]=LOGIC_POS;
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd2000;
         initcarr_x[`PWMCOUNT_WIDTH-1:0] = 'd1500;
         compare_x[`PWMCOUNT_WIDTH-1:0] = 'd500;
@@ -103,12 +107,22 @@ module TESTBENCH_cpwm_16bits_8carr();
                //One free clock cycle for the reset signal
         repeat(1) @(posedge clk);
         pwm_onoff = PWM_ON;
+        int_ack=0;
+        repeat(2) @(posedge clk);
+        int_ack=1;
+        repeat(2) @(posedge clk);
+        int_ack=0;
             
         repeat(8040) @(posedge clk);
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd0;
         
         repeat(8040) @(posedge clk);
         period_x[`PWMCOUNT_WIDTH-1:0] = 'd1000;
+        
+        repeat(500) @(posedge clk);
+        int_ack=1;
+        repeat(1) @(posedge clk);
+        int_ack=0;
         
         repeat(8040) @(posedge clk);
         countmode_x[1:0] = 2'(COUNT_DOWN);
@@ -167,12 +181,8 @@ module TESTBENCH_cpwm_16bits_8carr();
 //    Design Under Test
 //=============================================================
 cpwm_16bits_8carr DUT1 (
-    .pwm0_clk,
-    .pwm1_clk,
-    .pwm2_clk,
-    .pwm3_clk,
+    .clk(pwm_clk),
     .reset(rst),
-    .clk_sel,
     .pwm_onoff(pwm_onoff),
     //.int_onoff(int_onoff),
     .interrupt_matrix(interrupt_matrix),
@@ -185,7 +195,7 @@ cpwm_16bits_8carr DUT1 (
     .countmode_x(countmode_x),
     .carrsel_x(carrsel_x),
     .maskmode_x(maskmode_x),
-    //.carr_onoff_x(carr_onoff_x),
+    .carrier_onoff_x(carr_onoff_x),
     .dt_onoff_x(dt_onoff_x),
     .dtime_A_x(dtime_A_x),
     .dtime_B_x(dtime_B_x),
@@ -193,7 +203,9 @@ cpwm_16bits_8carr DUT1 (
     .logic_B_x(logic_B_x),
     .pwmout_A_x(pwmout_A_x),
     .pwmout_B_x(pwmout_B_x),
-    .interrupt(interrupt)
+    .int_ack(int_ack),
+    .interrupt(interrupt),
+    .trigger(trigger)
 );
 		
 //=============================================================

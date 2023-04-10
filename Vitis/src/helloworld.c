@@ -47,14 +47,21 @@
 
 #include <stdio.h>
 //#include "platform.h"
-#include "xil_printf.h"
+//#include "xil_printf.h"
 #include "xil_io.h"
 #include "xparameters.h"
 #include "sleep.h"
-#include "xgpio.h"
+//#include "xgpio.h"
 #include "axi_cpwm8c.h"
+#include "axi4fulltest.h"
+//#include "xclk_wiz.h"
+#include "xscugic.h"
+#include "xil_types.h"
+#include "xil_mmu.h"
+#include "xdmaps.h"
 //#include "AXI_CPWM.h"
 
+u32 memread=0;
 u32 gpio_reg0=0;
 u32 pwm_reg0=0;
 u32 pwm_reg1=0;
@@ -94,14 +101,15 @@ AXI_CPWM_onoff pwm_pwmclkdivonoff=REG_OFF;
 AXI_CPWM_onoff pwm_dtclkdivonoff=REG_OFF;
 */
 u8 pwm_dtimeA=0;
+AXI_CPWM8C_onoff pwm_carronoff=REG_ON;
 u8 pwm_dtimeB=0;
 u8 pwm_carrclkdiv=0;
 u8 pwm_dtclkdiv=0;
 AXI_CPWM8C_count_mode pwm_countmode=COUNT_UP_DOWN;
-AXI_CPWM8C_mask_mode pwm_maskmode=MINMAX_MASK;
-AXI_CPWM8C_onoff pwm_dtonoff=REG_ON;
-AXI_CPWM8C_logic pwm_logicA=LOGIC_NEG;
-AXI_CPWM8C_logic pwm_logicB=LOGIC_NEG;
+AXI_CPWM8C_mask_mode pwm_maskmode=MIN_MASK;
+AXI_CPWM8C_onoff pwm_dtonoff=REG_OFF;
+AXI_CPWM8C_logic pwm_logicA=LOGIC_POS;
+AXI_CPWM8C_logic pwm_logicB=LOGIC_POS;
 AXI_CPWM8C_carrsel pwm_carrsel=CARR_MASTER1;
 AXI_CPWM8C_onoff pwm_onoff=REG_ON;
 u8 pwm_clksel=1;
@@ -110,191 +118,214 @@ u8 pwm_clksel=1;
 //u8 pwm_logicB=0;
 u8 pwm_intmatrix=255;
 
+#define INTC_INTERRUPT_ID_0 XPAR_FABRIC_AXI_CPWM8C_0_INTERRUPT_INTR
+// instance of interrupt controller
+static XScuGic intc;
+
+int setup_interrupt_system();
+void isr0 (void *intc_inst_ptr);
+void cpwm8c_init();
+
+
+
 int main()
 {
-//    init_platform();
+	Xil_SetTlbAttributes(XPAR_AXI4FULLTEST_0_S00_AXI_BASEADDR,0xC02);
+	mtcp(XREG_CP15_INVAL_UTLB_UNLOCKED, 0);
+	dsb();
+	int status = XST_SUCCESS;
 
-//    print("Hello World\n\r");
-
-//    pwm_reg0 = 2000 << 16 | 0;
-//    pwm_reg1 = 1000 << 16 | 1000;
-//    pwm_reg2 = 1000 << 16 | 1000;
-//    pwm_reg3 = 0 << 24 | 0 << 16 | 0 << 11 | 0 << 6 | 0 << 3;
-//    pwm_reg4 = 0 << 9 | 0 << 8 | 0 << 7 | 0 << 6 | 1 << 5 | 1 << 4 | 1 << 2 | 1 ;
-//    pwm_period = 2000;
-//    pwm_init = 2000;
-//    pwm_comp1 = 1000;
-//	pwm_comp2 = 1000;
-//	pwm_comp3 = 1000;
-//	pwm_comp4 = 1000;
-//	pwm_dtimeA = 0;
-//	pwm_dtimeB = 0;
-//	pwm_eventcount=0;
-
-	while (1) {
-
-
-		AXI_CPWM8C_mWrite_PWMOnOff(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_onoff);
-
-		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		/*AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM8C_mWrite_Period_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);*/
-
-		AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		/*AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM8C_mWrite_Compare_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);*/
-
-		AXI_CPWM8C_mWrite_DeadTimeA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		/*AXI_CPWM8C_mWrite_DeadTimeA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM8C_mWrite_DeadTimeA_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);*/
-
-		AXI_CPWM8C_mWrite_DeadTimeB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		/*AXI_CPWM8C_mWrite_DeadTimeB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM8C_mWrite_DeadTimeB_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);*/
-
-		AXI_CPWM8C_mWrite_EventCount_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		/*AXI_CPWM8C_mWrite_EventCount_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM8C_mWrite_EventCount_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);*/
-
-		AXI_CPWM8C_mWrite_InterruptMatrix(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_intmatrix);
-
-		AXI_CPWM8C_mWrite_CountMode_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		/*AXI_CPWM8C_mWrite_CountMode_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM8C_mWrite_CountMode_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);*/
-
-		AXI_CPWM8C_mWrite_MaskMode_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		/*AXI_CPWM8C_mWrite_MaskMode_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM8C_mWrite_MaskMode_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);*/
-
-		AXI_CPWM8C_mWrite_DTimeOnOff_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		/*AXI_CPWM8C_mWrite_DTimeOnOff_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-		AXI_CPWM8C_mWrite_DTimeOnOff_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);*/
-
-		AXI_CPWM8C_mWrite_LogicA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		/*AXI_CPWM8C_mWrite_LogicA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM8C_mWrite_LogicA_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);*/
-
-		AXI_CPWM8C_mWrite_LogicB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		/*AXI_CPWM8C_mWrite_LogicB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
-		AXI_CPWM8C_mWrite_LogicB_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);*/
-
-		AXI_CPWM8C_mWrite_CarrSel_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		/*AXI_CPWM8C_mWrite_CarrSel_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
-		AXI_CPWM8C_mWrite_CarrSel_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);*/
-
-		AXI_CPWM8C_mWrite_ClkSel(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_clksel);
-
-		XGpio_WriteReg(XPAR_AXI_GPIO_0_BASEADDR, XGPIO_DATA_OFFSET, gpio_reg0);
-		/*
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET, pwm_reg0);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET, pwm_reg1);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET, pwm_reg2);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET, pwm_reg3);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG4_OFFSET, pwm_reg4);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG5_OFFSET, pwm_reg5);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG6_OFFSET, pwm_reg6);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG7_OFFSET, pwm_reg7);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET, pwm_reg8);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG9_OFFSET, pwm_reg9);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG10_OFFSET, pwm_reg10);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG11_OFFSET, pwm_reg11);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG12_OFFSET, pwm_reg12);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG13_OFFSET, pwm_reg13);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG14_OFFSET, pwm_reg14);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG15_OFFSET, pwm_reg15);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG16_OFFSET, pwm_reg16);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG17_OFFSET, pwm_reg17);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG18_OFFSET, pwm_reg18);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG19_OFFSET, pwm_reg19);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG20_OFFSET, pwm_reg20);
-		AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG21_OFFSET, pwm_reg21);
-		*/
-
-
-/*
-		AXI_CPWM_mWrite_Period(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_period);
-		AXI_CPWM_mWrite_InitCarrier(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_init);
-		AXI_CPWM_mWrite_Comp1(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_comp1);
-		AXI_CPWM_mWrite_Comp2(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_comp2);
-		AXI_CPWM_mWrite_Comp3(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_comp3);
-		AXI_CPWM_mWrite_Comp4(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_comp4);
-		AXI_CPWM_mWrite_DeadTimeA(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_dtimeA);
-		AXI_CPWM_mWrite_DeadTimeB(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_dtimeB);
-		AXI_CPWM_mWrite_EventCount(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_eventcount);
-		AXI_CPWM_mWrite_CarrClkDiv(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_carrclkdiv);
-		AXI_CPWM_mWrite_DtimeClkDiv(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_dtclkdiv);
-		AXI_CPWM_mWrite_CountMode(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_countmode);
-		AXI_CPWM_mWrite_MaskMode(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_maskmode);
-		AXI_CPWM_mWrite_PWMOnOff(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_pwmonoff);
-		AXI_CPWM_mWrite_IntOnOff(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_intonoff);
-		AXI_CPWM_mWrite_PWMClkDivOnOff(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_pwmclkdivonoff);
-		AXI_CPWM_mWrite_DTClkDivOnOff(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_dtclkdivonoff);
-		AXI_CPWM_mWrite_LogicOutA(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_logicA);
-		AXI_CPWM_mWrite_LogicOutB(XPAR_AXI_CPWM_0_S_AXI_BASEADDR,pwm_logicB);
-*/
-		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG0_OFFSET, pwm_reg0);
-		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG1_OFFSET, pwm_reg1);
-		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG2_OFFSET, pwm_reg2);
-		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG3_OFFSET, pwm_reg3);
-		//AXI_CPWM_mWriteReg(XPAR_AXI_CPWM_0_S_AXI_BASEADDR, AXI_CPWM_S_AXI_SLV_REG4_OFFSET, pwm_reg4);
-
+	status = setup_interrupt_system();
+	if (status != XST_SUCCESS)   {
+	           return XST_FAILURE;
+	    }
+	cpwm8c_init();
+	while (1){
 	}
 
 //    cleanup_platform();
     return 0;
+}
+
+void isr0 (void *intc_inst_ptr) {
+	//u32 IntIDFull;
+
+	//AXI4FULLTEST_mWriteMemory(XPAR_AXI4FULLTEST_0_S00_AXI_BASEADDR, 1);
+	//memread=AXI4FULLTEST_mReadMemory(XPAR_AXI4FULLTEST_0_S00_AXI_BASEADDR);
+	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+	//-------------------------------------------------------------
+	//Clear interrupt in PL (AXI_CPWM8C)
+	//-------------------------------------------------------------
+	AXI_CPWM8C_mWriteReg(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR, AXI_CPWM8C_S_AXI_SLV_REG6_OFFSET,2);
+	AXI_CPWM8C_IntAck(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR);
+	//-------------------------------------------------------------
+	//Clear interrupt in PS
+	//-------------------------------------------------------------
+	//IntIDFull = XScuGic_CPUReadReg(&intc, XSCUGIC_INT_ACK_OFFSET);
+	//XScuGic_CPUWriteReg(&intc, XSCUGIC_EOI_OFFSET, IntIDFull);
+}
+
+// sets up the interrupt system and enables interrupts for IRQ_F2P[1:0]
+int setup_interrupt_system() {
+
+    int result;
+    XScuGic *intc_instance_ptr = &intc;
+    XScuGic_Config *intc_config;
+
+    // get config for interrupt controller
+    intc_config = XScuGic_LookupConfig(XPAR_PS7_SCUGIC_0_DEVICE_ID);
+    if (NULL == intc_config) {
+        return XST_FAILURE;
+    }
+
+    // initialize the interrupt controller driver
+    result = XScuGic_CfgInitialize(intc_instance_ptr, intc_config, intc_config->CpuBaseAddress);
+
+    if (result != XST_SUCCESS) {
+        return result;
+    }
+
+    // set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a active high trigger 0x3.
+    XScuGic_SetPriorityTriggerType(intc_instance_ptr, INTC_INTERRUPT_ID_0, 0xA0, 0x3);
+
+    // connect the interrupt service routine isr0 to the interrupt controller
+    result = XScuGic_Connect(intc_instance_ptr, INTC_INTERRUPT_ID_0, (Xil_ExceptionHandler)isr0, (void *)&intc);
+
+    if (result != XST_SUCCESS) {
+        return result;
+    }
+
+    // enable interrupts for IRQ_F2P[0:0]
+    XScuGic_Enable(intc_instance_ptr, INTC_INTERRUPT_ID_0);
+
+    // initialize the exception table and register the interrupt controller handler with the exception table
+    Xil_ExceptionInit();
+
+    Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, intc_instance_ptr);
+
+    // enable non-critical exceptions
+    Xil_ExceptionEnable();
+
+    return XST_SUCCESS;
+}
+
+void cpwm8c_init()
+{
+
+
+		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+//		AXI_CPWM8C_mWrite_Period_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+
+		AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+//		AXI_CPWM8C_mWrite_Compare_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
+
+		AXI_CPWM8C_mWrite_DeadTimeA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+//		AXI_CPWM8C_mWrite_DeadTimeA_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+
+		AXI_CPWM8C_mWrite_DeadTimeB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+//		AXI_CPWM8C_mWrite_DeadTimeB_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+
+		AXI_CPWM8C_mWrite_EventCount_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+//		AXI_CPWM8C_mWrite_EventCount_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
+
+		AXI_CPWM8C_mWrite_InterruptMatrix(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_intmatrix);
+
+		AXI_CPWM8C_mWrite_CountMode_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+//		AXI_CPWM8C_mWrite_CountMode_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_countmode);
+
+		AXI_CPWM8C_mWrite_MaskMode_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+//		AXI_CPWM8C_mWrite_MaskMode_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
+
+		AXI_CPWM8C_mWrite_DTimeOnOff_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+//		AXI_CPWM8C_mWrite_DTimeOnOff_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+
+		AXI_CPWM8C_mWrite_LogicA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+//		AXI_CPWM8C_mWrite_LogicA_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
+
+		AXI_CPWM8C_mWrite_LogicB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+//		AXI_CPWM8C_mWrite_LogicB_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+
+		AXI_CPWM8C_mWrite_CarrSel_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrSel_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+
+		AXI_CPWM8C_mWrite_CarrOnOff_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carronoff);
+//		AXI_CPWM8C_mWrite_CarrOnOff_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_5(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_6(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_7(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+//		AXI_CPWM8C_mWrite_CarrOnOff_8(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
+
+
+//		XGpio_WriteReg(XPAR_AXI_GPIO_0_BASEADDR, XGPIO_DATA_OFFSET, gpio_reg0);
+		AXI_CPWM8C_mWrite_PWMOnOff(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_onoff);
+
+		AXI_CPWM8C_IntAck(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR);
 }
