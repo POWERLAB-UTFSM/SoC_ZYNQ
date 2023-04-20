@@ -18,6 +18,7 @@
         input wire [0:0] pwm2_clk,
         input wire [0:0] pwm3_clk,*/
         input wire pwm_clk,
+        input wire wire_ack,
         output wire [PWM_WIDTH-1:0] pwmout_A,
         output wire [PWM_WIDTH-1:0] pwmout_B,
         output wire trigger,
@@ -59,6 +60,7 @@
         .pwm2_clk(pwm2_clk),
         .pwm3_clk(pwm3_clk),*/
         .pwm_clk(pwm_clk),
+        .wire_ack(wire_ack),
         .pwmout_A(pwmout_A),
         .pwmout_B(pwmout_B),
         .trigger(trigger),

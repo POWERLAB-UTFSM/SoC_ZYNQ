@@ -1,0 +1,372 @@
+
+*** Running vivado
+    with args -log axi4litetest_v1_0.vds -m64 -product Vivado -mode batch -messageDb vivado.pb -notrace -source axi4litetest_v1_0.tcl
+
+
+
+****** Vivado v2022.2 (64-bit)
+  **** SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+  **** IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+    ** Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+
+source axi4litetest_v1_0.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:06 . Memory (MB): peak = 383.789 ; gain = 66.430
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+WARNING: [IP_Flow 19-3685] Ignored loading user repository 'e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0'. The path is contained within another repository.
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo'.
+WARNING: [IP_Flow 19-3656] If you move the project, the path for repository 'e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo' may become invalid. A better location for the repository would be in a path adjacent to the project. (Current project location is 'e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/edit_axi4litetest_v1_0.runs/synth_1'.)
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2022.2/data/ip'.
+WARNING: [IP_Flow 19-4995] The host OS only allows 260 characters in a normal path. The IP cache path is more than 80 characters. If you experience issues with IP caching, please consider changing the IP cache to a location with a shorter path. Alternately consider using the OS subst command to map part of the path to a drive letter. 
+Current IP cache path is e:/repos/powerlab-utfsm/soc_zynq/vivado/ip_repo/axi4lite/edit_axi4litetest_v1_0.cache/ip 
+Command: synth_design -top axi4litetest_v1_0 -part xc7z020clg484-1
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 32532
+INFO: [Synth 8-11241] undeclared symbol 'REGCCE', assumed default net type 'wire' [C:/Xilinx/Vivado/2022.2/data/verilog/src/unimacro/BRAM_SINGLE_MACRO.v:2170]
+---------------------------------------------------------------------------------
+Starting Synthesize : Time (s): cpu = 00:00:07 ; elapsed = 00:00:07 . Memory (MB): peak = 832.391 ; gain = 416.367
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'axi4litetest_v1_0' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0.v:4]
+INFO: [Synth 8-6157] synthesizing module 'axi4litetest_v1_0_S00_AXI' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:55]
+	Parameter PWM_WIDTH bound to: 8 - type: integer 
+	Parameter C_S_AXI_DATA_WIDTH bound to: 32 - type: integer 
+	Parameter C_S_AXI_ADDR_WIDTH bound to: 7 - type: integer 
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:337]
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:355]
+INFO: [Synth 8-6157] synthesizing module 'cpwm_16bits_8carr' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/cpwm_16bits_8carr.sv:36]
+INFO: [Synth 8-6157] synthesizing module 'carrier_16bits_1carr' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_16bits_1carr.sv:29]
+INFO: [Synth 8-6157] synthesizing module 'carrier_gen_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_gen_16bits.sv:23]
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_gen_16bits.sv:66]
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_gen_16bits.sv:204]
+INFO: [Synth 8-6155] done synthesizing module 'carrier_gen_16bits' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_gen_16bits.sv:23]
+INFO: [Synth 8-6157] synthesizing module 'maskevent_carrier' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/maskevent_carrier.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'maskevent_carrier' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/maskevent_carrier.sv:23]
+INFO: [Synth 8-6157] synthesizing module 'event_counter' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/event_counter.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'event_counter' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/event_counter.sv:23]
+INFO: [Synth 8-6157] synthesizing module 'register_mask_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/register_mask_16bits.sv:24]
+INFO: [Synth 8-6155] done synthesizing module 'register_mask_16bits' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/register_mask_16bits.sv:24]
+WARNING: [Synth 8-689] width (8) of port connection 'reg_out' does not match port width (16) of module 'register_mask_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_16bits_1carr.sv:162]
+INFO: [Synth 8-6155] done synthesizing module 'carrier_16bits_1carr' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/carrier_16bits_1carr.sv:29]
+INFO: [Synth 8-6157] synthesizing module 'compare_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/compare_16bits.sv:23]
+WARNING: [Synth 8-689] width (3) of port connection 'reg_out' does not match port width (16) of module 'register_mask_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/compare_16bits.sv:84]
+INFO: [Synth 8-6157] synthesizing module 'comparator_16bits' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/comparator_16bits.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'comparator_16bits' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/comparator_16bits.sv:23]
+INFO: [Synth 8-6157] synthesizing module 'deadtime_single' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/deadtime_single.sv:24]
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/deadtime_single.sv:52]
+INFO: [Synth 8-155] case statement is not full and has no default [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/deadtime_single.sv:86]
+INFO: [Synth 8-6155] done synthesizing module 'deadtime_single' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/deadtime_single.sv:24]
+INFO: [Synth 8-6155] done synthesizing module 'compare_16bits' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/compare_16bits.sv:23]
+INFO: [Synth 8-6157] synthesizing module 'interrupt_matrix' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/interrupt_matrix.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'interrupt_matrix' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/interrupt_matrix.sv:23]
+INFO: [Synth 8-6155] done synthesizing module 'cpwm_16bits_8carr' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/src/cpwm_16bits_8carr.sv:36]
+WARNING: [Synth 8-7071] port 'compare_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'dtime_A_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'dtime_B_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'eventcount_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'countmode_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'maskmode_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'dt_onoff_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'carrsel_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'pwm_onoff' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'carrier_onoff_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'interrupt_matrix' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'logic_A_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'logic_B_x' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7071] port 'int_ack' of module 'cpwm_16bits_8carr' is unconnected for instance 'CPWM8C' [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+WARNING: [Synth 8-7023] instance 'CPWM8C' of module 'cpwm_16bits_8carr' has 22 connections declared, but only 8 given [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:394]
+INFO: [Synth 8-6155] done synthesizing module 'axi4litetest_v1_0_S00_AXI' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0_S00_AXI.v:55]
+INFO: [Synth 8-6155] done synthesizing module 'axi4litetest_v1_0' (0#1) [e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/axi4litetest_1_0/hdl/axi4litetest_v1_0.v:4]
+WARNING: [Synth 8-7129] Port clk in module event_counter is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_AWADDR[1] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_AWADDR[0] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_AWPROT[2] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_AWPROT[1] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_AWPROT[0] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_ARADDR[1] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_ARADDR[0] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_ARPROT[2] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_ARPROT[1] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+WARNING: [Synth 8-7129] Port S_AXI_ARPROT[0] in module axi4litetest_v1_0_S00_AXI is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished Synthesize : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 929.148 ; gain = 513.125
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 929.148 ; gain = 513.125
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg484-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:09 ; elapsed = 00:00:10 . Memory (MB): peak = 929.148 ; gain = 513.125
+---------------------------------------------------------------------------------
+INFO: [Device 21-403] Loading part xc7z020clg484-1
+INFO: [Synth 8-802] inferred FSM for state register 'counter_state_reg' in module 'carrier_gen_16bits'
+INFO: [Synth 8-802] inferred FSM for state register 'dtime_state_reg' in module 'deadtime_single'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+               S_NEWCARR |                              000 |                              101
+                S_RESET0 |                              001 |                              000
+                    S_UP |                              010 |                              001
+                  S_DOWN |                              011 |                              010
+                S_RESETP |                              100 |                              011
+                  S_STOP |                              101 |                              100
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'counter_state_reg' using encoding 'sequential' in module 'carrier_gen_16bits'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+                   S_OFF |                              001 |                               00
+               S_DTCOUNT |                              010 |                               01
+                    S_ON |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'dtime_state_reg' using encoding 'one-hot' in module 'deadtime_single'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:10 ; elapsed = 00:00:11 . Memory (MB): peak = 929.148 ; gain = 513.125
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   32 Bit       Adders := 8     
+	   2 Input   16 Bit       Adders := 8     
+	   2 Input    8 Bit       Adders := 16    
+	   2 Input    3 Bit       Adders := 8     
++---XORs : 
+	   2 Input      1 Bit         XORs := 32    
++---Registers : 
+	               32 Bit    Registers := 9     
+	               16 Bit    Registers := 64    
+	                8 Bit    Registers := 16    
+	                3 Bit    Registers := 8     
+	                1 Bit    Registers := 44    
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 16    
+	   8 Input   32 Bit        Muxes := 8     
+	   6 Input   16 Bit        Muxes := 8     
+	   2 Input   16 Bit        Muxes := 8     
+	  24 Input    3 Bit        Muxes := 8     
+	   2 Input    3 Bit        Muxes := 72    
+	   3 Input    3 Bit        Muxes := 16    
+	   6 Input    2 Bit        Muxes := 8     
+	   2 Input    2 Bit        Muxes := 48    
+	   3 Input    2 Bit        Muxes := 48    
+	   2 Input    1 Bit        Muxes := 148   
+	   5 Input    1 Bit        Muxes := 8     
+	   6 Input    1 Bit        Muxes := 16    
+	   3 Input    1 Bit        Muxes := 16    
+	   4 Input    1 Bit        Muxes := 16    
+	   8 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-3917] design axi4litetest_v1_0 has port s00_axi_bresp[1] driven by constant 0
+WARNING: [Synth 8-3917] design axi4litetest_v1_0 has port s00_axi_bresp[0] driven by constant 0
+WARNING: [Synth 8-3917] design axi4litetest_v1_0 has port s00_axi_rresp[1] driven by constant 0
+WARNING: [Synth 8-3917] design axi4litetest_v1_0 has port s00_axi_rresp[0] driven by constant 0
+WARNING: [Synth 8-7129] Port s00_axi_awaddr[1] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_awaddr[0] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_awprot[2] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_awprot[1] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_awprot[0] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_araddr[1] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_araddr[0] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_arprot[2] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_arprot[1] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s00_axi_arprot[0] in module axi4litetest_v1_0 is either unconnected or has no load
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__1.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__1.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__2.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__2.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__3.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__3.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__4.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__4.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__5.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__5.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__6.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__6.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr__7.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits__7.
+WARNING: [Synth 8-3332] Sequential element (CARR/FSM_sequential_counter_state_reg[2]) is unused and will be removed from module carrier_16bits_1carr.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits.
+WARNING: [Synth 8-3332] Sequential element (DT_A/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[2]) is unused and will be removed from module compare_16bits.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[1]) is unused and will be removed from module compare_16bits.
+WARNING: [Synth 8-3332] Sequential element (DT_B/FSM_onehot_dtime_state_reg[0]) is unused and will be removed from module compare_16bits.
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:17 ; elapsed = 00:00:18 . Memory (MB): peak = 1138.785 ; gain = 722.762
+---------------------------------------------------------------------------------
+No constraint files found.
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:17 ; elapsed = 00:00:19 . Memory (MB): peak = 1143.973 ; gain = 727.949
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:17 ; elapsed = 00:00:19 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:00:22 ; elapsed = 00:00:23 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+------+------+
+|      |Cell  |Count |
++------+------+------+
+|1     |BUFG  |     1|
+|2     |LUT1  |     2|
+|3     |LUT2  |     1|
+|4     |LUT4  |     3|
+|5     |LUT6  |    97|
+|6     |MUXF7 |    32|
+|7     |FDRE  |   291|
+|8     |IBUF  |    53|
+|9     |OBUF  |    59|
++------+------+------+
+
+Report Instance Areas: 
++------+---------------------------------+--------------------------+------+
+|      |Instance                         |Module                    |Cells |
++------+---------------------------------+--------------------------+------+
+|1     |top                              |                          |   539|
+|2     |  axi4litetest_v1_0_S00_AXI_inst |axi4litetest_v1_0_S00_AXI |   426|
++------+---------------------------------+--------------------------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1144.137 ; gain = 728.113
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 99 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1144.137 ; gain = 728.113
+Synthesis Optimization Complete : Time (s): cpu = 00:00:22 ; elapsed = 00:00:24 . Memory (MB): peak = 1144.137 ; gain = 728.113
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.007 . Memory (MB): peak = 1156.016 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 32 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1253.914 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete, checksum: 17ad2bdf
+INFO: [Common 17-83] Releasing license: Synthesis
+50 Infos, 102 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:00:25 ; elapsed = 00:00:26 . Memory (MB): peak = 1253.914 ; gain = 840.855
+INFO: [Common 17-1381] The checkpoint 'e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/edit_axi4litetest_v1_0.runs/synth_1/axi4litetest_v1_0.dcp' has been generated.
+INFO: [runtcl-4] Executing : report_utilization -file axi4litetest_v1_0_utilization_synth.rpt -pb axi4litetest_v1_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue Apr 11 00:00:15 2023...

@@ -4,6 +4,7 @@
 /****************** Include Files ********************/
 #include "xil_types.h"
 #include "xstatus.h"
+#include "xil_io.h"
 
 /****************** read/write register ********************/
 #define HWREG(x)                                                          \
@@ -68,22 +69,28 @@ typedef enum
 } AXI_CPWM8C_carrsel;
 
 static INLINE void AXI_CPWM8C_mWrite_Period_1(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) & 0xFFFF0000) + (Value);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) & 0xFFFF0000) + (Value);
+	Xil_Out16((BaseAddress) + (0), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_2(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) & 0x0000FFFF) + (Value << 16);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) & 0x0000FFFF) + (Value << 16);
+	Xil_Out16((BaseAddress) + (2), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_3(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) & 0xFFFF0000) + (Value);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) & 0xFFFF0000) + (Value);
+	Xil_Out16((BaseAddress) + (4), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_4(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) & 0x0000FFFF) + (Value << 16);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG1_OFFSET) & 0x0000FFFF) + (Value << 16);
+	Xil_Out16((BaseAddress) + (6), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_5(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) & 0xFFFF0000) + (Value);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) & 0xFFFF0000) + (Value);
+	Xil_Out16((BaseAddress) + (8), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_6(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) & 0x0000FFFF) + (Value << 16);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG2_OFFSET) & 0x0000FFFF) + (Value << 16);
+	Xil_Out16((BaseAddress) + (10), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_7(UINTPTR BaseAddress, u16 Value){
 	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) & 0xFFFF0000) + (Value);

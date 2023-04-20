@@ -1,0 +1,13 @@
+#-----------------------------------------------------------
+# Vivado v2022.2 (64-bit)
+# SW Build 3671981 on Fri Oct 14 05:00:03 MDT 2022
+# IP Build 3669848 on Fri Oct 14 08:30:02 MDT 2022
+# Start of session at: Mon Apr 10 23:59:38 2023
+# Process ID: 33848
+# Current directory: e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/edit_axi4litetest_v1_0.runs/synth_1
+# Command line: vivado.exe -log axi4litetest_v1_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source axi4litetest_v1_0.tcl
+# Log file: e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/edit_axi4litetest_v1_0.runs/synth_1/axi4litetest_v1_0.vds
+# Journal file: e:/Repos/POWERLAB-UTFSM/SoC_ZYNQ/Vivado/ip_repo/AXI4lite/edit_axi4litetest_v1_0.runs/synth_1\vivado.jou
+# Running On: ALAN-MAIN-PC, OS: Windows, CPU Frequency: 3600 MHz, CPU Physical cores: 12, Host memory: 25712 MB
+#-----------------------------------------------------------
+source axi4litetest_v1_0.tcl -notrace

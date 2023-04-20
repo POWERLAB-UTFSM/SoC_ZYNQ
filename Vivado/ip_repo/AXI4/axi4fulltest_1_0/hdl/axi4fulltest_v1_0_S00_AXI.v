@@ -607,9 +607,9 @@
 	    end       
 	end    
 
-	
+    /*	
     // Add user logic here
-   /*cpwm_16bits_8carr CPWM8C(
+   cpwm_16bits_8carr CPWM8C(
         //.pwm0_clk(S_AXI_ACLK)
         //,
         //.pwm1_clk(pwm1_clk)
@@ -622,7 +622,7 @@
         ,
         .reset(~S_AXI_ARESETN)
         ,
-        .period_x()
+        .period_x(byte_ram)
         ,
         .initcarr_x({slv_reg7,slv_reg6,slv_reg5,slv_reg4})
         ,
