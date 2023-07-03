@@ -88,7 +88,7 @@ module fsm_3lanpc(
             S_out <= S_outcomb;
             counter     <= (transition && (counter < MAX_COUNTER - 1))? counter + 'd1: 'd0;
             delay_timer <= (transition && counter == MAX_COUNTER - 1)? delay_timer + 'd1: (transition)? delay_timer:   'd0;
-            transition  <= (state != next_state && !finish_transition)? 'd1: 'd0;
+            transition  <= ((v_lev != v_lev_past || state != next_state) && !finish_transition)? 'd1: 'd0;
             old_state   <= (state!=next_state)? state: old_state;
             
             if(finish_transition==1) begin
