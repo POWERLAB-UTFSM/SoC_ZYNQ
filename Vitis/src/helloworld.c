@@ -62,6 +62,7 @@
 #include "xdmaps.h"
 
 u16 globalpwm_period=2000;
+u16 globalpwm_compare=1000;
 
 
 u8 pwm_intmatrix=255;
@@ -102,8 +103,8 @@ int main()
 
 	cpwm8c_init();
 
-	status = setup_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID,INTC_INTERRUPT_ID_0);
-	//status = setup_FIQ_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID);
+	//status = setup_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID,INTC_INTERRUPT_ID_0);
+	status = setup_FIQ_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID); //initialize fast interrupt (FIQ) on channel "XPAR_PS7_SCUGIC_0_DEVICE_ID"
 	if (status != XST_SUCCESS)   {
 	           return XST_FAILURE;
 	    }
@@ -117,7 +118,8 @@ int main()
 void isr0 (void *intc_inst_ptr) {
 	//u32 IntIDFull;
 
-	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare);
 	//AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
 	//AXI_CPWM8C_mWrite_Period_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
 	//AXI_CPWM8C_mWrite_Period_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
@@ -147,7 +149,7 @@ void fiq_handler (void *intc_inst_ptr) {
 	//u32 IntIDFull;
 
 	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
-	//AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
+	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare);
 	//AXI_CPWM8C_mWrite_Period_3(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
 	//AXI_CPWM8C_mWrite_Period_4(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_period);
 

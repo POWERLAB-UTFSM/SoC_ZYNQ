@@ -9,6 +9,12 @@
 <!--- **Nota**: Toda subcarpeta desde esta posición raíz, junto a sus archivos, será ignorada a la hora de ejecutar comandos de captura de repositorios en git (como `git commit`). Cualquier archivo que necesite para guardar y subir al repositorio deberá guardarlo directamente acá o en carpetas anteriores. Para más detalle, abra [.gitignore](.gitignore).
 -->
 
+## Instalar archivos de preconfiguración de tarjetas
+
+Dependiendo de qué tarjeta se esté ocupando en un determinado proyecto, será necesario instalar archivos de preconfiguración antes de crear o regenerar un proyecto desde un `tcl`. Para ello, se accede a:
+
+* Vivado -> Vivado Store -> Boards -> {Tarjeta a elección}.
+
 ## Reempaquetar proyecto en `tcl`
 
 1. Ir a "File -> Project -> Write Tcl..."
