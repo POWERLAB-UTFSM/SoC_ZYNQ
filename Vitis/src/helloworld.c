@@ -71,11 +71,13 @@ u8 pwm_intmatrix=255;
 // instance of interrupt controller
 static XScuGic intc;
 
+//Function declaration
 int setup_interrupt_system(u16 DeviceId, u16 InterruptId);
 void isr0 (void *intc_inst_ptr);
 void fiq_handler (void *intc_inst_ptr);
 void cpwm8c_init();
 int setup_FIQ_interrupt_system(u16 DeviceId);
+static inline void pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir);
 
 XGpioPs_Config *xgpioptr;
 XGpioPs xgpio;
@@ -105,14 +107,19 @@ int main()
 
 	//status = setup_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID,INTC_INTERRUPT_ID_0);
 	status = setup_FIQ_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID); //initialize fast interrupt (FIQ) on channel "XPAR_PS7_SCUGIC_0_DEVICE_ID"
-	if (status != XST_SUCCESS)   {
-	           return XST_FAILURE;
-	    }
+	if (status != XST_SUCCESS){
+		return XST_FAILURE;
+	}
 	while (1){
 	}
 
 //    cleanup_platform();
     return 0;
+}
+
+static inline void pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir){
+	XGpioPs_WritePin(InstancePtr, pin_dir, 1);
+	XGpioPs_WritePin(InstancePtr, pin_dir, 0);
 }
 
 void isr0 (void *intc_inst_ptr) {
@@ -169,9 +176,9 @@ void fiq_handler (void *intc_inst_ptr) {
 	//-------------------------------------------------------------
 	//AXI4LITETEST_mWriteReg(XPAR_AXI4LITETEST_0_S_AXI_BASEADDR, AXI4LITETEST_S_AXI_SLV_REG6_OFFSET,2);
 	//AXI_CPWM8C_IntAck(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR);
-	XGpioPs_WritePin(&xgpio, 54, 1);
-	XGpioPs_WritePin(&xgpio, 54, 0);
-
+	//XGpioPs_WritePin(&xgpio, 54, 1);
+	//XGpioPs_WritePin(&xgpio, 54, 0);
+	pwm_wireack(&xgpio,54);
 }
 
 // sets up the interrupt system and enables interrupts for IRQ_F2P[1:0]
