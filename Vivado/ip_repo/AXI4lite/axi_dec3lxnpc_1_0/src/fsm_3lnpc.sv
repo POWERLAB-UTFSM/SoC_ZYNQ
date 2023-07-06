@@ -161,10 +161,10 @@ module fsm_3lnpc(
                                     end
                                 endcase
                             end
-                            //default: begin // ZU2 -> ZU2
-                            //    S_outcomb='b001_110;
-                            //    finish_transition=0;
-                            //end                      
+                            default: begin // Z -> Z
+                                S_outcomb='b01_10_00;
+                                finish_transition=0;
+                            end                     
                         endcase
                     end
                     else begin 

@@ -1,6 +1,6 @@
 
 
 /***************************** Include Files *******************************/
-#include "AXI_DECODER_3LXNPC.h"
+#include "axi_dec3lxnpc.h"
 
 /************************** Function Definitions ***************************/

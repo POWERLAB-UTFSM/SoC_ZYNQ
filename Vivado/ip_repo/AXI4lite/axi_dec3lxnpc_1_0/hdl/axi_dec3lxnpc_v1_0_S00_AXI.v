@@ -1,8 +1,8 @@
 
 `timescale 1 ns / 1 ps
 
-	module AXI_DECODER_3LXNPC_v1_0_S00_AXI #
-(
+	module axi_dec3lxnpc_v1_0_S00_AXI #
+	(
 		// Users to add parameters here
         parameter [0:0] OPT_READ_SIDEEFFECTS = 1,
 		parameter [0:0]	OPT_SKIDBUFFER = 1'b0,
@@ -22,6 +22,7 @@
         output wire [5:0] pwmout_xnpc,
 		// User ports ends
 		// Do not modify the ports beyond this line
+
 		// Global Clock Signal
 		input wire  S_AXI_ACLK,
 		// Global Reset Signal. This Signal is Active LOW
@@ -32,17 +33,17 @@
     		// privilege and security level of the transaction, and whether
     		// the transaction is a data access or an instruction access.
 		input wire [2 : 0] S_AXI_AWPROT,
-		// Write address valid. This signal indicates that the master
-		// signaling valid write address and control information.
+		// Write address valid. This signal indicates that the master signaling
+    		// valid write address and control information.
 		input wire  S_AXI_AWVALID,
-		// Write address ready. This signal indicates that the slave
-		// is ready to accept an address and associated control signals.
+		// Write address ready. This signal indicates that the slave is ready
+    		// to accept an address and associated control signals.
 		output wire  S_AXI_AWREADY,
-		// Write data (issued by master, acceped by Slave)
+		// Write data (issued by master, acceped by Slave) 
 		input wire [C_S_AXI_DATA_WIDTH-1 : 0] S_AXI_WDATA,
 		// Write strobes. This signal indicates which byte lanes hold
     		// valid data. There is one write strobe bit for each eight
-    		// bits of the write data bus.
+    		// bits of the write data bus.    
 		input wire [(C_S_AXI_DATA_WIDTH/8)-1 : 0] S_AXI_WSTRB,
 		// Write valid. This signal indicates that valid write
     		// data and strobes are available.
@@ -82,10 +83,9 @@
 		// Read ready. This signal indicates that the master can
     		// accept the read data and response information.
 		input wire  S_AXI_RREADY
-		// }}}
 	);
 
-////////////////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////////////////
 	//
 	// Register/wire signal declarations
 	// {{{
@@ -347,7 +347,7 @@
         ,
         .npc_type(r2[1:0])
         ,
-        .S_out(pwm_out)
+        .S_out(pwmout_xnpc)
    );
 	// User logic ends
 
@@ -561,4 +561,3 @@
 `endif
 // }}}
 endmodule
-

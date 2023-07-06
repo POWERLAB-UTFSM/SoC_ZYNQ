@@ -1,7 +1,7 @@
 
 `timescale 1 ns / 1 ps
 
-	module AXI_DECODER_3LXNPC_v1_0 #
+	module axi_dec3lxnpc_v1_0 #
 	(
 		// Users to add parameters here
 
@@ -46,10 +46,10 @@
 		input wire  s00_axi_rready
 	);
 // Instantiation of Axi Bus Interface S00_AXI
-	AXI_DECODER_3LXNPC_v1_0_S00_AXI # ( 
+	axi_dec3lxnpc_v1_0_S00_AXI # ( 
 		.C_S_AXI_DATA_WIDTH(C_S00_AXI_DATA_WIDTH),
 		.C_S_AXI_ADDR_WIDTH(C_S00_AXI_ADDR_WIDTH)
-	) axi_decoder_xnpc_v1_0_S00_AXI_inst (
+	) axi_dec3lxnpc_v1_0_S00_AXI_inst (
 	    .pwm_clk(pwm_clk),
 	    .pwm_in(pwm_in),
 	    .pwmout_xnpc(pwmout_xnpc),
@@ -81,4 +81,3 @@
 	// User logic ends
 
 	endmodule
-
