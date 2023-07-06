@@ -1,26 +1,26 @@
 
-#ifndef AXI_DECODER_XNPC_H
-#define AXI_DECODER_XNPC_H
+#ifndef AXI_DECODER_3LXNPC_H
+#define AXI_DECODER_3LXNPC_H
 
 
 /****************** Include Files ********************/
 #include "xil_types.h"
 #include "xstatus.h"
 
-#define AXI_DECODER_XNPC_S00_AXI_SLV_REG0_OFFSET 0
-#define AXI_DECODER_XNPC_S00_AXI_SLV_REG1_OFFSET 4
-#define AXI_DECODER_XNPC_S00_AXI_SLV_REG2_OFFSET 8
-#define AXI_DECODER_XNPC_S00_AXI_SLV_REG3_OFFSET 12
+#define AXI_DECODER_3LXNPC_S00_AXI_SLV_REG0_OFFSET 0
+#define AXI_DECODER_3LXNPC_S00_AXI_SLV_REG1_OFFSET 4
+#define AXI_DECODER_3LXNPC_S00_AXI_SLV_REG2_OFFSET 8
+#define AXI_DECODER_3LXNPC_S00_AXI_SLV_REG3_OFFSET 12
 
 
 /**************************** Type Definitions *****************************/
 /**
  *
- * Write a value to a AXI_DECODER_XNPC register. A 32 bit write is performed.
+ * Write a value to a AXI_DECODER_3LXNPC register. A 32 bit write is performed.
  * If the component is implemented in a smaller width, only the least
  * significant data is written.
  *
- * @param   BaseAddress is the base address of the AXI_DECODER_XNPCdevice.
+ * @param   BaseAddress is the base address of the AXI_DECODER_3LXNPCdevice.
  * @param   RegOffset is the register offset from the base to write to.
  * @param   Data is the data written to the register.
  *
@@ -28,30 +28,30 @@
  *
  * @note
  * C-style signature:
- * 	void AXI_DECODER_XNPC_mWriteReg(u32 BaseAddress, unsigned RegOffset, u32 Data)
+ * 	void AXI_DECODER_3LXNPC_mWriteReg(u32 BaseAddress, unsigned RegOffset, u32 Data)
  *
  */
-#define AXI_DECODER_XNPC_mWriteReg(BaseAddress, RegOffset, Data) \
+#define AXI_DECODER_3LXNPC_mWriteReg(BaseAddress, RegOffset, Data) \
   	Xil_Out32((BaseAddress) + (RegOffset), (u32)(Data))
 
 /**
  *
- * Read a value from a AXI_DECODER_XNPC register. A 32 bit read is performed.
+ * Read a value from a AXI_DECODER_3LXNPC register. A 32 bit read is performed.
  * If the component is implemented in a smaller width, only the least
  * significant data is read from the register. The most significant data
  * will be read as 0.
  *
- * @param   BaseAddress is the base address of the AXI_DECODER_XNPC device.
+ * @param   BaseAddress is the base address of the AXI_DECODER_3LXNPC device.
  * @param   RegOffset is the register offset from the base to write to.
  *
  * @return  Data is the data from the register.
  *
  * @note
  * C-style signature:
- * 	u32 AXI_DECODER_XNPC_mReadReg(u32 BaseAddress, unsigned RegOffset)
+ * 	u32 AXI_DECODER_3LXNPC_mReadReg(u32 BaseAddress, unsigned RegOffset)
  *
  */
-#define AXI_DECODER_XNPC_mReadReg(BaseAddress, RegOffset) \
+#define AXI_DECODER_3LXNPC_mReadReg(BaseAddress, RegOffset) \
     Xil_In32((BaseAddress) + (RegOffset))
 
 /************************** Function Prototypes ****************************/
@@ -63,7 +63,7 @@
  * If the hardware system is not built correctly, this function may never
  * return to the caller.
  *
- * @param   baseaddr_p is the base address of the AXI_DECODER_XNPC instance to be worked on.
+ * @param   baseaddr_p is the base address of the AXI_DECODER_3LXNPC instance to be worked on.
  *
  * @return
  *
@@ -74,6 +74,6 @@
  * @note    Self test may fail if data memory and device are not on the same bus.
  *
  */
-XStatus AXI_DECODER_XNPC_Reg_SelfTest(void * baseaddr_p);
+XStatus AXI_DECODER_3LXNPC_Reg_SelfTest(void * baseaddr_p);
 
-#endif // AXI_DECODER_XNPC_H
+#endif // AXI_DECODER_3LXNPC_H

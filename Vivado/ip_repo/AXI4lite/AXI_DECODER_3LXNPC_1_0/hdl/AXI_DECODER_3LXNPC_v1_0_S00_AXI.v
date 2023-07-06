@@ -1,8 +1,8 @@
 
 `timescale 1 ns / 1 ps
 
-	module axi_decoder_xnpc_v1_0_S00_AXI #
-	(
+	module AXI_DECODER_3LXNPC_v1_0_S00_AXI #
+(
 		// Users to add parameters here
         parameter [0:0] OPT_READ_SIDEEFFECTS = 1,
 		parameter [0:0]	OPT_SKIDBUFFER = 1'b0,
@@ -329,7 +329,7 @@
         //,
         .clk(pwm_clk)
         ,
-        .reset(~S_AXI_ARESETN)
+        .rst(~S_AXI_ARESETN)
         ,
         .t_short(r0[8:0])
         ,
@@ -561,3 +561,4 @@
 `endif
 // }}}
 endmodule
+
