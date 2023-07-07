@@ -93,10 +93,12 @@ static INLINE void AXI_CPWM8C_mWrite_Period_6(UINTPTR BaseAddress, u16 Value){
 	Xil_Out16((BaseAddress) + (10), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_7(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) & 0xFFFF0000) + (Value);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) & 0xFFFF0000) + (Value);
+	Xil_Out16((BaseAddress) + (12), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Period_8(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) & 0x0000FFFF) + (Value << 16);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG3_OFFSET) & 0x0000FFFF) + (Value << 16);
+	Xil_Out16((BaseAddress) + (14), (u16)(Value));
 }
 
 static INLINE void AXI_CPWM8C_mWrite_InitCarrier_1(UINTPTR BaseAddress, u16 Value){
@@ -125,10 +127,12 @@ static INLINE void AXI_CPWM8C_mWrite_InitCarrier_8(UINTPTR BaseAddress, u16 Valu
 }
 
 static INLINE void AXI_CPWM8C_mWrite_Compare_1(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) & 0xFFFF0000) + (Value);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) & 0xFFFF0000) + (Value);
+	Xil_Out16((BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) + (0), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Compare_2(UINTPTR BaseAddress, u16 Value){
-	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) & 0x0000FFFF) + (Value << 16);
+	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) & 0x0000FFFF) + (Value << 16);
+	Xil_Out16((BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG8_OFFSET) + (2), (u16)(Value));
 }
 static INLINE void AXI_CPWM8C_mWrite_Compare_3(UINTPTR BaseAddress, u16 Value){
 	HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG9_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG9_OFFSET) & 0xFFFF0000) + (Value);

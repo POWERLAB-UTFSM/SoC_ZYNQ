@@ -331,9 +331,9 @@
         ,
         .rst(~S_AXI_ARESETN)
         ,
-        .t_short(r0[8:0])
+        .t_short(r0[7:0])
         ,
-        .t_off_on(r1[23:16])
+        .t_off_on(r1[31:24])
         ,
         .t_on_offV0(r1[23:16])
         ,
