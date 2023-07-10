@@ -200,10 +200,10 @@ module fsm_3lanpc(
                                     end
                                 endcase
                             end
-                            //default: begin // ZU2 -> ZU2
-                            //    S_outcomb='b001_110;
-                            //    finish_transition=0;
-                            //end                      
+                            default: begin // ZU2 -> ZU2
+                                S_outcomb='b010_010;
+                                finish_transition=0;
+                            end                      
                         endcase
                     end
                     else begin 
@@ -252,17 +252,17 @@ module fsm_3lanpc(
                                     end
                                 endcase
                             end
-                            //default: begin // ZU1 -> ZU1
-                            //    S_outcomb='b010_110;
-                            //    finish_transition=0;
-                            //end                      
+                            default: begin // ZU1 -> ZU1
+                                S_outcomb='b010_110;
+                                finish_transition=0;
+                            end                      
                         endcase
                     end
                     else begin
                         S_outcomb='b010_110; 
                     end                  
                 end
-                Z_L1: begin // ZL2 ->
+                Z_L1: begin // ZL1 ->
                     //S_outcomb='b101_001;
                     if(transition) begin
                         case(next_state)
@@ -304,10 +304,10 @@ module fsm_3lanpc(
                                     end
                                 endcase
                             end
-                        //default: begin // ZL2 -> ZL2
-                        //    S_outcomb='b001_110;
-                        //    finish_transition=0;
-                        //end                      
+                        default: begin // ZL2 -> ZL2
+                            S_outcomb='b101_001;
+                            finish_transition=0;
+                        end                      
                         endcase
                     end
                     else begin
@@ -315,7 +315,7 @@ module fsm_3lanpc(
                     end                   
                 end
                 Z_L2: begin // ZL2 ->
-                    //S_outcomb='b101_001;
+                    //S_outcomb='b001_001;
                     if(transition) begin
                         case(next_state)
                             P: begin // ZL2 -> P (type II)
@@ -356,10 +356,10 @@ module fsm_3lanpc(
                                     end
                                 endcase
                             end
-                            //default: begin // ZL2 -> ZL2 
-                            //    S_outcomb='b001_110;
-                            //    finish_transition=0;
-                            //end                      
+                            default: begin // ZL2 -> ZL2 
+                                S_outcomb='b001_001;
+                                finish_transition=0;
+                            end                      
                         endcase
                     end
                     else begin
@@ -535,10 +535,10 @@ module fsm_3lanpc(
                                     end
                                 endcase
                             end
-                            //default: begin // N -> N
-                            //    S_outcomb='b001_110;
-                            //    finish_transition=0;
-                            //end                        
+                            default: begin // N -> N
+                                S_outcomb='b001_110;
+                                finish_transition=0;
+                            end                        
                         endcase
                     end
                     else begin 

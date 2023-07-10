@@ -47,8 +47,8 @@
 
 #include <stdio.h>
 //#include "platform.h"
-//#include "xil_printf.h"
-//#include "xil_io.h"
+#include "xil_printf.h"
+#include "xil_io.h"
 #include "xparameters.h"
 #include "sleep.h"
 //#include "xgpio.h"
@@ -59,14 +59,16 @@
 //#include "xclk_wiz.h"
 #include "xscugic.h"
 #include "xil_types.h"
-#include "xil_mmu.h"
+//#include "xil_mmu.h"
 #include "xdmaps.h"
 
 u16 globalpwm_period=2000;
 u16 globalpwm_compare1=1000;
-u16 globalpwm_compare2=1000;
+u16 globalpwm_compare2=800;
 u8 globaldec3lxnpc_tshort=1;
 u8 globaldec3lxnpc_toffon=10;
+
+u64 pwmclkfreq=50;
 
 AXI_DEC3LXNPC_convtype globaldec3lxnpc_convtype=ANPC;
 AXI_DEC3LXNPC_commtype globaldec3lxnpc_commtype=type_I;
@@ -89,6 +91,12 @@ static inline void pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir);
 XGpioPs_Config *xgpioptr;
 XGpioPs xgpio;
 
+#define XCLK_US_WIZ_RECONFIG_OFFSET	0x0000025C
+
+//XClk_Wiz_Config *xclkwizptr;
+//XClk_Wiz xclkwiz;
+
+int status = XST_SUCCESS;
 float ans=5.2e4;
 float k[4]={5.2e4,2.5,-3.2,1.05e2};
 float con[100];
@@ -103,20 +111,35 @@ int main()
 	//Xil_SetTlbAttributes(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,0xC02);
 	//mtcp(XREG_CP15_INVAL_UTLB_UNLOCKED, 0);
 	//dsb();
-	int status = XST_SUCCESS;
 
+
+	/*initialize XGPIO*/
 	xgpioptr= XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);
 	status=XGpioPs_CfgInitialize(&xgpio,xgpioptr,xgpioptr->BaseAddr);
 	XGpioPs_SetDirection(&xgpio,2,1);
 	XGpioPs_SetOutputEnable(&xgpio,2,1);
 
+	/*initialize XCLK_WIZ*//*
+	xclkwizptr=XClk_Wiz_LookupConfig(XPAR_CLK_WIZ_0_DEVICE_ID);
+	status=XClk_Wiz_CfgInitialize(&xclkwiz, xclkwizptr,xclkwizptr->BaseAddr);
+	XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_WIZ_REG25_OFFSET, 0);
+	//status=XClk_Wiz_WaitForLock(&xclkwiz);
+	status=XClk_Wiz_SetRate(&xclkwiz,pwmclkfreq);
+	XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_US_WIZ_RECONFIG_OFFSET,(XCLK_WIZ_RECONFIG_LOAD | XCLK_WIZ_RECONFIG_SADDR));
+	status=XClk_Wiz_WaitForLock(&xclkwiz);*/
+
 	cpwm8c_init();
 
+	/*Initialize interrupt*/
 	//status = setup_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID,INTC_INTERRUPT_ID_0);
 	status = setup_FIQ_interrupt_system(XPAR_PS7_SCUGIC_0_DEVICE_ID); //initialize fast interrupt (FIQ) on channel "XPAR_PS7_SCUGIC_0_DEVICE_ID"
+
+	/*status check*/
 	if (status != XST_SUCCESS){
 		return XST_FAILURE;
 	}
+
+	//xil_printf("holi :D");
 	while (1){
 	}
 
@@ -170,6 +193,7 @@ void fiq_handler (void *intc_inst_ptr) {
 	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 	AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
 	AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+	//XClk_Wiz_SetRateHz(&xclkwiz,pwmclkfreq);
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 	//AXI_DEC3LXNPC_mWrite_convtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_convtype );
