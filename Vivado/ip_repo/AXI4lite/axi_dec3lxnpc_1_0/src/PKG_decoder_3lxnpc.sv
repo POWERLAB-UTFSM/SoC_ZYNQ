@@ -32,7 +32,7 @@ package PKG_decoder_3lxnpc; // package name
     typedef enum logic [2:0] {P, Z_U2, Z_U1, Z_L1, Z_L2, N} _statesanpc_t;  // State definitions for 3L-ANPC
     typedef enum logic [1:0] {PP, ZZ, NN} _statesnpc_t;  // State definitions for 3L-NPC/NPP
     typedef enum logic [1:0] {type_I, type_IU, type_II, type_III} _commtypes_t;  // commutation type definitions for 3L-ANPC
-    typedef enum logic [1:0] {NPC,NPP,ANPC} _npctypes_t;
+    typedef enum logic [1:0] {NoOut,NPC,NPP,ANPC} _npctypes_t;
 
     //parameter t_short 		= cycles(500,10);
     //parameter t_off_on 		= cycles(500,10);

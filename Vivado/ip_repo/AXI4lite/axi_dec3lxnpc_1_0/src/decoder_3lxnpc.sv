@@ -67,6 +67,9 @@ module decoder_3lxnpc(
     
     always_comb begin
         case(npc_type)
+            NoOut: begin
+                S_out <= 'b000_000;
+            end
             NPC: begin
                 S_out <= S_out_NPC;
             end
@@ -77,7 +80,7 @@ module decoder_3lxnpc(
                 S_out <= S_out_ANPC;
             end
             default: begin
-                S_out <= S_out_NPC;
+                S_out <= 'b000_000;
             end
         endcase
     end
