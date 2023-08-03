@@ -2,7 +2,7 @@
 set /p "id=Enter your .tcl script file: "
 echo OKAY! your project tcl file is %id% , right?
 
-set exebat=\xilinx\Vitis\2022.2\bin\xsct.bat
+set exebat=\xilinx\Vitis\2023.1\bin\xsct.bat
 
 
 if exist  C:%exebat% (
