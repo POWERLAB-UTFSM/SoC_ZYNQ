@@ -51,7 +51,7 @@
 #include "xil_io.h"
 #include "xparameters.h"
 #include "sleep.h"
-//#include "xgpio.h"
+#include "xgpio.h"
 #include "axi_cpwm8c.h"
 #include "axi_dec3lxnpc.h"
 #include "xgpiops.h"
@@ -65,15 +65,16 @@
 u16 globalpwm_period=2000;
 u16 globalpwm_compare1=1000;
 u16 globalpwm_compare2=800;
+
 u8 globaldec3lxnpc_tshort=1;
 u8 globaldec3lxnpc_toffon=10;
-
-u64 pwmclkfreq=50;
-
+u8 globaldec3lxnpc_toffV0on=3;
+u8 globaldec3lxnpc_tonoffV0=7;
+u8 globaldec3lxnpc_toffonI0=10;
 AXI_DEC3LXNPC_convtype globaldec3lxnpc_convtype=ANPC;
 AXI_DEC3LXNPC_commtype globaldec3lxnpc_commtype=type_I;
 
-
+u64 pwmclkfreq=50;
 u8 pwm_intmatrix=255;
 
 #define INTC_INTERRUPT_ID_0 XPAR_FABRIC_AXI_CPWM8C_0_VEC_ID
@@ -141,6 +142,18 @@ int main()
 
 	//xil_printf("holi :D");
 	while (1){
+		AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
+		AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
+		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+
+		AXI_DEC3LXNPC_mWrite_tshort(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_tshort);
+		AXI_DEC3LXNPC_mWrite_toffon(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_toffon);
+		AXI_DEC3LXNPC_mWrite_toffV0on(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_toffV0on);
+		AXI_DEC3LXNPC_mWrite_tonoffV0(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_tonoffV0);
+		AXI_DEC3LXNPC_mWrite_toffonI0(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_toffonI0);
+
+		AXI_DEC3LXNPC_mWrite_convtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_convtype );
+		AXI_DEC3LXNPC_mWrite_commtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_commtype );
 	}
 
 //    cleanup_platform();
@@ -189,10 +202,10 @@ void isr0 (void *intc_inst_ptr) {
 void fiq_handler (void *intc_inst_ptr) {
 	//u32 IntIDFull;
 
-	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
-	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
-	AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
-	AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
+	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
+	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+	//AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
 	//XClk_Wiz_SetRateHz(&xclkwiz,pwmclkfreq);
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);

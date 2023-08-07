@@ -19,7 +19,13 @@
 		// Users to add ports here
         input wire pwm_clk,
         input wire [1:0] pwm_in,
-        output wire [5:0] pwmout_xnpc,
+        output wire S_1,
+        output wire S_2,
+        output wire S_3,
+        output wire S_4,
+        output wire S_5,
+        output wire S_6,
+        //output wire [5:0] pwmout_xnpc,
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -347,7 +353,13 @@
         ,
         .npc_type(r2[1:0])
         ,
-        .S_out(pwmout_xnpc)
+        //.S_out(pwmout_xnpc)
+        .S_1(S_1),
+	    .S_2(S_2),
+	    .S_3(S_3),
+	    .S_4(S_4),
+	    .S_5(S_5),
+	    .S_6(S_6)
    );
 	// User logic ends
 

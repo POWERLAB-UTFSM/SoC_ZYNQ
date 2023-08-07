@@ -17,7 +17,13 @@
 		// Users to add ports here
         input wire pwm_clk,
         input wire [1:0] pwm_in,
-        output wire [5:0] pwmout_xnpc,
+        //output wire [5:0] pwmout_xnpc,
+        output wire S_1,
+        output wire S_2,
+        output wire S_3,
+        output wire S_4,
+        output wire S_5,
+        output wire S_6,
 		// User ports ends
 		// Do not modify the ports beyond this line
 
@@ -52,7 +58,14 @@
 	) axi_dec3lxnpc_v1_0_S00_AXI_inst (
 	    .pwm_clk(pwm_clk),
 	    .pwm_in(pwm_in),
-	    .pwmout_xnpc(pwmout_xnpc),
+	    .S_1(S_1),
+	    .S_2(S_2),
+	    .S_3(S_3),
+	    .S_4(S_4),
+	    .S_5(S_5),
+	    .S_6(S_6),
+	    //.pwmout_xnpc(pwmout_xnpc),
+	    // End of user I/O
 		.S_AXI_ACLK(s00_axi_aclk),
 		.S_AXI_ARESETN(s00_axi_aresetn),
 		.S_AXI_AWADDR(s00_axi_awaddr),

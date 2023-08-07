@@ -27,12 +27,26 @@ module decoder_3lxnpc(
     input   [1:0]   v_lev,
     input   _commtypes_t   comm_type_anpc,
     input _npctypes_t npc_type,
-    output logic [5:0]  S_out
+    //output logic [5:0]  S_out
+    output wire S_1,
+    output wire S_2,
+    output wire S_3,
+    output wire S_4,
+    output wire S_5,
+    output wire S_6
     );
 
     logic [5:0]  S_out_ANPC;
     logic [5:0]  S_out_NPC;
     logic [5:0]  S_out_NPP;
+    logic [5:0]  S_out;
+    
+    assign S_1 = S_out[5];
+    assign S_2 = S_out[4];
+    assign S_3 = S_out[3];
+    assign S_4 = S_out[2];
+    assign S_5 = S_out[1];
+    assign S_6 = S_out[0];
 
     fsm_3lanpc FSM3LANPC(
         .clk(clk),

@@ -3,26 +3,48 @@ setws ./workspace
 cd ./workspace
 
 # automatic/manual
-# puts -nonewline "Automatic or manual names for the project:\n"
-# flush stdout
-# set automanual [gets stdin]
+puts -nonewline "Automatic (Y) or manual (N) names for the project:\n"
+flush stdout
+set strautomanual [gets stdin]
+
+if {[string equal [string tolower $strautomanual] "y"]} {
+    set automanual 1
+    puts $automanual
+    puts "Automatic names \n"
+} else {
+    set automanual 0
+    puts $automanual
+    puts "Manual names \n"
+}
 
 # platform name
-puts -nonewline "Enter a name for your platform name: \n"
-flush stdout
-set platformname [gets stdin]
+if {$automanual == 0} {
+    puts -nonewline "Enter a name for your platform name: \n"
+    flush stdout
+    set platformname [gets stdin]
+} else {
+    set platformname "Pform_Zedboard_test_decxnpc"
+}
 puts "Platform name: $platformname \n"
 
 # hardware location name
-puts -nonewline "Enter the hardware project (.xsa) located in ../../../Vivado/xsa_hardware/: \n"
-flush stdout
-set hardwarename [gets stdin]
+if {$automanual == 0} {
+    puts -nonewline "Enter the hardware project (.xsa) located in ../../../Vivado/xsa_hardware/: \n"
+    flush stdout
+    set hardwarename [gets stdin]
+} else {
+    set hardwarename "HW_Zedboard_test_decxnpc.xsa"
+}
 puts "Hardware name: $hardwarename \n"
 
 # app name
-puts -nonewline "Enter the name of your application: \n"
-flush stdout
-set appname [gets stdin]
+if {$automanual == 0} {
+    puts -nonewline "Enter the name of your application: \n"
+    flush stdout
+    set appname [gets stdin]
+} else {
+    set appname "App_Zedboard_test_decxnpc"
+}
 puts "App name: $appname \n"
 
 # saved directory from local path
