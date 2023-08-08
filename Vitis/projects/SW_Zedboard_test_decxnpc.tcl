@@ -1,9 +1,5 @@
-# workspace folder -> go to the folder
-setws ./workspace
-cd ./workspace
-
 # automatic/manual
-puts -nonewline "Automatic (Y) or manual (N) names for the project:\n"
+puts -nonewline "Automatic (Y) or manual (N) script for the project?:\n"
 flush stdout
 set strautomanual [gets stdin]
 
@@ -47,22 +43,53 @@ if {$automanual == 0} {
 }
 puts "App name: $appname \n"
 
-# saved directory from local path
+# included source name
+set includeSource "helloworld.c"
+puts "Source name: $includeSource \n"
+
+# workspace folder -> go to the folder
+setws ./workspace
+cd ./workspace
+
+# saved directories from local path
 set savedDir [pwd]
 set savedDir [file dirname $savedDir]
-puts $savedDir
+set savedDir [file dirname $savedDir]
+puts "Local directory: $savedDir \n"
+set stringSource ${savedDir}/src/$includeSource
+puts "Source path: $stringSource \n"
+set hardwarepath [pwd]
+set hardwarepath [file dirname $hardwarepath]
+set hardwarepath [file dirname $hardwarepath]
+set hardwarepath [file dirname $hardwarepath]
+set hardwarepath $hardwarepath/Vivado/xsa_hardware
+puts "Hardware path: $hardwarepath  \n"
+
+#delete directories with the same project name
+file delete -force $savedDir/projects/workspace
+
+# workspace folder -> go to the folder
+setws ./workspace
+cd ./workspace
 
 #copy hardware
-file copy -force ../../../Vivado/xsa_hardware/$hardwarename ./
+file copy -force $hardwarepath/$hardwarename ./
 
 # create standalone platform from hardware in core 0
 platform create -name $platformname -hw $hardwarename -os standalone -proc ps7_cortexa9_0 
+platform generate
 
 # create new app in baremetal domain 
-app create -name $appname -platform $platformname -os baremetal -template {Empty Application}
+app create -name $appname -platform $platformname -os standalone -template {Empty Application}
+
+# import sources
+importsources -name $appname -path $stringSource -soft-link -linker-script
+
+# configure app to include the "m" (math.h) library
+app config -name $appname -add libraries {m}
 
 # compile platform
-platform generate
+# platform generate
 
 # # create platform
 # platform create -name $platformname -hw $hardwarename -os linux -proc ps7_cortexa9 

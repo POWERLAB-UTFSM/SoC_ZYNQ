@@ -22,9 +22,10 @@
 /**/
 typedef enum
 {
-   NPC = 0,
-   NPP = 1,
-   ANPC = 2,
+   NoConv = 0,
+   NPC = 1,
+   NPP = 2,
+   ANPC = 3,
 } AXI_DEC3LXNPC_convtype;
 
 typedef enum

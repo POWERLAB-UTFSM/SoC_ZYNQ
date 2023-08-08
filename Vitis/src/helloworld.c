@@ -45,6 +45,7 @@
  *   ps7_uart    115200 (configured by bootrom/bsp)
  */
 
+#include <math.h>
 #include <stdio.h>
 //#include "platform.h"
 #include "xil_printf.h"
@@ -63,14 +64,24 @@
 #include "xdmaps.h"
 
 u16 globalpwm_period=2000;
-u16 globalpwm_compare1=1000;
-u16 globalpwm_compare2=800;
+u16 globalpwm_compare1=0;
+u16 globalpwm_compare2=0;
+u16 globalpwm_compare1_off=0;
+u16 globalpwm_compare2_off=0;
+u16 globalpwm_compare1_amp=0;
+u16 globalpwm_compare2_amp=0;
+
+double theta_sin=0;
+double pwm_time=0;
 
 u8 globaldec3lxnpc_tshort=1;
-u8 globaldec3lxnpc_toffon=10;
-u8 globaldec3lxnpc_toffV0on=3;
-u8 globaldec3lxnpc_tonoffV0=7;
-u8 globaldec3lxnpc_toffonI0=10;
+u8 globaldec3lxnpc_toffon=20;
+u8 globaldec3lxnpc_toffV0on=30;
+u8 globaldec3lxnpc_tonoffV0=25;
+u8 globaldec3lxnpc_toffonI0=15;
+
+u32 globalxgpio_pinenable=0;
+
 AXI_DEC3LXNPC_convtype globaldec3lxnpc_convtype=ANPC;
 AXI_DEC3LXNPC_commtype globaldec3lxnpc_commtype=type_I;
 
@@ -89,8 +100,10 @@ void cpwm8c_init();
 int setup_FIQ_interrupt_system(u16 DeviceId);
 static inline void pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir);
 
-XGpioPs_Config *xgpioptr;
-XGpioPs xgpio;
+XGpioPs_Config *xgpiopsptr;
+XGpioPs xgpiops;
+XGpio_Config *xgpioptr;
+XGpio xgpio;
 
 #define XCLK_US_WIZ_RECONFIG_OFFSET	0x0000025C
 
@@ -114,11 +127,19 @@ int main()
 	//dsb();
 
 
-	/*initialize XGPIO*/
-	xgpioptr= XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);
-	status=XGpioPs_CfgInitialize(&xgpio,xgpioptr,xgpioptr->BaseAddr);
-	XGpioPs_SetDirection(&xgpio,2,1);
-	XGpioPs_SetOutputEnable(&xgpio,2,1);
+	/*initialize PS XGPIO*/
+	xgpiopsptr= XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);
+	status=XGpioPs_CfgInitialize(&xgpiops,xgpiopsptr,xgpiopsptr->BaseAddr);
+	XGpioPs_SetDirection(&xgpiops,2,1);
+	XGpioPs_SetOutputEnable(&xgpiops,2,1);
+
+	/*initialize AXI XGPIO*/
+	xgpioptr=XGpio_LookupConfig(XPAR_AXI_GPIO_0_DEVICE_ID);
+	status=XGpio_CfgInitialize(&xgpio,xgpioptr,xgpioptr->BaseAddress);
+	XGpio_SetDataDirection(&xgpio,1,0b11);
+	/*XGpio_SetDataDirection(&xgpio,2,0);*/
+	XGpio_DiscreteWrite(&xgpio,1,0);
+	/*XGpio_DiscreteWrite(&xgpio,2,0);*/
 
 	/*initialize XCLK_WIZ*//*
 	xclkwizptr=XClk_Wiz_LookupConfig(XPAR_CLK_WIZ_0_DEVICE_ID);
@@ -154,6 +175,9 @@ int main()
 
 		AXI_DEC3LXNPC_mWrite_convtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_convtype );
 		AXI_DEC3LXNPC_mWrite_commtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_commtype );
+
+		XGpio_DiscreteWrite(&xgpio,1,globalxgpio_pinenable);
+		//XGpio_DiscreteWrite(&xgpio,2,globalxgpio_pinenable);
 	}
 
 //    cleanup_platform();
@@ -194,13 +218,20 @@ void isr0 (void *intc_inst_ptr) {
 	//-------------------------------------------------------------
 	//AXI4LITETEST_mWriteReg(XPAR_AXI4LITETEST_0_S_AXI_BASEADDR, AXI4LITETEST_S_AXI_SLV_REG6_OFFSET,2);
 	//AXI_CPWM8C_IntAck(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR);
-	XGpioPs_WritePin(&xgpio, 54, 1);
-	XGpioPs_WritePin(&xgpio, 54, 0);
+	XGpioPs_WritePin(&xgpiops, 54, 1);
+	XGpioPs_WritePin(&xgpiops, 54, 0);
 
 }
 
 void fiq_handler (void *intc_inst_ptr) {
 	//u32 IntIDFull;
+
+	pwm_time=0.02;
+	theta_sin=theta_sin+pwm_time;
+	if(theta_sin>M_PI*4){
+		theta_sin=theta_sin-M_PI*4;
+	}
+	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u32)(globalpwm_compare1_amp*sinf(theta_sin)+globalpwm_compare1_off));
 
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
@@ -232,9 +263,7 @@ void fiq_handler (void *intc_inst_ptr) {
 	//-------------------------------------------------------------
 	//AXI4LITETEST_mWriteReg(XPAR_AXI4LITETEST_0_S_AXI_BASEADDR, AXI4LITETEST_S_AXI_SLV_REG6_OFFSET,2);
 	//AXI_CPWM8C_IntAck(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR);
-	//XGpioPs_WritePin(&xgpio, 54, 1);
-	//XGpioPs_WritePin(&xgpio, 54, 0);
-	pwm_wireack(&xgpio,54);
+	pwm_wireack(&xgpiops,54);
 }
 
 // sets up the interrupt system and enables interrupts for IRQ_F2P[1:0]
@@ -319,7 +348,7 @@ void cpwm8c_init()
 {
 	u16 pwm_period=2000;
 	u16 pwm_init=0;
-	u16 pwm_comp1=1000;
+	u16 pwm_comp1=0;
 	u8 pwm_eventcount=0;
 	u8 pwm_dtimeA=0;
 	u8 pwm_dtimeB=0;
