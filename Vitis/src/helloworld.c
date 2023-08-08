@@ -68,17 +68,18 @@ u16 globalpwm_compare1=0;
 u16 globalpwm_compare2=0;
 u16 globalpwm_compare1_off=0;
 u16 globalpwm_compare2_off=0;
-u16 globalpwm_compare1_amp=0;
-u16 globalpwm_compare2_amp=0;
 
-double theta_sin=0;
-double pwm_time=0;
+
+float theta_sin=0;
+float pwm_time=0;
+float osc_sin=0;
+float m_A=0;
 
 u8 globaldec3lxnpc_tshort=1;
-u8 globaldec3lxnpc_toffon=20;
-u8 globaldec3lxnpc_toffV0on=30;
-u8 globaldec3lxnpc_tonoffV0=25;
-u8 globaldec3lxnpc_toffonI0=15;
+u8 globaldec3lxnpc_toffon=40;
+u8 globaldec3lxnpc_toffV0on=50;
+u8 globaldec3lxnpc_tonoffV0=35;
+u8 globaldec3lxnpc_toffonI0=45;
 
 u32 globalxgpio_pinenable=0;
 
@@ -231,8 +232,11 @@ void fiq_handler (void *intc_inst_ptr) {
 	if(theta_sin>M_PI*4){
 		theta_sin=theta_sin-M_PI*4;
 	}
-	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u32)(globalpwm_compare1_amp*sinf(theta_sin)+globalpwm_compare1_off));
 
+	osc_sin=globalpwm_period*m_A*sinf(theta_sin);
+
+	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u16)(osc_sin)+globalpwm_compare1_off);
+	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u16)(osc_sin)+globalpwm_period-globalpwm_compare2_off);
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
