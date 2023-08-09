@@ -57,7 +57,7 @@
 #include "axi_dec3lxnpc.h"
 #include "xgpiops.h"
 //#include "axi4fulltest.h"
-//#include "xclk_wiz.h"
+#include "xclk_wiz.h"
 #include "xscugic.h"
 #include "xil_types.h"
 //#include "xil_mmu.h"
@@ -70,10 +70,16 @@ u16 globalpwm_compare1_off=0;
 u16 globalpwm_compare2_off=0;
 
 
+float time_sin=0;
 float theta_sin=0;
 float pwm_time=0;
 float osc_sin=0;
+float ref_sinpos=0;
+float ref_sinneg=0;
 float m_A=0;
+float f_1=50;
+
+#define M_2PI 6.283185307179586476925286
 
 u8 globaldec3lxnpc_tshort=1;
 u8 globaldec3lxnpc_toffon=40;
@@ -108,8 +114,8 @@ XGpio xgpio;
 
 #define XCLK_US_WIZ_RECONFIG_OFFSET	0x0000025C
 
-//XClk_Wiz_Config *xclkwizptr;
-//XClk_Wiz xclkwiz;
+XClk_Wiz_Config *xclkwizptr;
+XClk_Wiz xclkwiz;
 
 int status = XST_SUCCESS;
 float ans=5.2e4;
@@ -142,14 +148,14 @@ int main()
 	XGpio_DiscreteWrite(&xgpio,1,0);
 	/*XGpio_DiscreteWrite(&xgpio,2,0);*/
 
-	/*initialize XCLK_WIZ*//*
+	/*initialize XCLK_WIZ*/
 	xclkwizptr=XClk_Wiz_LookupConfig(XPAR_CLK_WIZ_0_DEVICE_ID);
 	status=XClk_Wiz_CfgInitialize(&xclkwiz, xclkwizptr,xclkwizptr->BaseAddr);
 	XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_WIZ_REG25_OFFSET, 0);
 	//status=XClk_Wiz_WaitForLock(&xclkwiz);
 	status=XClk_Wiz_SetRate(&xclkwiz,pwmclkfreq);
 	XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_US_WIZ_RECONFIG_OFFSET,(XCLK_WIZ_RECONFIG_LOAD | XCLK_WIZ_RECONFIG_SADDR));
-	status=XClk_Wiz_WaitForLock(&xclkwiz);*/
+	status=XClk_Wiz_WaitForLock(&xclkwiz);
 
 	cpwm8c_init();
 
@@ -164,8 +170,8 @@ int main()
 
 	//xil_printf("holi :D");
 	while (1){
-		AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
-		AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
+		//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
+		//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
 
 		AXI_DEC3LXNPC_mWrite_tshort(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_tshort);
@@ -178,6 +184,10 @@ int main()
 		AXI_DEC3LXNPC_mWrite_commtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_commtype );
 
 		XGpio_DiscreteWrite(&xgpio,1,globalxgpio_pinenable);
+
+		status=XClk_Wiz_SetRate(&xclkwiz,pwmclkfreq);
+		XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_US_WIZ_RECONFIG_OFFSET,(XCLK_WIZ_RECONFIG_LOAD | XCLK_WIZ_RECONFIG_SADDR));
+		status=XClk_Wiz_WaitForLock(&xclkwiz);
 		//XGpio_DiscreteWrite(&xgpio,2,globalxgpio_pinenable);
 	}
 
@@ -227,16 +237,26 @@ void isr0 (void *intc_inst_ptr) {
 void fiq_handler (void *intc_inst_ptr) {
 	//u32 IntIDFull;
 
-	pwm_time=0.02;
-	theta_sin=theta_sin+pwm_time;
-	if(theta_sin>M_PI*4){
-		theta_sin=theta_sin-M_PI*4;
+	// PWM_period [s] = PWM_count*(1/PWM_clock [MHz] )*2   ----triangular wave
+
+	pwm_time=2*(float)(globalpwm_period)/((float)(pwmclkfreq)*1E6);
+
+	theta_sin=2*M_PI*f_1*time_sin;
+
+	if(theta_sin>M_2PI){
+		theta_sin=theta_sin-M_2PI;
 	}
 
-	osc_sin=globalpwm_period*m_A*sinf(theta_sin);
+	osc_sin=m_A*sinf(theta_sin);
+	ref_sinpos=(float)(globalpwm_period)*(osc_sin);
+	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1);
 
-	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u16)(osc_sin)+globalpwm_compare1_off);
-	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,(u16)(osc_sin)+globalpwm_period-globalpwm_compare2_off);
+	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinpos);
+	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinneg);
+
+	//t[k+1]=t[k]+PWM_period
+	time_sin=time_sin+pwm_time;
+
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 	//AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
@@ -359,8 +379,10 @@ void cpwm8c_init()
 	AXI_CPWM8C_count_mode pwm_countmode=COUNT_UP_DOWN;
 	AXI_CPWM8C_mask_mode pwm_maskmode=MIN_MASK;
 	AXI_CPWM8C_onoff pwm_dtonoff=REG_OFF;
-	AXI_CPWM8C_logic pwm_logicA=LOGIC_POS;
-	AXI_CPWM8C_logic pwm_logicB=LOGIC_POS;
+	AXI_CPWM8C_logic pwm_logicA1=LOGIC_NEG;
+	AXI_CPWM8C_logic pwm_logicB1=LOGIC_NEG;
+	AXI_CPWM8C_logic pwm_logicA2=LOGIC_POS;
+	AXI_CPWM8C_logic pwm_logicB2=LOGIC_POS;
 	AXI_CPWM8C_carrsel pwm_carrsel=CARR_MASTER1;
 	AXI_CPWM8C_onoff pwm_onoff=REG_ON;
 	AXI_CPWM8C_onoff pwm_carronoff=REG_ON;
@@ -376,6 +398,8 @@ void cpwm8c_init()
 	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_comp1);
 	AXI_CPWM8C_mWrite_DeadTimeA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
 	AXI_CPWM8C_mWrite_DeadTimeB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
+	AXI_CPWM8C_mWrite_DeadTimeA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeA);
+	AXI_CPWM8C_mWrite_DeadTimeB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtimeB);
 	AXI_CPWM8C_mWrite_EventCount_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
 	AXI_CPWM8C_mWrite_EventCount_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_eventcount);
 	AXI_CPWM8C_mWrite_InterruptMatrix(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_intmatrix);
@@ -384,8 +408,11 @@ void cpwm8c_init()
 	AXI_CPWM8C_mWrite_MaskMode_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
 	AXI_CPWM8C_mWrite_MaskMode_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_maskmode);
 	AXI_CPWM8C_mWrite_DTimeOnOff_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
-	AXI_CPWM8C_mWrite_LogicA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA);
-	AXI_CPWM8C_mWrite_LogicB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB);
+	AXI_CPWM8C_mWrite_DTimeOnOff_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_dtonoff);
+	AXI_CPWM8C_mWrite_LogicA_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA1);
+	AXI_CPWM8C_mWrite_LogicB_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB1);
+	AXI_CPWM8C_mWrite_LogicA_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicA2);
+	AXI_CPWM8C_mWrite_LogicB_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_logicB2);
 	AXI_CPWM8C_mWrite_CarrSel_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
 	AXI_CPWM8C_mWrite_CarrSel_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carrsel);
 	AXI_CPWM8C_mWrite_CarrOnOff_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,pwm_carronoff);
