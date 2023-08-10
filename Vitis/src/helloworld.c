@@ -81,7 +81,7 @@ float f_1=50;
 
 #define M_2PI 6.283185307179586476925286
 
-u8 globaldec3lxnpc_tshort=1;
+u8 globaldec3lxnpc_tshort=5;
 u8 globaldec3lxnpc_toffon=40;
 u8 globaldec3lxnpc_toffV0on=50;
 u8 globaldec3lxnpc_tonoffV0=35;
@@ -184,11 +184,11 @@ int main()
 		AXI_DEC3LXNPC_mWrite_commtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_commtype );
 
 		XGpio_DiscreteWrite(&xgpio,1,globalxgpio_pinenable);
-
+/*
 		status=XClk_Wiz_SetRate(&xclkwiz,pwmclkfreq);
 		XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_US_WIZ_RECONFIG_OFFSET,(XCLK_WIZ_RECONFIG_LOAD | XCLK_WIZ_RECONFIG_SADDR));
 		status=XClk_Wiz_WaitForLock(&xclkwiz);
-		//XGpio_DiscreteWrite(&xgpio,2,globalxgpio_pinenable);
+		//XGpio_DiscreteWrite(&xgpio,2,globalxgpio_pinenable);*/
 	}
 
 //    cleanup_platform();
