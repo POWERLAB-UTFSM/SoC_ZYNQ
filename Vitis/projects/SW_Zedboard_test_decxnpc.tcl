@@ -43,10 +43,6 @@ if {$automanual == 0} {
 }
 puts "App name: $appname \n"
 
-# included source name
-set includeSource "helloworld.c"
-puts "Source name: $includeSource \n"
-
 # workspace folder -> go to the folder
 setws ./workspace
 cd ./workspace
@@ -56,8 +52,6 @@ set savedDir [pwd]
 set savedDir [file dirname $savedDir]
 set savedDir [file dirname $savedDir]
 puts "Local directory: $savedDir \n"
-set stringSource ${savedDir}/src/$includeSource
-puts "Source path: $stringSource \n"
 set hardwarepath [pwd]
 set hardwarepath [file dirname $hardwarepath]
 set hardwarepath [file dirname $hardwarepath]
@@ -81,6 +75,18 @@ platform generate
 
 # create new app in baremetal domain 
 app create -name $appname -platform $platformname -os standalone -template {Empty Application}
+
+# included source name
+if {$automanual == 0} {
+    puts -nonewline "Enter the name of your source file: \n"
+    flush stdout
+    set includeSource [gets stdin]
+} else {
+    set includeSource "helloworld.c"
+}
+puts "\n Source name: $includeSource \n"
+set stringSource ${savedDir}/src/$includeSource
+puts "Source path: $stringSource \n"
 
 # import sources
 importsources -name $appname -path $stringSource -soft-link -linker-script
