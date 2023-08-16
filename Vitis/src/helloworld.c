@@ -93,7 +93,7 @@ AXI_DEC3LXNPC_convtype globaldec3lxnpc_convtype=ANPC;
 AXI_DEC3LXNPC_commtype globaldec3lxnpc_commtype=type_I;
 
 u64 pwmclkfreq=50;
-u8 pwm_intmatrix=255;
+u8 pwm_intmatrix=1;
 
 #define INTC_INTERRUPT_ID_0 XPAR_FABRIC_AXI_CPWM8C_0_VEC_ID
 // instance of interrupt controller
@@ -173,6 +173,7 @@ int main()
 		//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 		//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
 		AXI_CPWM8C_mWrite_Period_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
+		//AXI_CPWM8C_mWrite_Period_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_period);
 
 		AXI_DEC3LXNPC_mWrite_tshort(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_tshort);
 		AXI_DEC3LXNPC_mWrite_toffon(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR,globaldec3lxnpc_toffon);
@@ -241,12 +242,6 @@ void fiq_handler (void *intc_inst_ptr) {
 
 	pwm_time=2*(float)(globalpwm_period)/((float)(pwmclkfreq)*1E6);
 
-	theta_sin=2*M_PI*f_1*time_sin;
-
-	if(theta_sin>M_2PI){
-		theta_sin=theta_sin-M_2PI;
-	}
-
 	osc_sin=m_A*sinf(theta_sin);
 	ref_sinpos=(float)(globalpwm_period)*(osc_sin);
 	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1);
@@ -254,8 +249,11 @@ void fiq_handler (void *intc_inst_ptr) {
 	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinpos);
 	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinneg);
 
-	//t[k+1]=t[k]+PWM_period
-	time_sin=time_sin+pwm_time;
+	theta_sin=theta_sin+2*M_PI*f_1*pwm_time;
+
+	if(theta_sin>M_2PI){
+		theta_sin=theta_sin-M_2PI;
+	}
 
 	//AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare1);
 	//AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,globalpwm_compare2);
