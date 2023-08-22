@@ -26,14 +26,14 @@ set_property PACKAGE_PIN V8 [get_ports {JB10}];  # "JB10"
 # ----------------------------------------------------------------------------
 # JC Pmod - Bank 13
 # ---------------------------------------------------------------------------- 
-#set_property PACKAGE_PIN AB6 [get_ports {JC1_N}];  # "JC1_N"
-#set_property PACKAGE_PIN AB7 [get_ports {JC1_P}];  # "JC1_P"
-#set_property PACKAGE_PIN AA4 [get_ports {JC2_N}];  # "JC2_N"
-#set_property PACKAGE_PIN Y4  [get_ports {JC2_P}];  # "JC2_P"
-#set_property PACKAGE_PIN T6  [get_ports {JC3_N}];  # "JC3_N"
-#set_property PACKAGE_PIN R6  [get_ports {JC3_P}];  # "JC3_P"
-#set_property PACKAGE_PIN U4  [get_ports {JC4_N}];  # "JC4_N"
-#set_property PACKAGE_PIN T4  [get_ports {JC4_P}];  # "JC4_P"
+set_property PACKAGE_PIN AB6 [get_ports {JC1_N}];  # "JC1_N"
+set_property PACKAGE_PIN AB7 [get_ports {JC1_P}];  # "JC1_P"
+set_property PACKAGE_PIN AA4 [get_ports {JC2_N}];  # "JC2_N"
+set_property PACKAGE_PIN Y4  [get_ports {JC2_P}];  # "JC2_P"
+set_property PACKAGE_PIN T6  [get_ports {JC3_N}];  # "JC3_N"
+set_property PACKAGE_PIN R6  [get_ports {JC3_P}];  # "JC3_P"
+set_property PACKAGE_PIN U4  [get_ports {JC4_N}];  # "JC4_N"
+set_property PACKAGE_PIN T4  [get_ports {JC4_P}];  # "JC4_P"
 
 # ----------------------------------------------------------------------------
 # JD Pmod - Bank 13
