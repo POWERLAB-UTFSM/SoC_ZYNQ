@@ -1,5 +1,7 @@
 # Administración de proyectos en Vitis IDE
 
+
+
 # Instalar Petalinux en WSL (Windows Subsystem for Linux)
 
 1. Habilitar WSL (más detalles ver [aquí](https://learn.microsoft.com/en-us/windows/wsl/install-manual#step-3---enable-virtual-machine-feature))

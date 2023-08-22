@@ -3,7 +3,7 @@
 
 ## Cómo crear periférico AXI4:
 
-1. Crear un nuevo proyecto de Vivado y seleccionar la placa xc7z010clg400-1.
+1. Crear un nuevo proyecto de Vivado y seleccionar la plataforma o chip desde la que se va a desarrollar.
 2. Haga clic en "tools" en la barra superior y seleccione "Create and Package New IP".
 3. Seleccione "Create New AXI4 Peripheral" y haga clic en "Next".
 4. Asigne un nombre a su periférico, una descripción y la ubicación donde guardara el módulo IP.
@@ -15,3 +15,5 @@
 
 1. Abrir proyecto en Vivado
 2. Ir a "Tools -> Settings -> Project Settings -> IP -> Repository" e incluir esta carpeta, o las IPs deseadas.
+
+## Descripción de IPs
