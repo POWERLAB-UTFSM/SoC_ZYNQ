@@ -76,7 +76,7 @@ float pwm_time=0;
 float osc_sin=0;
 float ref_sinpos=0;
 float ref_sinneg=0;
-float m_A=0;
+float m_A=0.0,m_A_masked=0.0;
 float f_1=50;
 
 #define M_2PI 6.283185307179586476925286
@@ -93,7 +93,7 @@ AXI_DEC3LXNPC_convtype globaldec3lxnpc_convtype=ANPC;
 AXI_DEC3LXNPC_commtype globaldec3lxnpc_commtype=type_I;
 
 u64 pwmclkfreq=50;
-u8 pwm_intmatrix=1;
+
 
 #define INTC_INTERRUPT_ID_0 XPAR_FABRIC_AXI_CPWM8C_0_VEC_ID
 // instance of interrupt controller
@@ -185,6 +185,15 @@ int main()
 		AXI_DEC3LXNPC_mWrite_commtype(XPAR_AXI_DEC3LXNPC_0_S00_AXI_BASEADDR, globaldec3lxnpc_commtype );
 
 		XGpio_DiscreteWrite(&xgpio,1,globalxgpio_pinenable);
+
+		if(m_A>1.0){
+			m_A_masked=1.0;
+		} else if (m_A<0.0){
+			m_A_masked=0.0;
+		}
+		else {
+			m_A_masked=m_A;
+		}
 /*
 		status=XClk_Wiz_SetRate(&xclkwiz,pwmclkfreq);
 		XClk_Wiz_WriteReg(xclkwizptr->BaseAddr, XCLK_US_WIZ_RECONFIG_OFFSET,(XCLK_WIZ_RECONFIG_LOAD | XCLK_WIZ_RECONFIG_SADDR));
@@ -239,18 +248,23 @@ void fiq_handler (void *intc_inst_ptr) {
 	//u32 IntIDFull;
 
 	// PWM_period [s] = PWM_count*(1/PWM_clock [MHz] )*2   ----triangular wave
-
 	pwm_time=2*(float)(globalpwm_period)/((float)(pwmclkfreq)*1E6);
 
-	osc_sin=m_A*sinf(theta_sin);
-	ref_sinpos=(float)(globalpwm_period)*(osc_sin);
-	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1);
+	//sine wave generator with modulation index
+	osc_sin=m_A_masked*sinf(theta_sin);
 
+	//LSPWM reference de-normalizer (two references)
+	ref_sinpos=(float)(globalpwm_period)*(osc_sin)+globalpwm_compare1;
+	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1)-globalpwm_compare2;
+
+	//reference compare write to AXI_CPWM8C
 	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinpos);
 	AXI_CPWM8C_mWrite_Compare_1(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinneg);
 
+	//sine angle update generator
 	theta_sin=theta_sin+2*M_PI*f_1*pwm_time;
 
+	//sine angle update reset
 	if(theta_sin>M_2PI){
 		theta_sin=theta_sin-M_2PI;
 	}
@@ -374,6 +388,8 @@ void cpwm8c_init()
 	u8 pwm_eventcount=0;
 	u8 pwm_dtimeA=0;
 	u8 pwm_dtimeB=0;
+	u8 pwm_intmatrix=1;
+
 	AXI_CPWM8C_count_mode pwm_countmode=COUNT_UP_DOWN;
 	AXI_CPWM8C_mask_mode pwm_maskmode=MIN_MASK;
 	AXI_CPWM8C_onoff pwm_dtonoff=REG_OFF;
