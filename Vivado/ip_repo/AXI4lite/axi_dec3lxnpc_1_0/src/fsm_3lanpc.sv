@@ -482,12 +482,12 @@ module fsm_3lanpc(
                                 case(delay_timer)
                                     0: begin // S_outcomb[3] = 0
                                         S_outcomb='b000_110;
-                                        MAX_COUNTER=t_short;
+                                        MAX_COUNTER=t_off_on;
                                         finish_transition=0;
                                     end
                                     1: begin // S_outcomb[2] = 1
                                         S_outcomb='b010_110;
-                                        MAX_COUNTER=t_off_on;
+                                        MAX_COUNTER=t_short;
                                         finish_transition=(counter==(MAX_COUNTER-1)) ? 1 : 0;
                                     end
                                 endcase
@@ -520,12 +520,12 @@ module fsm_3lanpc(
                                 case(delay_timer)
                                     0: begin // S_outcomb[5] = 0
                                         S_outcomb='b001_100;
-                                        MAX_COUNTER=t_off_on;
+                                        MAX_COUNTER=t_short;
                                         finish_transition=0;
                                     end
                                     1: begin // S_outcomb[4] = 0
                                         S_outcomb='b001_000;
-                                        MAX_COUNTER=t_short;
+                                        MAX_COUNTER=t_off_on;
                                         finish_transition=0;
                                     end
                                     2: begin // S_outcomb[6] = 1

@@ -133,7 +133,6 @@ int main()
 	//mtcp(XREG_CP15_INVAL_UTLB_UNLOCKED, 0);
 	//dsb();
 
-
 	/*initialize PS XGPIO*/
 	xgpiopsptr= XGpioPs_LookupConfig(XPAR_XGPIOPS_0_DEVICE_ID);
 	status=XGpioPs_CfgInitialize(&xgpiops,xgpiopsptr,xgpiopsptr->BaseAddr);
@@ -255,7 +254,7 @@ void fiq_handler (void *intc_inst_ptr) {
 
 	//LSPWM reference de-normalizer (two references)
 	ref_sinpos=(float)(globalpwm_period)*(osc_sin)+globalpwm_compare1;
-	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1)-globalpwm_compare2;
+	ref_sinneg=(float)(globalpwm_period)*(osc_sin+1)-globalpwm_compare2+1;
 
 	//reference compare write to AXI_CPWM8C
 	AXI_CPWM8C_mWrite_Compare_2(XPAR_AXI_CPWM8C_0_S_AXI_BASEADDR,ref_sinpos);
