@@ -61,7 +61,7 @@ module TESTBENCH_fsm_3lanpc();
 
         repeat(100) @(posedge clk);
         v_lev  <= 'b01;
-        repeat(50) @(posedge clk);
+        repeat(3) @(posedge clk);
         v_lev  <= 'b00 ;
         repeat(50) @(posedge clk);
         v_lev  <= 'b01 ;

@@ -88,12 +88,22 @@ module fsm_3lanpc(
             S_out <= S_outcomb;
             counter     <= (transition && (counter < MAX_COUNTER - 1))? counter + 'd1: 'd0;
             delay_timer <= (transition && counter == MAX_COUNTER - 1)? delay_timer + 'd1: (transition)? delay_timer:   'd0;
-            transition  <= ((v_lev != v_lev_past || state != next_state) && !finish_transition)? 'd1: 'd0;
-            old_state   <= (state!=next_state)? state: old_state;
+            //transition  <= ((state != next_state) && !finish_transition)? 'd1: 'd0;
             
-            if(finish_transition==1) begin
-                state       <= next_state;
+            if(state!=next_state) begin
+                transition<=1;
             end
+            
+            if(finish_transition) begin
+                transition<=0;
+                old_state <=state;
+            end
+            
+            //old_state   <= (state!=next_state)? state: old_state;
+            
+            //if(finish_transition==1) begin
+                state       <= next_state;
+            //end
             
             
         end 
@@ -103,10 +113,10 @@ module fsm_3lanpc(
     // COMBINATIONAL LOGIC FOR STATES
     always_comb begin
         next_state = state;
-        //if(change) begin
+        //if(transition==0) begin
             case(state)
                 P   :   begin
-                            if(v_lev == 'd0) begin
+                            if(v_lev == 'd0 && transition=='d0) begin
                                 case(comm_type)
                                 type_I: next_state = Z_U2;
                                 type_II: next_state = Z_L2;
@@ -116,31 +126,31 @@ module fsm_3lanpc(
                             end
                         end
                 Z_U2:   begin
-                            if(v_lev == 'd1) 
+                            if(v_lev == 'd1 && transition=='d0) 
                                 next_state = P;
-                            else if(v_lev == 'd2)
+                            else if(v_lev == 'd2 && transition=='d0)
                                 next_state = N;              
                         end
                 Z_U1:   begin     
-                            if(v_lev == 'd1)
+                            if(v_lev == 'd1 && transition=='d0)
                                 next_state = P;
-                            else if(v_lev == 'd2)
+                            else if(v_lev == 'd2 && transition=='d0)
                                 next_state = N;             
                         end
                 Z_L1:   begin   
-                            if(v_lev == 'd1)
+                            if(v_lev == 'd1 && transition=='d0)
                                 next_state = P;
-                            else if(v_lev == 'd2)
+                            else if(v_lev == 'd2 && transition=='d0)
                                 next_state = N;               
                         end
                 Z_L2:   begin     
-                            if(v_lev == 'd1)
+                            if(v_lev == 'd1 && transition=='d0)
                                 next_state = P;
-                            else if(v_lev == 'd2)
+                            else if(v_lev == 'd2 && transition=='d0)
                                 next_state = N;             
                         end
                 N   :   begin   
-                            if(v_lev == 'd0) begin
+                            if(v_lev == 'd0 && transition=='d0) begin
                                 case(comm_type)
                                 type_I: next_state = Z_L2;
                                 type_II: next_state = Z_U2;
@@ -150,6 +160,7 @@ module fsm_3lanpc(
                             end               
                         end
             endcase
+        //end
     end
     
     // Logic for transitions
@@ -157,7 +168,7 @@ module fsm_3lanpc(
         finish_transition=0;
         MAX_COUNTER='d255;
         //if(transition) begin
-            case(state)
+            case(old_state)
                 Z_U2: begin // ZU2 ->
                     //S_outcomb='b010_010;
                     if(transition) begin
