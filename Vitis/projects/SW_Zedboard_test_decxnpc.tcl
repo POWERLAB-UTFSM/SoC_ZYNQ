@@ -82,10 +82,25 @@ if {$automanual == 0} {
     flush stdout
     set includeSource [gets stdin]
 } else {
-    set includeSource "helloworld.c"
+    set includeSource "main.c"
 }
 puts "\n Source name: $includeSource \n"
-set stringSource ${savedDir}/src/$includeSource
+set stringSource ${savedDir}/src/SW_Zedboard_test_decxnpc/$includeSource
+puts "Source path: $stringSource \n"
+
+# import sources
+importsources -name $appname -path $stringSource -soft-link -linker-script
+
+# included source name
+if {$automanual == 0} {
+    puts -nonewline "Enter the name of your source file: \n"
+    flush stdout
+    set includeSource [gets stdin]
+} else {
+    set includeSource "hw_zedboard_test_decxnpc.c"
+}
+puts "\n Source name: $includeSource \n"
+set stringSource ${savedDir}/src/SW_Zedboard_test_decxnpc/$includeSource
 puts "Source path: $stringSource \n"
 
 # import sources

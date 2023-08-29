@@ -1,6 +1,9 @@
 {
     "files.associations": {
         "*.tikz": "latex",
-        "math.h": "c"
+        "math.h": "c",
+        "functional": "c",
+        "xscugic.h": "c",
+        "hw_zedboard_test_decxnpc.h": "c"
     }
 }
