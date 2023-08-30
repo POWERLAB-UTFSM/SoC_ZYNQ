@@ -68,6 +68,45 @@ int xscugic_fiq_interrupt_myinit(XScuGic *intc_instance_ptr,XScuGic_Config *intc
 	return XST_SUCCESS;
 }
 
+int xscugic_irq_interrupt_myinit(XScuGic *intc_instance_ptr,XScuGic_Config *intc_config,Xil_ExceptionHandler irq_handler,u16 DeviceId,u16 InterruptId){
+	int status;
+
+	//Initialize the interrupt controller driver so that it is ready to use.
+	intc_config = XScuGic_LookupConfig(DeviceId);
+	if (NULL == intc_config) {
+		return XST_FAILURE;
+	}
+
+	status = XScuGic_CfgInitialize(intc_instance_ptr, intc_config, intc_config->CpuBaseAddress);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	// set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a rising edge trigger 0x3.
+    XScuGic_SetPriorityTriggerType(intc_instance_ptr,InterruptId, 0xA0, 0x3);
+
+	// connect the interrupt service routine isr0 to the interrupt controller
+    status = XScuGic_Connect(intc_instance_ptr,InterruptId, irq_handler, (void *)intc_instance_ptr);
+
+	 //Perform a self-test to ensure that the hardware was built correctly
+	status = XScuGic_SelfTest(intc_instance_ptr);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	// enable interrupts for IRQ_F2P[0:0]
+    XScuGic_Enable(intc_instance_ptr,InterruptId);
+
+	// initialize the exception table and register the interrupt controller handler with the exception table
+    Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, intc_instance_ptr);
+
+	// enable non-critical exceptions
+    Xil_ExceptionEnable();
+
+	return XST_SUCCESS;
+}
+
 void axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(u16 pwm_period){
 	//u16 pwm_period=2000;
 	u16 pwm_init=0;

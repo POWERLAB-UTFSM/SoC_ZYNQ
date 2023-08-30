@@ -54,14 +54,32 @@ u64 pwmclkfreq=50;
 
 int status= XST_SUCCESS;
 
-void fiq_myhandler(void *intc_inst_ptr);
+/*
+---------------------------------------------------------------------------------
+Function declarations
+---------------------------------------------------------------------------------
+*/
+/*fast interrupt handler*/
+//void fiq_myhandler(void *intc_inst_ptr);
+/*interrupt handler*/
+void irq0_myhandler(void *intc_inst_ptr);
 
+
+/*
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+main()
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+*/
 int main()
 {
+	/*initialization routines*/
 	status = xgpiops_myinit(&xgpiops_my_inst,&xgpiops_my_config,XPAR_XGPIOPS_0_DEVICE_ID);
 	status = xgpio_myinit(&xgpio_my_inst,&xgpio_my_config,XPAR_AXI_GPIO_0_DEVICE_ID);
 	status = xclk_wiz_myinit(&xclk_wiz_my_inst,&xclk_wiz_my_config,50,XPAR_CLK_WIZ_0_DEVICE_ID);
-	status = xscugic_fiq_interrupt_myinit(&xscugic_my_inst,&xscugic_my_config,(Xil_ExceptionHandler) fiq_myhandler,XPAR_PS7_SCUGIC_0_DEVICE_ID);
+	//status = xscugic_fiq_interrupt_myinit(&xscugic_my_inst,&xscugic_my_config,(Xil_ExceptionHandler) fiq_myhandler,XPAR_PS7_SCUGIC_0_DEVICE_ID);
+	status = xscugic_irq_interrupt_myinit(&xscugic_my_inst,&xscugic_my_config,(Xil_ExceptionHandler) irq0_myhandler,XPAR_PS7_SCUGIC_0_DEVICE_ID,XPAR_FABRIC_AXI_CPWM8C_0_VEC_ID);
 	axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(2000);
 	axi_dec3lxnpc_myinit(globaldec3lxnpc_convtype,globaldec3lxnpc_commtype,globaldec3lxnpc_tshort,globaldec3lxnpc_toffon,globaldec3lxnpc_toffV0on,globaldec3lxnpc_tonoffV0,globaldec3lxnpc_toffonI0);
 	
@@ -100,8 +118,16 @@ int main()
     return 0;
 }
 
-void fiq_myhandler(void *intc_inst_ptr) {
+/*
+---------------------------------------------------------------------------------
+irq0_myhandler()
+interupt service routine handler definition
+---------------------------------------------------------------------------------
+*/
+void irq0_myhandler(void *intc_inst_ptr) {
+	u32 IntIDFull;
 
+	//time period calculation
 	pwm_time=2*(float)(globalpwm_period)/((float)(pwmclkfreq)*1E6);
 
 	//sine wave generator with modulation index
@@ -123,5 +149,11 @@ void fiq_myhandler(void *intc_inst_ptr) {
 		theta_sin=theta_sin-M_2PI;
 	}
 
+	//Interrupt acknowledgment signal from xgpiops to AXI_CPWM8C
 	xgpiops_pwm_wireack(&xgpiops_my_inst,54);
+	//-------------------------------------------------------------
+	//Clear interrupt in PS
+	//-------------------------------------------------------------
+	IntIDFull = XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET);
+	XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, IntIDFull);
 }

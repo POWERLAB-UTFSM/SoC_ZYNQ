@@ -33,6 +33,7 @@ int xgpiops_myinit(XGpioPs *InstancePtr, XGpioPs_Config *InstanceConfigPtr, u16 
 int xgpio_myinit(XGpio *InstancePtr, XGpio_Config *InstanceConfigPtr, u16 DeviceId);
 int xclk_wiz_myinit(XClk_Wiz *InstancePtr, XClk_Wiz_Config *InstanceConfigPtr,u64 xclk_wiz_freqinit, u16 DeviceId);
 int xscugic_fiq_interrupt_myinit(XScuGic *intc_instance_ptr,XScuGic_Config *intc_config,Xil_ExceptionHandler fiq_handler,u16 DeviceId);
+int xscugic_irq_interrupt_myinit(XScuGic *intc_instance_ptr,XScuGic_Config *intc_config,Xil_ExceptionHandler irq_handler,u16 DeviceId,u16 InterruptId);
 
 void axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(u16 pwm_period);
 void axi_dec3lxnpc_myinit(AXI_DEC3LXNPC_convtype dec3lxnpc_convtype,AXI_DEC3LXNPC_commtype dec3lxnpc_commtype,u8 axi_dec3lxnpc_tshort,u8 axi_dec3lxnpc_toffon,u8 axi_dec3lxnpc_toffV0on,u8 axi_dec3lxnpc_tonoffV0,u8 axi_dec3lxnpc_toffonI0);
