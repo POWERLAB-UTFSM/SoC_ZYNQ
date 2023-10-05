@@ -150,6 +150,3 @@ domain active
 
 # add compiler flag to domain
 bsp config -append extra_compiler_flags {-DUSE_AMP=1}
-
-# create new FSBL app for CPU0
-app create -name $appfsblname -platform $pformcpu1name -os standalone -template {Zynq FSBL}
