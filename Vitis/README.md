@@ -45,6 +45,7 @@ cd ~
 mkdir petalinux
 cp WinDownloads/petalinux-v2023.1-05012318-installer.run petalinux
 cd petalinux
+chmod +x petalinux-v2023.1-05012318-installer.run
 ./petalinux-v2023.1-05012318-installer.run
 ```
 
