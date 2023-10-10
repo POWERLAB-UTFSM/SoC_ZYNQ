@@ -47,6 +47,19 @@ cp WinDownloads/petalinux-v2023.1-05012318-installer.run petalinux
 cd petalinux
 chmod +x petalinux-v2023.1-05012318-installer.run
 ./petalinux-v2023.1-05012318-installer.run
+source settings.sh
+```
+
+9. Configurar
+```bash
+sudo locale-gen en_US.UTF-8
+```
+
+10. Generar Proyecto petalinux
+```bash
+petalinux-create --type project --template zynq --name < NOMBRE_DEL_PROYECTO >
+
+petalinux-config --get-hw-description < NOMBRE_DEL_ARCHIVO_DE_HARDWARE.xsa >
 ```
 
 Más información:
