@@ -66,3 +66,4 @@ Más información:
 
 * [PetaLinux Tools Documentation: Reference Guide (UG1144)](https://docs.xilinx.com/r/en-US/ug1144-petalinux-tools-reference-guide/Overview=)
 * [000035006 - PetaLinux 2023.1 - Product Update Release Notes and Known Issues](https://support.xilinx.com/s/article/000035006?language=en_US)
+* [Libmetal y OpenAMP user guide (UG1186)](https://docs.xilinx.com/r/en-US/ug1186-zynq-openamp-gsg)
