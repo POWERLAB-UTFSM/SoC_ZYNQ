@@ -2,11 +2,64 @@
 
 # Creación de proyectos y aplicaciones con Petalinux
 
-1. Generar Proyecto Petalinux
+1. Generar Proyecto Petalinux (el nombre no debe llevar espacio ni barra baja [``_``])
     ```bash
-    petalinux-create --type project --template zynq --name < NOMBRE_DEL_PROYECTO >
-    petalinux-config --get-hw-description < RUTA/NOMBRE_DEL_ARCHIVO_DE_HARDWARE.xsa >
+    foo@bar:~$ petalinux-create --type project --template zynq --name < NOMBRE_DEL_PROYECTO >
+    foo@bar:~$ cd < NOMBRE_DEL_PROYECTO >
+    foo@bar:~$ petalinux-config --get-hw-description < RUTA/NOMBRE_DEL_ARCHIVO_DE_HARDWARE.xsa >
     ```
+
+1. Generar Aplicación Petalinux (el nombre no debe llevar espacio ni barra baja [``_``])
+    ```bash
+    foo@bar:~$ petalinux-create -t apps --template install -n <app-name> --enable
+    ```
+
+1. Copiar firmware (``.elf``) en la carpeta ``project-spec/meta-user/recipes-apps/<app-name>/files/``
+    ```bash
+    foo@bar:~$ cp <path/to/elf> project-spec/meta-user/recipes-apps/<app-name>/files/
+    ```
+
+1. Modificar el archivo ``project-spec/meta-user/recipes-apps/<app_name>/<app_name>.bb``. Como ejemplo:
+
+    ```
+    Recipe needs to be changed due to syntax changes in yocto
+
+    Please use recipe content below
+
+    SUMMARY = "Simple freertos-amp-demos application"
+
+    SECTION = "PETALINUX/apps"
+
+    LICENSE = "MIT"
+
+    LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
+
+    SRC_URI = "file://<myfirmware> \
+
+    "
+
+    S = "${WORKDIR}"
+
+    INSANE_SKIP:${PN} = "arch"
+
+    RDEPENDS:${PN} += " \
+
+    libmetal \
+
+    "
+
+    do_install() {
+
+    install -d ${D}${base_libdir}/firmware
+
+    install -m 0644 ${S}/<myfirmware> ${D}${base_libdir}/firmware/<myfirmware>
+
+    }
+
+    FILES:${PN} = "${base_libdir}/firmware/<myfirmware>"
+
+    ```
+
 
 # Instalar Petalinux en WSL (Windows Subsystem for Linux)
 
