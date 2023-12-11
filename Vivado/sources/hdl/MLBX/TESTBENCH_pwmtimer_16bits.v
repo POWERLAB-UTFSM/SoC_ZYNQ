@@ -32,6 +32,9 @@ module TESTBENCH_cpwm_16bits_8carr();
 		
 		repeat(2000) @(posedge clk);
 		count_mode=COUNT_UPDOWN;
+		
+		repeat(3000) @(posedge clk);
+		init_carr=16'h000C;
 	end
 
 	pwmtimer_16bits DUT1(

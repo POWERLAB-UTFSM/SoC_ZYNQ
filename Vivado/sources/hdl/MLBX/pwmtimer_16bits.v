@@ -33,7 +33,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 	reg [2:0] counter_state;
 	reg [2:0] counter_state_next;
 	reg stop_status;
-	reg init_carr_buffer;
+	reg [PWMWIDTH-1:0] init_carr_buffer;
 	reg new_carrier;
 
 	localparam S_RESET0		=0;
