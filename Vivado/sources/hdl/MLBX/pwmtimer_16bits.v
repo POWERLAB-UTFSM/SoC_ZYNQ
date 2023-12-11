@@ -198,19 +198,19 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 		end
 		case(counter_state) 
 			S_RESET0: begin
-				carrier = 0;
+				carrier <= 0;
 			end
 			S_RESETP: begin
-				carrier = (countmax) ;
+				carrier <= (countmax) ;
 			end
 			S_UP: begin
-				carrier = (carrier +1) ;
+				carrier <= (carrier +1) ;
 			end
 			S_DOWN: begin
-				carrier = (carrier -1) ;
+				carrier <= (carrier -1) ;
 			end
 			S_STOP: begin
-				carrier = 0;
+				carrier <= 0;
 			end
 			S_NEWCARR: begin
 				carrier = init_carr;
