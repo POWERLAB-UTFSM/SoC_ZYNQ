@@ -19,21 +19,19 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-module pwmtimer_16bits #(parameter PWMWIDTH = 16)
+module pwm16bits_timer //#(parameter PWMWIDTH = 16)
 (
 	input clk,ce,rst,
-	input [PWMWIDTH-1:0] countmax,
-	input [PWMWIDTH-1:0] init_carr,
+	input [15:0] count_max,
+	input [15:0] init_carr,
 	input [1:0] count_mode, //00=no_count; 01=up; 10=down; 11=up_down
-	input [1:0] syncmode,
-	output reg [PWMWIDTH-1:0] carrier,
-	output reg sync
+	output reg [15:0] carrier
 );
 
 	reg [2:0] counter_state;
 	reg [2:0] counter_state_next;
 	reg stop_status;
-	reg [PWMWIDTH-1:0] init_carr_buffer;
+	reg [15:0] init_carr_buffer;
 	reg new_carrier;
 
 	localparam S_RESET0		=0;
@@ -48,14 +46,21 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 	localparam COUNT_UP	=2'b10;
 	localparam COUNT_UPDOWN	=2'b11;
 
+	initial begin
+		counter_state <= S_NEWCARR;
+		init_carr_buffer <=0;
+	end
+
 	always @* begin
-		if(count_mode==2'b00 || countmax == 0) begin
+		if(count_mode==2'b00 || count_max == 0) begin
 			stop_status=1;
 		end
 		else begin
 			stop_status=0;
 		end
 	end
+
+
 
 	always @* begin
 	//always_ff @(posedge clk) begin
@@ -76,7 +81,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 				counter_state_next = S_RESETP;
 			end
 			else
-			if((count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) && carrier < (countmax-1)) begin
+			if((count_mode==COUNT_UP || count_mode==COUNT_UPDOWN) && carrier < (count_max-1)) begin
 				counter_state_next = S_UP;
 			end
 		end
@@ -107,11 +112,11 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 				counter_state_next = S_NEWCARR;
 			end
 			else 
-			if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN) && carrier >= (countmax-1)) begin
+			if((count_mode==COUNT_UPDOWN || count_mode==COUNT_DOWN) && carrier >= (count_max-1)) begin
 				counter_state_next = S_DOWN;
 			end
 			else 
-			if(count_mode==COUNT_UP && carrier >= (countmax-1)) begin
+			if(count_mode==COUNT_UP && carrier >= (count_max-1)) begin
 				counter_state_next = S_RESET0;
 			end
 		end
@@ -139,7 +144,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 			else begin 
 				counter_state_next = S_NEWCARR;
 			end
-			/*if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (countmax-1)) begin
+			/*if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (count_max-1)) begin
 					counter_state_next = S_UP;
 			end
 			else 
@@ -147,7 +152,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 					counter_state_next = S_DOWN;
 			end
 			else 
-			if(carrier >= (countmax-1) && stop_status==0) begin
+			if(carrier >= (count_max-1) && stop_status==0) begin
 					counter_state_next = S_RESETP;
 			end
 			else 
@@ -160,7 +165,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 				counter_state_next = S_STOP;
 			end
 			else 
-			if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (countmax-1)) begin
+			if((count_mode==COUNT_UPDOWN || count_mode==COUNT_UP) && carrier < (count_max-1)) begin
 				counter_state_next = S_UP;
 			end
 			else 
@@ -168,7 +173,7 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 				counter_state_next = S_DOWN;
 			end
 			else 
-			if(carrier >= (countmax-1) && stop_status==0) begin
+			if(carrier >= (count_max-1) && stop_status==0) begin
 				counter_state_next = S_RESETP;
 			end
 			else 
@@ -179,76 +184,102 @@ module pwmtimer_16bits #(parameter PWMWIDTH = 16)
 		endcase		
 	end
 
-	always @(posedge clk or posedge rst) begin
+    always @(posedge clk or posedge rst) begin
 		if (rst) begin
 			counter_state <= S_NEWCARR;
 			init_carr_buffer <=0;
 		end
 		else begin
 			counter_state <= counter_state_next;
-			init_carr_buffer <=init_carr;
-		end
-	end
-
-	always @(posedge clk) begin
-		//------------------------------------
-		//State actions
-		if(init_carr !=init_carr_buffer) begin
+			//init_carr_buffer <=init_carr;
+			if(init_carr !=init_carr_buffer && (carrier == 0)) begin
 				new_carrier=1;
-		end
-		case(counter_state) 
-			S_RESET0: begin
-				carrier <= 0;
 			end
-			S_RESETP: begin
-				carrier <= (countmax) ;
-			end
-			S_UP: begin
-				carrier <= (carrier +1) ;
-			end
-			S_DOWN: begin
-				carrier <= (carrier -1) ;
-			end
-			S_STOP: begin
-				carrier <= 0;
-			end
-			S_NEWCARR: begin
-				carrier = init_carr;
-				new_carrier=0;
-			end
-		endcase
-	end
-
-	//--------------------------------
-	//Interrupt generator
-	reg mask_ok_min;
-	reg mask_ok_max;
-	reg carrier_min;
-	reg carrier_max;
-
-    localparam NO_MASK=1;
-	localparam MIN_MASK=1;
-	localparam MAX_MASK=2;
-	localparam MINMAX_MASK=3;
-
-	always @* begin
-		mask_ok_min = syncmode==MIN_MASK || syncmode==MINMAX_MASK;
-		mask_ok_max = syncmode==MAX_MASK || syncmode==MINMAX_MASK;
-		carrier_min = (carrier == 0);
-		carrier_max = (carrier == countmax);
-	end
-
-	always @(posedge clk or posedge rst) begin
-		if(rst==1'b1) begin
-			sync <= 1'b0;
-		end
-		else if((carrier_min & mask_ok_min) | (carrier_max & mask_ok_max) | syncmode==NO_MASK) begin
-			sync <= 1'b1;
-		end
-		else begin
-			sync  <= 1'b0;
+			case(counter_state) 
+				S_RESET0: begin
+					carrier <= 0;
+				end
+				S_RESETP: begin
+					carrier <= (count_max) ;
+				end
+				S_UP: begin
+					carrier <= (carrier +1) ;
+				end
+				S_DOWN: begin
+					carrier <= (carrier -1) ;
+				end
+				S_STOP: begin
+					carrier <= 0;
+				end
+				S_NEWCARR: begin
+					carrier = init_carr;
+					new_carrier=0;
+					init_carr_buffer <=init_carr;
+				end
+			endcase
 		end
 	end
+
+	// always @(posedge clk) begin
+	// 	//------------------------------------
+	// 	//State actions
+	// 	if(init_carr !=init_carr_buffer && (carrier == 0)) begin
+	// 		new_carrier=1;
+	// 	end
+	// 	case(counter_state) 
+	// 		S_RESET0: begin
+	// 			carrier <= 0;
+	// 		end
+	// 		S_RESETP: begin
+	// 			carrier <= (count_max) ;
+	// 		end
+	// 		S_UP: begin
+	// 			carrier <= (carrier +1) ;
+	// 		end
+	// 		S_DOWN: begin
+	// 			carrier <= (carrier -1) ;
+	// 		end
+	// 		S_STOP: begin
+	// 			carrier <= 0;
+	// 		end
+	// 		S_NEWCARR: begin
+	// 			carrier = init_carr;
+	// 			new_carrier=0;
+	// 			init_carr_buffer <=init_carr;
+	// 		end
+	// 	endcase
+	// end
+
+	// //--------------------------------
+	// //Interrupt generator
+	// reg mask_ok_min;
+	// reg mask_ok_max;
+	// reg carrier_min;
+	// reg carrier_max;
+
+  // localparam NO_MASK=1;
+	// localparam MIN_MASK=1;
+	// localparam MAX_MASK=2;
+	// localparam MINMAX_MASK=3;
+
+	// always @* begin
+	// 	mask_ok_min = sync_mode==MIN_MASK || sync_mode==MINMAX_MASK;
+	// 	mask_ok_max = sync_mode==MAX_MASK || sync_mode==MINMAX_MASK;
+	// 	carrier_min = (carrier == 0);
+	// 	carrier_max = (carrier == count_max);
+	// end
+
+	// always @(posedge clk or posedge rst) begin
+	// 	if(rst==1'b1) begin
+	// 		sync <= 1'b0;
+	// 	end
+	// 	else if((carrier_min & mask_ok_min) | (carrier_max & mask_ok_max) | sync_mode==NO_MASK) begin
+	// 		sync <= 1'b1;
+	// 	end
+	// 	else begin
+	// 		sync  <= 1'b0;
+	// 	end
+	// end
 
 
 endmodule
