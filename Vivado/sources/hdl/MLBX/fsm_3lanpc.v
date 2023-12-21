@@ -21,7 +21,7 @@
 
 module fsm_3lanpc(
 	input	clk,ce,rst,
-	input   [7:0]  t_short, t_off_on, t_on_offv0, t_offv0_on, t_off_oni0,
+	input   [9:0]  t_short, t_off_on, t_on_offv0, t_offv0_on, t_off_oni0,
 	input   [1:0]   v_lev,
 	input   [1:0]   comm_type,
 	output reg [5:0]  s_out
@@ -52,11 +52,26 @@ module fsm_3lanpc(
 	reg transition;
 	reg [1:0] v_lev_past;
 	reg  finish_transition;
-	reg [5:0] counter;
+	reg [9:0] counter;
 	reg [2:0] delay_timer;
-	reg [5:0] max_counter;
+	reg [9:0] max_counter;
 	reg change;
 	reg [5:0] S_outcomb;
+
+    initial begin
+        state     <= Z_U2;
+        old_state <= Z_U2;
+        v_lev_past <= 0;
+        state_mem <= Z_U2;
+        next_state_mem <= Z_U2;
+        transition  <= 'd0;
+        counter     <= 'd0;
+        delay_timer <= 'd0;
+        s_out <= 'b010_010;
+        //finish_transition <= 0;
+        //max_counter <= 'd254;
+        change<=0;
+    end
 
 	always @(posedge clk or posedge rst) begin     
 		if (rst) begin

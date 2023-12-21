@@ -25,6 +25,7 @@ module pwm16bits_compare2ch #(parameter PWMWIDTH = 16)
 	input [15:0] carrier,
 	input [15:0] compare_1,
 	input [15:0] compare_2,
+    input en_pwm,
 	input sig_pwm_1,
 	input sig_pwm_2,
 	output reg pwm_1a,
@@ -42,7 +43,7 @@ module pwm16bits_compare2ch #(parameter PWMWIDTH = 16)
 	end
 
 	always @* begin
-		if(carrier>=compare_1) begin
+		if(carrier>compare_1) begin
 			pwm_1_buffer='d0;
 		end
 		else begin
@@ -51,7 +52,7 @@ module pwm16bits_compare2ch #(parameter PWMWIDTH = 16)
 	end
 
 	always @* begin
-		if(carrier>=compare_2) begin
+		if(carrier>compare_2) begin
 			pwm_2_buffer='d0;
 		end
 		else begin
@@ -60,10 +61,10 @@ module pwm16bits_compare2ch #(parameter PWMWIDTH = 16)
 	end
 
 	always @(posedge clk) begin
-		pwm_1a <= pwm_1_buffer ^ sig_pwm_1;	
-		pwm_2a <= pwm_2_buffer ^ sig_pwm_2;
-		pwm_1b <= ~pwm_1_buffer ^ sig_pwm_1;	
-		pwm_2b <= ~pwm_2_buffer ^ sig_pwm_2;
+		pwm_1a <= (pwm_1_buffer ^ sig_pwm_1)&en_pwm;	
+		pwm_2a <= (pwm_2_buffer ^ sig_pwm_2)&en_pwm;
+		pwm_1b <= (~pwm_1_buffer ^ sig_pwm_1)&en_pwm;	
+		pwm_2b <= (~pwm_2_buffer ^ sig_pwm_2)&en_pwm;
 	end
 
 
