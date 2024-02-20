@@ -2,7 +2,7 @@
 set /p "id=Enter your project tcl file: "
 echo OKAY! your project tcl file is %id% , right?
 
-set exebat=\Xilinx\Vivado\2023.1\bin\vivado.bat
+set exebat=\Xilinx\Vivado\2023.2\bin\vivado.bat
 
 if exist  C:%exebat% ( C:%exebat% -mode batch -source %id% )
 else (

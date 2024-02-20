@@ -20,6 +20,25 @@
 /************************** User defined functions/macros ****************************/
 /**/
 /**/
+
+/**
+ * This typedef contains configuration information for a device.
+ */
+typedef struct {
+#ifndef SDT
+	u16 DeviceId;		/**< Unique ID of device */
+#else
+	char *Name;
+#endif
+	UINTPTR BaseAddr;		/**< Register base address */
+#ifdef SDT
+	u16 IntrId;		/** Bits[11:0] Interrupt-id Bits[15:12]
+				 * trigger type and level flags */
+	UINTPTR IntrParent; 	/** Bit[0] Interrupt parent type Bit[64/32:1]
+				 * Parent base address */
+#endif
+} AXI_DEC3LXNPC_Config;
+
 typedef enum
 {
    NoConv = 0,

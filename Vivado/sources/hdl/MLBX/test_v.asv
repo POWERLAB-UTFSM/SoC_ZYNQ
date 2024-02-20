@@ -1,0 +1,17 @@
+module test_v (
+    input clk, ce, 
+    input sig_in,
+    input conf,
+    output reg sig_out
+);
+
+//always @* begin
+    if (conf==1) begin
+        sig_out <= !sig_in;
+    end
+    else begin
+        sig_out <= 0;
+    end
+end
+
+endmodule
