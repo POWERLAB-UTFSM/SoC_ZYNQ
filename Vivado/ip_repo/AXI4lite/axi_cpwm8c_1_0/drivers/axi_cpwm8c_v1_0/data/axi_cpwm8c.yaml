@@ -1,0 +1,76 @@
+# SPDX-License-Identifier: MIT
+%YAML 1.2
+---
+title: Driver
+ 
+maintainers:
+    - Alan Wilson <alan.h.wilson@ieee.org>
+ 
+type: driver
+ 
+properties:
+    compatible:
+        items:
+            - const: xlnx,axi_cpwm8c
+#            OneOf:
+#                - items:
+#                    - enum:
+#                        - xlnx,zynqmp-ipi-mailbox
+#                        - xlnx,psu-ipi-1.0
+    reg:
+        description: Standard reg property
+    ipi-bitmask:
+        description: foo0 bar0 abc0 xyz0
+    interrupts:
+        description: foo1 bar1 abc1 xyz1
+    interrupt-parent:
+        description: foo2 bar2 abc2 xyz2
+    num_slcr_addr:
+        description: foo3 bar3 abc3 xyz3
+    axistream-connected:
+        description: foo4 bar4 abc4 xyz4
+    child-required:
+        description: foo5 bar5 abc5 xyz5
+    ipi-id:
+        description: foo6 bar6 abc6 xyz6
+    max-intr-size:
+        description: foo7 bar7 abc7 xyz7
+ 
+config:
+    - XIpiPsu_Config
+ 
+required:
+    - compatible
+    - reg
+    - xlnx,ipi-bitmask
+    - interrupts
+    - interrupt-parent
+    - xlnx,num_slcr_addr: 2
+    - axistream-connected: phandle
+    - child,required:
+        - xlnx,ipi-bitmask
+        - xlnx,ipi-buf-index
+ 
+optional:
+    - xlnx,ipi-id
+ 
+additionalProperties:
+    - xlnx,max-intr-size
+ 
+depends:
+    clockps: []
+    resetps: []
+ 
+depends_libs:
+    libmetal: {}
+ 
+examples:
+    xdrv1_selftest_example.c::
+        - reg
+    xdrv1_polltimeout_interrupt_example.c:
+        - dependency_files:
+            - xdrv1_flash_config.h
+        - interrupts
+        - compatible : xlnx,versal-wwdt-1.0
+    xdrv1_generic_interrupt_example.c:
+        - interrupts 

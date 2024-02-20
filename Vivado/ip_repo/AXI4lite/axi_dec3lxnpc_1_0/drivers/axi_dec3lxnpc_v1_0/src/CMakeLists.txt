@@ -1,0 +1,17 @@
+
+# SPDX-License-Identifier: MIT
+cmake_minimum_required(VERSION 3.15)
+project(axi_dec3lxnpc)
+find_package(common)
+collector_create (PROJECT_LIB_HEADERS "${CMAKE_CURRENT_SOURCE_DIR}")
+collector_create (PROJECT_LIB_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}")
+include_directories(${CMAKE_BINARY_DIR}/include)
+collect (PROJECT_LIB_SOURCES axi_dec3lxnpc.c)
+collect (PROJECT_LIB_HEADERS axi_dec3lxnpc.h)
+collect (PROJECT_LIB_SOURCES axi_dec3lxnpc_selftest.c)
+collect (PROJECT_LIB_SOURCES axi_dec3lxnpc_g.c)
+collector_list (_sources PROJECT_LIB_SOURCES)
+collector_list (_headers PROJECT_LIB_HEADERS)
+file(COPY ${_headers} DESTINATION ${CMAKE_BINARY_DIR}/include)
+add_library(axi_dec3lxnpc STATIC ${_sources})
+set_target_properties(axi_dec3lxnpc PROPERTIES LINKER_LANGUAGE C)

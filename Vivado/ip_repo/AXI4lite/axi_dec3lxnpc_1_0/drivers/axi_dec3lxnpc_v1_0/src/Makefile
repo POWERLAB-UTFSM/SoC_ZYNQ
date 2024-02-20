@@ -1,26 +1,40 @@
+DRIVER_LIB_VERSION = 1.0
 COMPILER=
 ARCHIVER=
 CP=cp
 COMPILER_FLAGS=
 EXTRA_COMPILER_FLAGS=
 LIB=libxil.a
-RELEASEDIR=../../../lib
-INCLUDEDIR=../../../include
-INCLUDES=-I./. -I${INCLUDEDIR}
-INCLUDEFILES=*.h
-LIBSOURCES=$(wildcard *.c)
-OUTS = *.o
-OBJECTS = $(addsuffix .o, $(basename $(wildcard *.c)))
-ASSEMBLY_OBJECTS = $(addsuffix .o, $(basename $(wildcard *.S)))
 
-libs:
-	echo "Compiling axi_dec3lxnpc"
-	$(COMPILER) $(COMPILER_FLAGS) $(EXTRA_COMPILER_FLAGS) $(INCLUDES) $(LIBSOURCES)
-	$(ARCHIVER) -r ${RELEASEDIR}/${LIB} ${OBJECTS} ${ASSEMBLY_OBJECTS}
-	make clean
+CC_FLAGS = $(COMPILER_FLAGS)
+ECC_FLAGS = $(EXTRA_COMPILER_FLAGS)
 
-include:
-	${CP} $(INCLUDEFILES) $(INCLUDEDIR)
+RELEASEDIR=../../../lib/
+INCLUDEDIR=../../../include/
+INCLUDES=-I./. -I$(INCLUDEDIR)
+
+SRCFILES:=$(wildcard *.c)
+
+OBJECTS = $(addprefix $(RELEASEDIR), $(addsuffix .o, $(basename $(wildcard *.c))))
+
+libs: $(OBJECTS)
+
+DEPFILES := $(SRCFILES:%.c=$(RELEASEDIR)%.d)
+
+include $(wildcard $(DEPFILES))
+
+include $(wildcard ../../../../dep.mk)
+
+$(RELEASEDIR)%.o: %.c
+	${COMPILER} $(CC_FLAGS) $(ECC_FLAGS) $(INCLUDES) $(DEPENDENCY_FLAGS) $< -o $@
+
+.PHONY: include
+include: $(addprefix $(INCLUDEDIR),$(wildcard *.h))
+
+$(INCLUDEDIR)%.h: %.h
+	$(CP) $< $@
 
 clean:
-	rm -rf ${OUTS}
+	rm -rf ${OBJECTS}
+	rm -rf $(DEPFILES)
+
