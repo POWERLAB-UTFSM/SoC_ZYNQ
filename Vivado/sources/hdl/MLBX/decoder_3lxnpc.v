@@ -21,7 +21,7 @@
 
 module decoder_3lxnpc(
 	input	clk,ce,rst,
-	input	[7:0]	t_short, t_off_on, t_on_offv0, t_offv0_on, t_off_oni0,
+	input	[9:0]	t_short, t_off_on, t_on_offv0, t_offv0_on, t_off_oni0,
 	input	[1:0]	v_lev,
 	input	[1:0]	comm_type_anpc,
 	input	[1:0]	npc_type,
@@ -98,19 +98,19 @@ module decoder_3lxnpc(
 //		.S_out(S_out_NPP)
 //	);
     
-	always @* begin
+	always @(posedge clk) begin
 		case(npc_type)
 			NOOUT: begin
-				S_out = 'b000_000;
+				S_out <= 'b000_000;
 			end
 			NPC: begin
-				S_out = 'b000_000;
+				S_out <= 'b000_000;
 			end
 			NPP: begin
-				S_out = 'b000_000;
+				S_out <= 'b000_000;
 			end
 			ANPC: begin
-				S_out = S_out_ANPC;
+				S_out <= S_out_ANPC;
 			end
 			default: begin
 				S_out = 'b000_000;
