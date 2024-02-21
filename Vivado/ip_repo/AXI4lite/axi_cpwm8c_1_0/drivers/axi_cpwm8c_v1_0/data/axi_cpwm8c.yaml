@@ -14,7 +14,8 @@ properties:
             OneOf:
              - items:
                 - enum: 
-                    - xlnx,axi_cpwm8c
+                    - xlnx,zynq-axi-cpwm8c-1.0
+                    - xlnx,zynqmp-axi-cpwm8c-1.0
     reg:
         description: Standard reg property
  
@@ -24,7 +25,6 @@ config:
 required:
     - compatible
     - reg
-    - xlnx,dma-type
     - interrupts
     - interrupt-parent
 

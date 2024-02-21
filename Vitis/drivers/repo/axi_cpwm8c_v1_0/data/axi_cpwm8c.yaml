@@ -14,13 +14,12 @@ properties:
             OneOf:
              - items:
                 - enum: 
-                    - xlnx,zynq-axi-dec3lxnpc-1.0
-                    - xlnx,zynqmp-axi-dec3lxnpc-1.0
+                    - xlnx,axi_cpwm8c
     reg:
         description: Standard reg property
  
 config:
-    - AXI_DEC3LXNPC_Config
+    - AXI_CPWM8C_Config
  
 required:
     - compatible
@@ -35,6 +34,7 @@ optional:
  
 additionalProperties:
     - reg
+#    - xlnx,max-intr-size
  
 depends:
 #    clockps: []

@@ -14,8 +14,7 @@ properties:
             OneOf:
              - items:
                 - enum: 
-                    - xlnx,zynq-axi-dec3lxnpc-1.0
-                    - xlnx,zynqmp-axi-dec3lxnpc-1.0
+                    - xlnx,axi_dec3lxnpc
     reg:
         description: Standard reg property
  
