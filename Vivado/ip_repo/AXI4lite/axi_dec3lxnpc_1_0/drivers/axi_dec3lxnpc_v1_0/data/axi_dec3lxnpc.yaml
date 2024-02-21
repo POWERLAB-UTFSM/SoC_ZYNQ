@@ -33,7 +33,7 @@ optional:
 #    - xlnx,ipi-id
  
 additionalProperties:
-#    - xlnx,max-intr-size
+    - reg
  
 depends:
 #    clockps: []

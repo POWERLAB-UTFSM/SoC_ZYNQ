@@ -33,6 +33,7 @@ optional:
 #    - xlnx,ipi-id
  
 additionalProperties:
+    - reg
 #    - xlnx,max-intr-size
  
 depends:
