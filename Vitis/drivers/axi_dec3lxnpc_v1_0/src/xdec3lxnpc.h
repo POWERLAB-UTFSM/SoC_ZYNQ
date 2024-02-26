@@ -1,6 +1,6 @@
 
-#ifndef AXI_DEC3LXNPC_H
-#define AXI_DEC3LXNPC_H
+#ifndef XDEC3LXNPC_H
+#define XDEC3LXNPC_H
 
 
 /****************** Include Files ********************/
@@ -37,7 +37,7 @@ typedef struct {
 	UINTPTR IntrParent; 	/** Bit[0] Interrupt parent type Bit[64/32:1]
 				 * Parent base address */
 #endif
-} AXI_DEC3LXNPC_Config;
+} XDec3lxnpc_Config;
 
 typedef enum
 {

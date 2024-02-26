@@ -4,6 +4,7 @@
         "math.h": "c",
         "functional": "c",
         "xscugic.h": "c",
-        "hw_zedboard_test_decxnpc.h": "c"
+        "hw_zedboard_test_decxnpc.h": "c",
+        "xstatus.h": "c"
     }
 }

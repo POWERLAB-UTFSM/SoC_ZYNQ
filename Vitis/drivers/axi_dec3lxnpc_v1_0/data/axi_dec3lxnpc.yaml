@@ -10,40 +10,38 @@ type: driver
  
 properties:
     compatible:
-        items:
-            OneOf:
-             - items:
+        OneOf:
+            - items:
                 - enum: 
-                    - xlnx,axi_cpwm8c
+                    - xlnx,axi-dec3lxnpc-1.0
     reg:
         description: Standard reg property
  
 config:
-    - AXI_CPWM8C_Config
+    - XDec3lxnpc_Config
  
 required:
     - compatible
     - reg
-    - xlnx,dma-type
     - interrupts
     - interrupt-parent
 
+...
  
-optional:
+# optional:
 #    - xlnx,ipi-id
  
-additionalProperties:
-    - reg
-#    - xlnx,max-intr-size
+# additionalProperties:
+#    - reg
  
-depends:
+# depends:
 #    clockps: []
 #    resetps: []
  
-depends_libs:
+# depends_libs:
 #    libmetal: {}
  
-examples:
+# examples:
 #    xdrv1_selftest_example.c::
 #        - reg
 #    xdrv1_polltimeout_interrupt_example.c:

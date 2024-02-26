@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 %YAML 1.2
 ---
-title: Driver
+title: AXI CPWM8C Driver
  
 maintainers:
     - Alan Wilson <alan.h.wilson@ieee.org>
@@ -9,40 +9,40 @@ maintainers:
 type: driver
  
 properties:
-    compatible:
-        items:
-            OneOf:
-             - items:
-                - enum: 
-                    - xlnx,axi_dec3lxnpc
-    reg:
-        description: Standard reg property
+  compatible:
+    OneOf:
+      - items:
+        - enum: 
+          - xlnx,axi-cpwm8c-1.0
+  reg:
+    description: Standard reg property
  
 config:
-    - AXI_DEC3LXNPC_Config
+  - XCpwm8c_Config
  
 required:
-    - compatible
-    - reg
-    - xlnx,dma-type
-    - interrupts
-    - interrupt-parent
+  - compatible
+  - reg
+  - interrupts
+  - interrupt-parent
 
+...
  
-optional:
+# optional:
 #    - xlnx,ipi-id
  
-additionalProperties:
-    - reg
+# additionalProperties:
+#    - reg
+#    - xlnx,max-intr-size
  
-depends:
+# depends:
 #    clockps: []
 #    resetps: []
  
-depends_libs:
+# depends_libs:
 #    libmetal: {}
  
-examples:
+# examples:
 #    xdrv1_selftest_example.c::
 #        - reg
 #    xdrv1_polltimeout_interrupt_example.c:

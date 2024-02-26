@@ -1,5 +1,5 @@
-#ifndef AXI_CPWM8C_H
-#define AXI_CPWM8C_H
+#ifndef XCUSTOM_CPWM8C_H
+#define XCUSTOM_CPWM8C_H
 
 /****************** Include Files ********************/
 #include "xil_types.h"
@@ -53,7 +53,7 @@ typedef struct {
 	UINTPTR IntrParent; 	/** Bit[0] Interrupt parent type Bit[64/32:1]
 				 * Parent base address */
 #endif
-} AXI_CPWM8C_Config;
+} XCpwm8c_Config;
 
 
 typedef enum

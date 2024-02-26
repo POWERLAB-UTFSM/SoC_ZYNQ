@@ -1,6 +1,6 @@
 
 
 /***************************** Include Files *******************************/
-#include "axi_dec3lxnpc.h"
+#include "xcpwm8c.h"
 
 /************************** Function Definitions ***************************/
