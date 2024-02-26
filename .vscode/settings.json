@@ -5,6 +5,9 @@
         "functional": "c",
         "xscugic.h": "c",
         "hw_zedboard_test_decxnpc.h": "c",
-        "xstatus.h": "c"
+        "xstatus.h": "c",
+        "axi_cpwm8c.h": "c",
+        "xgpiops.h": "c",
+        "xil_util.h": "c"
     }
 }
