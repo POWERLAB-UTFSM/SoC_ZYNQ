@@ -9,7 +9,7 @@ int main(){
     
     u32 my_write=0;
     double my_sinans=0.0;
-    double my_sinarg=1.57079;
+    double my_sinarg=3.141592;
 
     status = xgpio_myinit(&xgpio_my_inst,MY_GPIO0_BASEADDR);
 
