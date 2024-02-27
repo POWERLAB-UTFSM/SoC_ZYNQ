@@ -23,6 +23,7 @@ config:
 required:
   - compatible
   - reg
+  - xlnx,interrupt-present
   - interrupts
   - interrupt-parent
 
