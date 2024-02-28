@@ -1,6 +1,5 @@
-#ifndef HARDWARE_FUNC /* prevent circular inclusions */
-#define HARDWARE_FUNC /* by using protection macros */
-
+//#ifndef HARDWARE_FUNC /* prevent circular inclusions */
+//#define HARDWARE_FUNC /* by using protection macros */
 
 #include "xparameters.h"
 #include "xcommon_drv_config.h"
@@ -43,4 +42,4 @@ void axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(u16 pwm_period, UINTPTR BaseAddr);
 void xgpiops_pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir);
 
 
-#endif /* end of inclusion protection macro */
+//#endif /* end of inclusion protection macro */

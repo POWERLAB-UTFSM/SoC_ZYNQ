@@ -1,5 +1,16 @@
-#ifndef XCUSTOM_CPWM8C_H
-#define XCUSTOM_CPWM8C_H
+/**
+ * @file xcpwm8c.h
+ * @author your name (you@domain.com)
+ * @brief 
+ * @version 0.1
+ * @date 2024-02-28
+ * 
+ * @copyright Copyright (c) 2024
+ * 
+ */
+
+#ifndef XCPWM8C_H /* prevent circular inclusions */
+#define XCPWM8C_H /* by using protection macros */
 
 /****************** Include Files ********************/
 #include "xil_types.h"
@@ -58,37 +69,49 @@ typedef struct {
 
 typedef enum
 {
-   NO_COUNT = 0,
-   COUNT_UP = 1,
-   COUNT_DOWN = 2,
-   COUNT_UP_DOWN = 3,
+	NO_COUNT = 0,
+	COUNT_UP = 1,
+	COUNT_DOWN = 2,
+	COUNT_UP_DOWN = 3,
 } AXI_CPWM8C_count_mode;
 
 typedef enum
 {
-   NO_MASK = 0,
-   MIN_MASK = 1,
-   MAX_MASK = 2,
-   MINMAX_MASK = 3,
+	NO_MASK = 0,
+	MIN_MASK = 1,
+	MAX_MASK = 2,
+	MINMAX_MASK = 3,
 } AXI_CPWM8C_mask_mode;
 
 typedef enum
 {
-   REG_OFF = 0,
-   REG_ON = 1,
+	REG_OFF = 0,
+	REG_ON = 1,
 } AXI_CPWM8C_onoff;
 
 typedef enum
 {
-   LOGIC_POS = 0,
-   LOGIC_NEG = 1,
+	LOGIC_POS = 0,
+	LOGIC_NEG = 1,
 } AXI_CPWM8C_logic;
 
 typedef enum
 {
-   CARR_MASTER1 = 0,
-   CARR_LOCAL = 1,
+	CARR_MASTER1 = 0,
+	CARR_LOCAL = 1,
 } AXI_CPWM8C_carrsel;
+
+/************************** Variable Definitions *****************************/
+extern XCpwm8c_Config XCpwm8c_ConfigTable[];
+
+/************************** Function Prototypes ******************************/
+
+#ifndef SDT
+XCpwm8c_Config *XCpwm8c_LookupConfig(u16 DeviceId);
+#else
+XCpwm8c_Config *XCpwm8c_LookupConfig(u32 BaseAddress);
+#endif
+
 
 static INLINE void AXI_CPWM8C_mWrite_Period_1(UINTPTR BaseAddress, u16 Value){
 	//HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) = (HWREG(BaseAddress + AXI_CPWM8C_S_AXI_SLV_REG0_OFFSET) & 0xFFFF0000) + (Value);
