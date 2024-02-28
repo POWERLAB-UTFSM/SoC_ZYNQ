@@ -5,12 +5,14 @@
 // gpio
 
 int \
-xgpio_myinit(\
-XGpio *InstancePtr,\
+XGpio_myinit(\
+XGpio *InstancePtr, \
+XGpio_Config *InstanceConfigPtr, \
 UINTPTR BaseAddr){
 	int status=XST_SUCCESS;
 
-	status = XGpio_Initialize(InstancePtr,BaseAddr);
+	InstanceConfigPtr = XGpio_LookupConfig(BaseAddr);
+    status = XGpio_CfgInitialize(InstancePtr, InstanceConfigPtr, BaseAddr);
     if(status != XST_SUCCESS){
         return XST_FAILURE;
     }
@@ -21,7 +23,7 @@ UINTPTR BaseAddr){
 }
 
 void \
-xgpio_mych1enable(\
+XGpio_mych1enable(\
 XGpio *InstancePtr,\
 u32 input){
 
@@ -34,14 +36,14 @@ u32 input){
 // gpiops
 
 int \
-xgpiops_myinit(\
+XGpiops_myinit(\
 XGpioPs *InstancePtr,\
 XGpioPs_Config *InstanceConfigPtr,\
 UINTPTR BaseAddr){
 	int status=XST_SUCCESS;
 
 	InstanceConfigPtr = XGpioPs_LookupConfig(BaseAddr);
-    status = XGpioPs_CfgInitialize(InstancePtr, InstanceConfigPtr, InstanceConfigPtr -> BaseAddr);
+    status = XGpioPs_CfgInitialize(InstancePtr, InstanceConfigPtr, BaseAddr);
 
     if(status != XST_SUCCESS){
         return XST_FAILURE;
@@ -54,7 +56,7 @@ UINTPTR BaseAddr){
 }
 
 void \
-xgpiops_pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir){
+XGpiops_pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir){
 	XGpioPs_WritePin(InstancePtr, pin_dir, 1);
 	XGpioPs_WritePin(InstancePtr, pin_dir, 0);
 }
@@ -62,7 +64,7 @@ xgpiops_pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir){
 //---------------------------------------------------------------
 // clk_wiz
 int \
-xclk_wiz_myinit(\
+XClk_wiz_myinit(\
 XClk_Wiz *InstancePtr, \
 XClk_Wiz_Config *InstanceConfigPtr, \
 u64 xclk_wiz_freqinit, \
@@ -83,7 +85,7 @@ UINTPTR BaseAddr){
 }
 
 int \
-xscugic_fiq_interrupt_myinit(\
+XScugic_fiq_interrupt_myinit(\
 XScuGic *intc_inst_ptr, \
 XScuGic_Config *intc_config, \
 Xil_ExceptionHandler fiq_handler, \
@@ -115,7 +117,7 @@ UINTPTR BaseAddr){
 }
 
 int \
-xscugic_irq_interrupt_myinit(\
+XScugic_irq_interrupt_myinit(\
 XScuGic *intc_instance_ptr, \
 XScuGic_Config *intc_config, \
 Xil_ExceptionHandler irq_handler, \
@@ -160,7 +162,7 @@ u16 InterruptId){
 }
 
 void \
-axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(\
+XCpwm8c_lspwm3l_dec3lxnpc_myinit(\
 u16 pwm_period, \
 UINTPTR BaseAddr){
 	//u16 pwm_period=2000;
@@ -171,46 +173,46 @@ UINTPTR BaseAddr){
 	u8 pwm_dtimeB=0;
 	u8 pwm_intmatrix=1;
 
-	AXI_CPWM8C_count_mode pwm_countmode=COUNT_UP_DOWN;
-	AXI_CPWM8C_mask_mode pwm_maskmode=MIN_MASK;
-	AXI_CPWM8C_onoff pwm_dtonoff=REG_OFF;
-	AXI_CPWM8C_logic pwm_logicA1=LOGIC_NEG;
-	AXI_CPWM8C_logic pwm_logicB1=LOGIC_NEG;
-	AXI_CPWM8C_logic pwm_logicA2=LOGIC_POS;
-	AXI_CPWM8C_logic pwm_logicB2=LOGIC_POS;
-	AXI_CPWM8C_carrsel pwm_carrsel=CARR_MASTER1;
-	AXI_CPWM8C_onoff pwm_onoff=REG_ON;
-	AXI_CPWM8C_onoff pwm_carronoff=REG_ON;
+	XCpwm8c_countmode pwm_countmode=COUNT_UP_DOWN;
+	XCpwm8c_maskmode pwm_maskmode=MIN_MASK;
+	XCpwm8c_onoff pwm_dtonoff=REG_OFF;
+	XCpwm8c_logic pwm_logicA1=LOGIC_NEG;
+	XCpwm8c_logic pwm_logicB1=LOGIC_NEG;
+	XCpwm8c_logic pwm_logicA2=LOGIC_POS;
+	XCpwm8c_logic pwm_logicB2=LOGIC_POS;
+	XCpwm8c_carrsel pwm_carrsel=CARR_MASTER1;
+	XCpwm8c_onoff pwm_onoff=REG_ON;
+	XCpwm8c_onoff pwm_carronoff=REG_ON;
 
-	AXI_CPWM8C_mWrite_Period_1(BaseAddr,pwm_period);
-	AXI_CPWM8C_mWrite_Period_2(BaseAddr,pwm_period);
-	AXI_CPWM8C_mWrite_InitCarrier_1(BaseAddr,pwm_init);
-	AXI_CPWM8C_mWrite_InitCarrier_2(BaseAddr,pwm_init);
-	AXI_CPWM8C_mWrite_Compare_1(BaseAddr,pwm_comp1);
-	AXI_CPWM8C_mWrite_Compare_2(BaseAddr,pwm_comp1);
-	AXI_CPWM8C_mWrite_DeadTimeA_1(BaseAddr,pwm_dtimeA);
-	AXI_CPWM8C_mWrite_DeadTimeB_1(BaseAddr,pwm_dtimeB);
-	AXI_CPWM8C_mWrite_DeadTimeA_2(BaseAddr,pwm_dtimeA);
-	AXI_CPWM8C_mWrite_DeadTimeB_2(BaseAddr,pwm_dtimeB);
-	AXI_CPWM8C_mWrite_EventCount_1(BaseAddr,pwm_eventcount);
-	AXI_CPWM8C_mWrite_EventCount_2(BaseAddr,pwm_eventcount);
-	AXI_CPWM8C_mWrite_InterruptMatrix(BaseAddr,pwm_intmatrix);
-	AXI_CPWM8C_mWrite_CountMode_1(BaseAddr,pwm_countmode);
-	AXI_CPWM8C_mWrite_CountMode_2(BaseAddr,pwm_countmode);
-	AXI_CPWM8C_mWrite_MaskMode_1(BaseAddr,pwm_maskmode);
-	AXI_CPWM8C_mWrite_MaskMode_2(BaseAddr,pwm_maskmode);
-	AXI_CPWM8C_mWrite_DTimeOnOff_1(BaseAddr,pwm_dtonoff);
-	AXI_CPWM8C_mWrite_DTimeOnOff_2(BaseAddr,pwm_dtonoff);
-	AXI_CPWM8C_mWrite_LogicA_1(BaseAddr,pwm_logicA1);
-	AXI_CPWM8C_mWrite_LogicB_1(BaseAddr,pwm_logicB1);
-	AXI_CPWM8C_mWrite_LogicA_2(BaseAddr,pwm_logicA2);
-	AXI_CPWM8C_mWrite_LogicB_2(BaseAddr,pwm_logicB2);
-	AXI_CPWM8C_mWrite_CarrSel_1(BaseAddr,pwm_carrsel);
-	AXI_CPWM8C_mWrite_CarrSel_2(BaseAddr,pwm_carrsel);
-	AXI_CPWM8C_mWrite_CarrOnOff_1(BaseAddr,pwm_carronoff);
-	AXI_CPWM8C_mWrite_CarrOnOff_2(BaseAddr,pwm_carronoff);
-	AXI_CPWM8C_mWrite_PWMOnOff(BaseAddr,pwm_onoff);
-	AXI_CPWM8C_IntAck(BaseAddr);
+	XCpwm8c_mWrite_Period_1(BaseAddr,pwm_period);
+	XCpwm8c_mWrite_Period_2(BaseAddr,pwm_period);
+	XCpwm8c_mWrite_InitCarrier_1(BaseAddr,pwm_init);
+	XCpwm8c_mWrite_InitCarrier_2(BaseAddr,pwm_init);
+	XCpwm8c_mWrite_Compare_1(BaseAddr,pwm_comp1);
+	XCpwm8c_mWrite_Compare_2(BaseAddr,pwm_comp1);
+	XCpwm8c_mWrite_DeadTimeA_1(BaseAddr,pwm_dtimeA);
+	XCpwm8c_mWrite_DeadTimeB_1(BaseAddr,pwm_dtimeB);
+	XCpwm8c_mWrite_DeadTimeA_2(BaseAddr,pwm_dtimeA);
+	XCpwm8c_mWrite_DeadTimeB_2(BaseAddr,pwm_dtimeB);
+	XCpwm8c_mWrite_EventCount_1(BaseAddr,pwm_eventcount);
+	XCpwm8c_mWrite_EventCount_2(BaseAddr,pwm_eventcount);
+	XCpwm8c_mWrite_InterruptMatrix(BaseAddr,pwm_intmatrix);
+	XCpwm8c_mWrite_CountMode_1(BaseAddr,pwm_countmode);
+	XCpwm8c_mWrite_CountMode_2(BaseAddr,pwm_countmode);
+	XCpwm8c_mWrite_MaskMode_1(BaseAddr,pwm_maskmode);
+	XCpwm8c_mWrite_MaskMode_2(BaseAddr,pwm_maskmode);
+	XCpwm8c_mWrite_DTimeOnOff_1(BaseAddr,pwm_dtonoff);
+	XCpwm8c_mWrite_DTimeOnOff_2(BaseAddr,pwm_dtonoff);
+	XCpwm8c_mWrite_LogicA_1(BaseAddr,pwm_logicA1);
+	XCpwm8c_mWrite_LogicB_1(BaseAddr,pwm_logicB1);
+	XCpwm8c_mWrite_LogicA_2(BaseAddr,pwm_logicA2);
+	XCpwm8c_mWrite_LogicB_2(BaseAddr,pwm_logicB2);
+	XCpwm8c_mWrite_CarrSel_1(BaseAddr,pwm_carrsel);
+	XCpwm8c_mWrite_CarrSel_2(BaseAddr,pwm_carrsel);
+	XCpwm8c_mWrite_CarrOnOff_1(BaseAddr,pwm_carronoff);
+	XCpwm8c_mWrite_CarrOnOff_2(BaseAddr,pwm_carronoff);
+	XCpwm8c_mWrite_PWMOnOff(BaseAddr,pwm_onoff);
+	XCpwm8c_mWrite_IntAck(BaseAddr);
 }
 
 /*

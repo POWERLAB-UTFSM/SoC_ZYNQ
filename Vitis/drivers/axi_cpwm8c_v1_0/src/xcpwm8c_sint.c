@@ -27,10 +27,10 @@ XCpwm8c_Config *XCpwm8c_LookupConfig(u16 DeviceId)
 		}
 	}
 
-	return (XCpwm8c_Config *)CfgPtr;
+	return CfgPtr;
 }
 #else
-XCpwm8c_Config *XCpwm8c_LookupConfig(u32 BaseAddress)
+XCpwm8c_Config *XCpwm8c_LookupConfig(UINTPTR BaseAddress)
 {
 	XCpwm8c_Config *CfgPtr = NULL;
 	u32 Index;
@@ -42,8 +42,39 @@ XCpwm8c_Config *XCpwm8c_LookupConfig(u32 BaseAddress)
 		}
 	}
 
-	return (XCpwm8c_Config *)CfgPtr;
+	return CfgPtr;
 }
 #endif
+
+#ifndef SDT
+int XCpwm8c_Initialize(XCpwm8c * InstancePtr, u16 DeviceId)
+#else
+int XCpwm8c_Initialize(XCpwm8c * InstancePtr, UINTPTR BaseAddress)
+#endif
+{
+	XCpwm8c_Config *ConfigPtr;
+
+	/*
+	 * Assert arguments
+	 */
+	Xil_AssertNonvoid(InstancePtr != NULL);
+
+	/*
+	 * Lookup configuration data in the device configuration table.
+	 * Use this configuration info down below when initializing this
+	 * driver.
+	 */
+#ifndef SDT
+	ConfigPtr = XCpwm8c_LookupConfig(DeviceId);
+#else
+	ConfigPtr = XCpwm8c_LookupConfig(BaseAddress);
+#endif
+	if (ConfigPtr == (XCpwm8c_Config *) NULL) {
+		InstancePtr->IsReady = 0;
+		return (XST_DEVICE_NOT_FOUND);
+	}
+
+	return XCpwm8c_CfgInitialize(InstancePtr, ConfigPtr,ConfigPtr->BaseAddr);
+}
 
 /** @} */
