@@ -1,5 +1,4 @@
 #include <math.h>
-#include <xcpwm8c.h>
 
 #include "hardware_func.h"
 
@@ -19,41 +18,31 @@ main(){
     double my_sinarg=3.141592;
 
     XGpio xgpio_my_inst;
-    XGpio_Config xgpio_my_config;
+    XGpio_Config* xgpio_my_config = 0;
 
     XGpioPs xgpiops_my_inst;
-    XGpioPs_Config xgpiops_my_config;
+    XGpioPs_Config* xgpiops_my_config = 0;
 
     XClk_Wiz xclkwiz_my_inst;
-    XClk_Wiz_Config xclkwiz_my_config;
+    XClk_Wiz_Config* xclkwiz_my_config = 0;
 
     XScuGic xscugic_my_inst;
-    XScuGic_Config xscugic_my_config;
+    XScuGic_Config* xscugic_my_config = 0;
 
     XCpwm8c xcpwm8c_my_inst;
-    XCpwm8c_Config xcpwm8c_my_config;
+    XCpwm8c_Config* xcpwm8c_my_config = 0;
 
-    //status = XGpio_myinit(&xgpio_my_inst,&xgpio_my_config,MY_GPIO_0_BASEADDR);
-    //status = XGpiops_myinit(&xgpiops_my_inst,&xgpiops_my_config,MY_GPIOPS_0_BASEADDR);
-    //status = XGpio_Initialize(&xgpio_my_inst,MY_GPIO_0_BASEADDR);
-    //xgpio_my_config = *XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
-    //status = XGpioPs_Initialize(&xcpwm8c_my_inst,MY_CPWM8C_0_BASEADDR);
-    //xgpio_my_config = *XGpioPs_LookupConfig(MY_CPWM8C_0_BASEADDR);
-    //status = XClk_wiz_myinit(&xclkwiz_my_inst,&xclkwiz_my_config,50,MY_CLKWIZ_0_BASEADDR);
-    //status = XCpwm8c_Initialize(&xcpwm8c_my_inst,MY_CPWM8C_0_BASEADDR);
-    //xcpwm8c_my_config = *XCpwm8c_LookupConfig(MY_CPWM8C_0_BASEADDR);
+    xgpio_my_config = XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
+    status = XGpio_CfgInitialize(&xgpio_my_inst,xgpio_my_config,xgpio_my_config->BaseAddress);
 
-    xgpio_my_config = *XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
-    status = XGpio_CfgInitialize(&xgpio_my_inst,&xgpio_my_config,xgpio_my_config.BaseAddress);
+    xgpiops_my_config = XGpioPs_LookupConfig(MY_GPIOPS_0_BASEADDR);
+    status = XGpioPs_CfgInitialize(&xgpiops_my_inst,xgpiops_my_config,xgpiops_my_config->BaseAddr);
 
-    xgpiops_my_config = *XGpioPs_LookupConfig(MY_GPIOPS_0_BASEADDR);
-    status = XGpioPs_CfgInitialize(&xgpiops_my_inst,&xgpiops_my_config,xgpiops_my_config.BaseAddr);
+    xclkwiz_my_config = XClk_Wiz_LookupConfig(MY_CLKWIZ_0_BASEADDR);
+    status = XClk_Wiz_CfgInitialize(&xclkwiz_my_inst,xclkwiz_my_config,xclkwiz_my_config->BaseAddr);
 
-    xclkwiz_my_config = *XClk_Wiz_LookupConfig(MY_CLKWIZ_0_BASEADDR);
-    status = XClk_Wiz_CfgInitialize(&xclkwiz_my_inst,&xclkwiz_my_config,xclkwiz_my_config.BaseAddr);
-
-    xcpwm8c_my_config = *XCpwm8c_LookupConfig(MY_CPWM8C_0_BASEADDR);
-    status = XCpwm8c_CfgInitialize(&xcpwm8c_my_inst,&xcpwm8c_my_config,xcpwm8c_my_config.BaseAddr);
+    xcpwm8c_my_config = XCpwm8c_LookupConfig(MY_CPWM8C_0_BASEADDR);
+    status = XCpwm8c_CfgInitialize(&xcpwm8c_my_inst,xcpwm8c_my_config,xcpwm8c_my_config->BaseAddr);
 
     
     //axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(2000,MY_CPWM8C_0_BASEADDR);
