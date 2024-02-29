@@ -49,6 +49,12 @@ main(){
     xgpiops_my_config = *XGpioPs_LookupConfig(MY_GPIOPS_0_BASEADDR);
     status = XGpioPs_CfgInitialize(&xgpiops_my_inst,&xgpiops_my_config,xgpiops_my_config.BaseAddr);
 
+    xclkwiz_my_config = *XClk_Wiz_LookupConfig(MY_CLKWIZ_0_BASEADDR);
+    status = XClk_Wiz_CfgInitialize(&xclkwiz_my_inst,&xclkwiz_my_config,xclkwiz_my_config.BaseAddr);
+
+    xcpwm8c_my_config = *XCpwm8c_LookupConfig(MY_CPWM8C_0_BASEADDR);
+    status = XCpwm8c_CfgInitialize(&xcpwm8c_my_inst,&xcpwm8c_my_config,xcpwm8c_my_config.BaseAddr);
+
     
     //axi_cpwm8c_lspwm3l_dec3lxnpc_myinit(2000,MY_CPWM8C_0_BASEADDR);
 
