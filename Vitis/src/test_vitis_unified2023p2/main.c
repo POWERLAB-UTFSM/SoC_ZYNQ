@@ -1,13 +1,17 @@
 #include <math.h>
+#include <sys/_types.h>
 
 #include "hardware_func.h"
 
-#define XBUFFER_SIZE 30
+#define XBUFFER_SIZE 300
 
-static volatile double gv_sinans=3.141592;
-static volatile double gv_sinarg=3.141592;
+/* Memory sections from linker*/
+extern UINTPTR __data_start;
+
+static volatile double gv_sinans[1]={3.141592};
+static volatile double gv_sinarg[1]={3.141592};
 static volatile double gv_xbuffer[XBUFFER_SIZE]  = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
-static volatile double gv_xarg=3.141592;
+static volatile double gv_xarg[1]={3.141592};
 
 // void fiq_myhandler(void *intc_inst_ptr);
 //void irq0_myhandler(void *intc_inst_ptr);
@@ -27,6 +31,12 @@ XScuGic_Config* xscugic_my_config = 0;
 XCpwm8c xcpwm8c_my_inst;
 XCpwm8c_Config* xcpwm8c_my_config = 0;
 
+
+
+volatile UINTPTR asdf;
+
+volatile int wohl=-1;
+
 int \
 main(){
     
@@ -35,6 +45,8 @@ main(){
     // int asd=SDT;
 
     u32 my_write=0;
+
+    asdf = &__data_start;
     
 
     xgpio_my_config = XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
@@ -59,12 +71,12 @@ main(){
    
     int i=0;
     while(1){
-        gv_sinans=sin(gv_sinarg);  
+        gv_sinans[0]=sin(gv_sinarg[0]);  
 
         XGpio_mych1enable(&xgpio_my_inst,my_write);
         for (i=0;i < XBUFFER_SIZE; i++){
-            gv_xbuffer[i]=gv_sinans*(double)(i);
-            gv_xarg=gv_sinans/3.0;
+            gv_xbuffer[i]=gv_sinans[0]*(double)(i);
+            gv_xarg[0]=gv_sinans[0]/3.0;
         }
     }
 
