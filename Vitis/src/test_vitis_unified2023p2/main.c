@@ -2,9 +2,30 @@
 
 #include "hardware_func.h"
 
+#define XBUFFER_SIZE 30
+
+static volatile double gv_sinans=3.141592;
+static volatile double gv_sinarg=3.141592;
+static volatile double gv_xbuffer[XBUFFER_SIZE]  = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+static volatile double gv_xarg=3.141592;
 
 // void fiq_myhandler(void *intc_inst_ptr);
 //void irq0_myhandler(void *intc_inst_ptr);
+
+XGpio xgpio_my_inst;
+XGpio_Config* xgpio_my_config = 0;
+
+XGpioPs xgpiops_my_inst;
+XGpioPs_Config* xgpiops_my_config = 0;
+
+XClk_Wiz xclkwiz_my_inst;
+XClk_Wiz_Config* xclkwiz_my_config = 0;
+
+XScuGic xscugic_my_inst;
+XScuGic_Config* xscugic_my_config = 0;
+
+XCpwm8c xcpwm8c_my_inst;
+XCpwm8c_Config* xcpwm8c_my_config = 0;
 
 int \
 main(){
@@ -14,23 +35,7 @@ main(){
     // int asd=SDT;
 
     u32 my_write=0;
-    double my_sinans=0.0;
-    double my_sinarg=3.141592;
-
-    XGpio xgpio_my_inst;
-    XGpio_Config* xgpio_my_config = 0;
-
-    XGpioPs xgpiops_my_inst;
-    XGpioPs_Config* xgpiops_my_config = 0;
-
-    XClk_Wiz xclkwiz_my_inst;
-    XClk_Wiz_Config* xclkwiz_my_config = 0;
-
-    XScuGic xscugic_my_inst;
-    XScuGic_Config* xscugic_my_config = 0;
-
-    XCpwm8c xcpwm8c_my_inst;
-    XCpwm8c_Config* xcpwm8c_my_config = 0;
+    
 
     xgpio_my_config = XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
     status = XGpio_CfgInitialize(&xgpio_my_inst,xgpio_my_config,xgpio_my_config->BaseAddress);
@@ -52,10 +57,15 @@ main(){
     //status = xscugic_irq_interrupt_myinit(&xscugic_my_inst,&xscugic_my_config,(Xil_ExceptionHandler) irq0_myhandler,XPAR_PS7_SCUGIC_0_BASEADDR,XPAR_FABRIC_AXI_CPWM8C_0_VEC_ID);
 
    
-
+    int i=0;
     while(1){
-        my_sinans=sin(my_sinarg);  
+        gv_sinans=sin(gv_sinarg);  
+
         XGpio_mych1enable(&xgpio_my_inst,my_write);
+        for (i=0;i < XBUFFER_SIZE; i++){
+            gv_xbuffer[i]=gv_sinans*(double)(i);
+            gv_xarg=gv_sinans/3.0;
+        }
     }
 
     return status;
