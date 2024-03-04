@@ -1,9 +1,102 @@
 #include "hardware_func.h"
+#include <xcpwm8c.h>
 
 
+void \
+XGpiops_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir)
+{
+	XGpioPs_WritePin(InstancePtr, pin_dir, 1);
+	XGpioPs_WritePin(InstancePtr, pin_dir, 0);
+}
+
+void \
+XGpio_mych1enable(\
+XGpio *InstancePtr,\
+u32 input){
+
+    XGpio_DiscreteWrite(InstancePtr,1,input);
+
+}
+
+void XCpwm8c_my_init(XCpwm8c *InstancePtr)
+{
+    XCpwm8c_WriteCountMax(InstancePtr,0,2000);
+    XCpwm8c_WriteCountMax(InstancePtr,1,2000);
+    XCpwm8c_WriteCompare(InstancePtr,0,1000);
+    XCpwm8c_WriteCompare(InstancePtr,1,1000);
+    XCpwm8c_WriteCountMode(InstancePtr,0,COUNT_UP_DOWN);
+    XCpwm8c_WriteCountMode(InstancePtr,1,COUNT_UP_DOWN);
+    XCpwm8c_WriteMaskMode(InstancePtr,0,MIN_MASK);
+    XCpwm8c_WriteMaskMode(InstancePtr,1,MIN_MASK);
+    XCpwm8c_WriteCarrOnOff(InstancePtr,0,REG_ON);
+    XCpwm8c_WriteCarrOnOff(InstancePtr,1,REG_ON);
+    XCpwm8c_WriteCarrSel(InstancePtr,0,CARR_MASTER1);
+    XCpwm8c_WriteCarrSel(InstancePtr,1,CARR_MASTER1);
+    XCpwm8c_WriteDTimeOnOff(InstancePtr,0,REG_OFF);
+    XCpwm8c_WriteDTimeOnOff(InstancePtr,1,REG_OFF);
+    XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
+    XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
+    XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
+    XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
+    XCpwm8c_WriteIntMatrix(InstancePtr,1);
+    XCpwm8c_WritePwmOnOff(InstancePtr,REG_ON);
+    XCpwm8c_WriteIntAck(InstancePtr);
+}
+
+void XCpwm8c_my_initlow(UINTPTR BaseAddress)
+{
+	u16 pwm_period=2000;
+	u16 pwm_init=0;
+	u16 pwm_comp1=1000;
+	u8 pwm_eventcount=0;
+	u8 pwm_dtimeA=0;
+	u8 pwm_dtimeB=0;
+	u8 pwm_intmatrix=1;
+
+	XCpwm8c_countmode pwm_countmode=COUNT_UP_DOWN;
+	XCpwm8c_maskmode pwm_maskmode=MIN_MASK;
+	XCpwm8c_onoff pwm_dtonoff=REG_OFF;
+	XCpwm8c_logic pwm_logicA1=LOGIC_NEG;
+	XCpwm8c_logic pwm_logicB1=LOGIC_NEG;
+	XCpwm8c_logic pwm_logicA2=LOGIC_POS;
+	XCpwm8c_logic pwm_logicB2=LOGIC_POS;
+	XCpwm8c_carrsel pwm_carrsel=CARR_MASTER1;
+	XCpwm8c_onoff pwm_onoff=REG_ON;
+	XCpwm8c_onoff pwm_carronoff=REG_ON;
+
+	XCpwm8c_mWrite_Period_1(BaseAddress,pwm_period);
+	XCpwm8c_mWrite_Period_2(BaseAddress,pwm_period);
+	XCpwm8c_mWrite_InitCarrier_1(BaseAddress,pwm_init);
+	XCpwm8c_mWrite_InitCarrier_2(BaseAddress,pwm_init);
+	XCpwm8c_mWrite_Compare_1(BaseAddress,pwm_comp1);
+	XCpwm8c_mWrite_Compare_2(BaseAddress,pwm_comp1);
+	XCpwm8c_mWrite_DeadTimeA_1(BaseAddress,pwm_dtimeA);
+	XCpwm8c_mWrite_DeadTimeB_1(BaseAddress,pwm_dtimeB);
+	XCpwm8c_mWrite_DeadTimeA_2(BaseAddress,pwm_dtimeA);
+	XCpwm8c_mWrite_DeadTimeB_2(BaseAddress,pwm_dtimeB);
+	XCpwm8c_mWrite_EventCount_1(BaseAddress,pwm_eventcount);
+	XCpwm8c_mWrite_EventCount_2(BaseAddress,pwm_eventcount);
+	XCpwm8c_mWrite_InterruptMatrix(BaseAddress,pwm_intmatrix);
+	XCpwm8c_mWrite_CountMode_1(BaseAddress,pwm_countmode);
+	XCpwm8c_mWrite_CountMode_2(BaseAddress,pwm_countmode);
+	XCpwm8c_mWrite_MaskMode_1(BaseAddress,pwm_maskmode);
+	XCpwm8c_mWrite_MaskMode_2(BaseAddress,pwm_maskmode);
+	XCpwm8c_mWrite_DTimeOnOff_1(BaseAddress,pwm_dtonoff);
+	XCpwm8c_mWrite_DTimeOnOff_2(BaseAddress,pwm_dtonoff);
+	XCpwm8c_mWrite_LogicA_1(BaseAddress,pwm_logicA1);
+	XCpwm8c_mWrite_LogicB_1(BaseAddress,pwm_logicB1);
+	XCpwm8c_mWrite_LogicA_2(BaseAddress,pwm_logicA2);
+	XCpwm8c_mWrite_LogicB_2(BaseAddress,pwm_logicB2);
+	XCpwm8c_mWrite_CarrSel_1(BaseAddress,pwm_carrsel);
+	XCpwm8c_mWrite_CarrSel_2(BaseAddress,pwm_carrsel);
+	XCpwm8c_mWrite_CarrOnOff_1(BaseAddress,pwm_carronoff);
+	XCpwm8c_mWrite_CarrOnOff_2(BaseAddress,pwm_carronoff);
+	XCpwm8c_mWrite_PWMOnOff(BaseAddress,pwm_onoff);
+	XCpwm8c_mWrite_IntAck(BaseAddress);
+}
 //---------------------------------------------------------------
 // gpio
-
+/*
 int \
 XGpio_myinit(\
 XGpio *InstancePtr, \
@@ -214,6 +307,7 @@ UINTPTR BaseAddr){
 	XCpwm8c_mWrite_PWMOnOff(BaseAddr,pwm_onoff);
 	XCpwm8c_mWrite_IntAck(BaseAddr);
 }
+*/
 
 /*
 void axi_dec3lxnpc_myinit(AXI_DEC3LXNPC_convtype dec3lxnpc_convtype,AXI_DEC3LXNPC_commtype dec3lxnpc_commtype,u8 axi_dec3lxnpc_tshort,u8 axi_dec3lxnpc_toffon,u8 axi_dec3lxnpc_toffV0on,u8 axi_dec3lxnpc_tonoffV0,u8 axi_dec3lxnpc_toffonI0){

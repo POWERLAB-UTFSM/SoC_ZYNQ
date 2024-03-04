@@ -36,6 +36,8 @@ platform.update_desc(desc = 'pform')
 print("Adding new domain 'domain_standalone' for cpu: 'ps7_cortexa9_1' and OS: 'standalone'")
 domain_standalone = platform.add_domain(cpu = 'ps7_cortexa9_1', os = 'standalone', name = 'standalone_domain', display_name = 'standalone on ps7_cortexa9_1')
 print("Configuring the domain 'domain_standalone'...")
+domain_standalone.set_lib('xilffs')
+domain_standalone.set_lib('xilrsa')
 
 print("Migrating BSP settings for the domain 'domain_standalone'")
 
@@ -73,6 +75,11 @@ jsonData["configurations"][0]['targetSetup']['zynqInitialization']['usingPs7Init
 with open(app.component_location + "\\_ide\\.theia\\launch.json", 'w', encoding='utf-8') as jsonFile:
     json.dump(jsonData, jsonFile)
 jsonFile.close()
+
+# Get the linker script from the app component
+linker = app.get_ld_script()
+# Regenerate ld file with default values
+linker.regenerate()
 
 # Creating system project : 'app_system'
 print("Creating system project 'app_system'")

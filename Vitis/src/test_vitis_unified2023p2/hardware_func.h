@@ -18,10 +18,16 @@
 #define MY_CLKWIZ_0_BASEADDR XPAR_XCLK_WIZ_0_BASEADDR
 #define MY_CPWM8C_0_BASEADDR XPAR_AXI_CPWM8C_0_BASEADDR
 
-
-int XGpio_myinit(XGpio *InstancePtr, XGpio_Config *InstanceConfigPtr, UINTPTR BaseAddr);
+void XGpiops_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir);
 
 void XGpio_mych1enable(XGpio *InstancePtr, u32 input);
+
+void XCpwm8c_my_init(XCpwm8c *InstancePtr);
+
+void XCpwm8c_my_initlow(UINTPTR BaseAddress);
+
+/*
+int XGpio_myinit(XGpio *InstancePtr, XGpio_Config *InstanceConfigPtr, UINTPTR BaseAddr);
 
 int XGpiops_myinit(XGpioPs *InstancePtr, XGpioPs_Config *InstanceConfigPtr, UINTPTR BaseAddr);
 
@@ -34,6 +40,6 @@ int XScugic_irq_interrupt_myinit(XScuGic *intc_instance_ptr, XScuGic_Config *int
 void XCpwm8c_lspwm3l_dec3lxnpc_myinit(u16 pwm_period, UINTPTR BaseAddr);
 
 void XGpiops_pwm_wireack(XGpioPs *InstancePtr,u32 pin_dir);
-
+*/
 
 #endif /* end of inclusion protection macro */
