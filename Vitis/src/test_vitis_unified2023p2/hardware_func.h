@@ -20,11 +20,17 @@
 
 void XGpiops_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir);
 
-void XGpio_mych1enable(XGpio *InstancePtr, u32 input);
+int XGpio_My_Init(XGpio *InstancePtr,XGpio_Config *InstanceCfg, UINTPTR BaseAddr);
 
-void XCpwm8c_my_init(XCpwm8c *InstancePtr);
+void XGpio_My_Ch1enable(XGpio *InstancePtr, u32 input);
 
-void XCpwm8c_my_initlow(UINTPTR BaseAddress);
+int XCpwm8c_My_Init(XCpwm8c *InstancePtr,XCpwm8c_Config *InstanceCfg,UINTPTR BaseAddr);
+
+void XCpwm8c_My_initlow(UINTPTR BaseAddress);
+
+int XScugic_My_InitInterrupt(u32 IntrId,UINTPTR BaseAddress,XScuGic *IntInstance,XScuGic_Config *IntConfig,Xil_ExceptionHandler IntHandler,u32 Priority,u32 Trigger);
+
+//int my_XSetupInterruptSystem(void *DriverInstance, void *IntrHandler, u32 IntrId,  UINTPTR IntcParent, u16 Priority);
 
 /*
 int XGpio_myinit(XGpio *InstancePtr, XGpio_Config *InstanceConfigPtr, UINTPTR BaseAddr);
