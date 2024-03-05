@@ -1,13 +1,5 @@
 #include <math.h>
-#include <sys/_types.h>
-#include <xcpwm8c.h>
-#include <xcpwm8c_l.h>
-#include <xgpiops.h>
-#include <xinterrupt_wrap.h>
-#include "xil_io.h"
-#include "xdmaps.h"
-#include "xil_mmu.h"
-#include "sleep.h"
+#include <xaxicdma.h>
 
 #include "hardware_func.h"
 
@@ -38,6 +30,9 @@ XScuGic_Config xscugic_my_config;
 XCpwm8c xcpwm8c_my_inst;
 XCpwm8c_Config xcpwm8c_my_config;
 
+XAxiCdma xaxicdma_my_inst;
+XAxiCdma_Config xaxicdma_my_config;
+
 /* Global variables */
 u16 my_comp1=1000;
 u16 my_comp2=1000;
@@ -57,18 +52,19 @@ void _My_IRQHandler();
 /*------------------------------------------------------------------------------------------*/
 int \
 main(){
-
-    
-    
+   
 	u32 status= XST_SUCCESS;
-	//asdf = &__data_start;
-	/*
-	xgpio_my_config = XGpio_LookupConfig(MY_GPIO_0_BASEADDR);
-	status = XGpio_CfgInitialize(&xgpio_my_inst,xgpio_my_config,xgpio_my_config->BaseAddress);*/
+
 	status = XGpio_My_Init(\
 		&xgpio_my_inst,\
 		&xgpio_my_config,\
 		MY_GPIO_0_BASEADDR\
+		);
+
+	status = XAxiCdma_My_Init(\
+		&xaxicdma_my_inst,\
+		&xaxicdma_my_config,\
+		MY_AXICDMA_0_BASEADDR\
 		);
 
 	status = XClk_Wiz_My_Init(\
@@ -120,28 +116,20 @@ main(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_IRQHandler(){
+  /*
+	switch(i_cnt){
+		case 0:
+			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 0, my_comp1);
+			break;
+		case 1:
+			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 1, my_comp2);
+			break;
+		case 2:
+			XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
+			break;
+	}*/
 
-		switch(i_cnt){
-			case 0:
-				XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 0, my_comp1);
-				break;
-			case 1:
-				XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 1, my_comp2);
-				break;
-      case 2:
-				XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
-				break;
-		}
-
-    i_cnt=(i_cnt+1)%3;
+	i_cnt=(i_cnt+1)%3;
 	
-	
-	// XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
-	// XCpwm8c_WritePwmOnOff(&xcpwm8c_my_inst,my_pwmonoff);
-	// XCpwm8c_WriteEventCount(&xcpwm8c_my_inst,0,my_eventcount);
-	
-	// XCpwm8c_WriteMaskMode(&xcpwm8c_my_inst, 0, my_maskmode);
-	// XCpwm8c_mWrite_MaskMode_1(MY_CPWM8C_0_BASEADDR, my_maskmode);
-	// XCpwm8c_mWrite_Compare_1(MY_CPWM8C_0_BASEADDR,my_comp);
 	XGpiops_My_PwmWireack(&xgpiops_my_inst,54);
 }

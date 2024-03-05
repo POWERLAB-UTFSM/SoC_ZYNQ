@@ -1,8 +1,5 @@
 #include "hardware_func.h"
-#include <xcpwm8c.h>
-#include <xscugic.h>
-#include <xstatus.h>
-#include "xinterrupt_wrap.h"
+
 
 int \
 XScugic_My_InitInterrupt(\
@@ -29,7 +26,11 @@ u32 Trigger\
 	}
 
 	// set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a rising edge trigger 0x3.
-	XScuGic_SetPriorityTriggerType(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), Priority, Trigger);
+	XScuGic_SetPriorityTriggerType(\
+		IntInstance,\
+		XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId),\
+		Priority,\
+		Trigger);
 
 	// connect the interrupt service routine isr0 to the interrupt controller
 	status = XScuGic_Connect(\
@@ -60,15 +61,39 @@ u32 Trigger\
 	return status;
 }
 
+int \
+XAxiCdma_My_Init(\
+  XAxiCdma *InstancePtr,\
+  XAxiCdma_Config *InstanceCfg,\
+  UINTPTR BaseAddr\
+)
+{
+  int status = XST_FAILURE;
+	XAxiCdma_Config * ICfg = NULL;
+
+  ICfg  = XAxiCdma_LookupConfig(BaseAddr);
+	if (NULL == ICfg) {
+		return XST_FAILURE;
+	}
+	status = XAxiCdma_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddress);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+  XAxiCdma_IntrDisable(InstancePtr, XAXICDMA_XR_IRQ_ALL_MASK);
+
+  *InstanceCfg=*ICfg;
+}
+
 void \
-XGpiops_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir)
+XGpioPs_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir)
 {
 	XGpioPs_WritePin(InstancePtr, pin_dir, 1);
 	XGpioPs_WritePin(InstancePtr, pin_dir, 0);
 }
 
 void \
-XGpio_My_Ch1enable(\
+XGpio_My_Ch1Enable(\
 XGpio *InstancePtr,\
 u32 input){
 
@@ -192,7 +217,7 @@ XCpwm8c_My_Init(XCpwm8c *InstancePtr,XCpwm8c_Config *InstanceCfg, UINTPTR BaseAd
 	return status;
 }
 
-void XCpwm8c_My_initlow(UINTPTR BaseAddress)
+void XCpwm8c_My_InitLow(UINTPTR BaseAddress)
 {
 	u16 pwm_period=2000;
 	u16 pwm_init=0;
