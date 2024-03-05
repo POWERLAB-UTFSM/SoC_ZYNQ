@@ -24,8 +24,6 @@
                 "C:/Xilinx/Vitis/2023.2/gnu/aarch32/nt/gcc-arm-none-eabi/aarch32-xilinx-eabi/usr/include"
             ],
             "defines": [
-                "UNICODE",
-                "_UNICODE",
                 "SDT"
             ],
             "compilerPath": "C:/Xilinx/Vitis/2023.2/gnu/aarch32/nt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc.exe",

@@ -1,10 +1,4 @@
 {
 	"makefile.makefilePath": "",
 	"makefile.makePath": "",
-	"files.associations": {
-		"*.tikz": "latex",
-		"xinterrupt_wrap.h": "c",
-		"xcommon_drv_config.h": "c",
-		"xscugic.h": "c"
-	},
 }

@@ -15,15 +15,13 @@ u32 Priority,\
 u32 Trigger\
 )
 {
-    int status = XST_FAILURE;
-    XScuGic_Config * Cfg = NULL;
+	int status = XST_FAILURE;
+	XScuGic_Config * Cfg = NULL;
 
-    Cfg = XScuGic_LookupConfig(BaseAddress);
+	Cfg = XScuGic_LookupConfig(BaseAddress);
 	if (NULL == Cfg) {
 		return XST_FAILURE;
 	}
-
-    
 
 	status = XScuGic_CfgInitialize(IntInstance, Cfg, Cfg->CpuBaseAddress);
 	if (status != XST_SUCCESS) {
@@ -31,34 +29,35 @@ u32 Trigger\
 	}
 
 	// set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a rising edge trigger 0x3.
-    XScuGic_SetPriorityTriggerType(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), Priority, Trigger);
+	XScuGic_SetPriorityTriggerType(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), Priority, Trigger);
 
 	// connect the interrupt service routine isr0 to the interrupt controller
-    status = XScuGic_Connect(\
-        IntInstance,\
-        XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), \
-        IntHandler, \
-        (void *)IntInstance);
+	status = XScuGic_Connect(\
+		IntInstance,\
+		XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), \
+		IntHandler, \
+		(void *)IntInstance);
 
-	 //Perform a self-test to ensure that the hardware was built correctly
+	// Perform a self-test to ensure that the hardware was built correctly
 	status = XScuGic_SelfTest(IntInstance);
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
 	// enable interrupts for IRQ_F2P[0:0]
-    XScuGic_Enable(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+	XScuGic_Enable(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
 
 	// initialize the exception table and register the interrupt controller handler with the exception table
-    Xil_ExceptionInit();
+	Xil_ExceptionInit();
 	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntInstance);
 
 	// enable non-critical exceptions
-    Xil_ExceptionEnable();
+	Xil_ExceptionEnable();
 
-    *IntConfig=*Cfg;
+	// Refresh config pointer
+	*IntConfig=*Cfg;
 
-    return status;
+	return status;
 }
 
 void \
@@ -80,66 +79,117 @@ u32 input){
 int \
 XGpio_My_Init(XGpio *InstancePtr,XGpio_Config *InstanceCfg, UINTPTR BaseAddr)
 {
-    u32 status = XST_SUCCESS;
+	u32 status = XST_SUCCESS;
 
-    //XCpwm8c *IPtr = NULL;
-    XGpio_Config *ICfg = NULL;
-    
-    ICfg  = XGpio_LookupConfig(BaseAddr);
-    status = XGpio_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddress);
-
-    if (status != XST_SUCCESS) {
+	//XCpwm8c *IPtr = NULL;
+	XGpio_Config *ICfg = NULL;
+	
+	ICfg  = XGpio_LookupConfig(BaseAddr);
+	if (NULL == ICfg) {
+		return XST_FAILURE;
+	}
+	status = XGpio_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddress);
+	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-    *InstanceCfg=*ICfg;
-    //*InstancePtr=*IPtr;
+	*InstanceCfg=*ICfg;
+	//*InstancePtr=*IPtr;
 
-    return status;
+	return status;
+}
+
+int \
+XClk_Wiz_My_Init(XClk_Wiz *InstancePtr,XClk_Wiz_Config *InstanceCfg, UINTPTR BaseAddr)
+{
+	u32 status = XST_SUCCESS;
+
+	//XCpwm8c *IPtr = NULL;
+	XClk_Wiz_Config *ICfg = NULL;
+	
+	ICfg  = XClk_Wiz_LookupConfig(BaseAddr);
+	if (NULL == ICfg) {
+		return XST_FAILURE;
+	}
+	status = XClk_Wiz_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddr);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	*InstanceCfg=*ICfg;
+	//*InstancePtr=*IPtr;
+
+	return status;
+}
+
+int \
+XGpioPs_My_Init(XGpioPs *InstancePtr,XGpioPs_Config *InstanceCfg, UINTPTR BaseAddr)
+{
+	u32 status = XST_SUCCESS;
+
+	//XCpwm8c *IPtr = NULL;
+	XGpioPs_Config *ICfg = NULL;
+	
+	ICfg  = XGpioPs_LookupConfig(BaseAddr);
+	if (NULL == ICfg) {
+		return XST_FAILURE;
+	}
+	status = XGpioPs_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddr);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+  XGpioPs_SetDirection(InstancePtr,XGPIOPS_BANK2,1);
+	XGpioPs_SetOutputEnable(InstancePtr,XGPIOPS_BANK2,1);
+
+	*InstanceCfg=*ICfg;
+	//*InstancePtr=*IPtr;
+
+	return status;
 }
 
 int \
 XCpwm8c_My_Init(XCpwm8c *InstancePtr,XCpwm8c_Config *InstanceCfg, UINTPTR BaseAddr)
 {
-    u32 status = XST_SUCCESS;
+	u32 status = XST_SUCCESS;
 
-    //XCpwm8c *IPtr = NULL;
-    XCpwm8c_Config *ICfg = NULL;
-    
-    ICfg  = XCpwm8c_LookupConfig(BaseAddr);
-    status = XCpwm8c_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddr);
-
-    if (status != XST_SUCCESS) {
+	XCpwm8c_Config *ICfg = NULL;
+	
+	ICfg  = XCpwm8c_LookupConfig(BaseAddr);
+	if (NULL == ICfg) {
+		return XST_FAILURE;
+	}
+	status = XCpwm8c_CfgInitialize(InstancePtr,ICfg,ICfg->BaseAddr);
+	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
 
-    
-    XCpwm8c_WriteCountMax(InstancePtr,0,2000);
-    XCpwm8c_WriteCountMax(InstancePtr,1,2000);
-    XCpwm8c_WriteCompare(InstancePtr,0,1000);
-    XCpwm8c_WriteCompare(InstancePtr,1,1000);
-    XCpwm8c_WriteCountMode(InstancePtr,0,COUNT_UP_DOWN);
-    XCpwm8c_WriteCountMode(InstancePtr,1,COUNT_UP_DOWN);
-    XCpwm8c_WriteMaskMode(InstancePtr,0,MIN_MASK);
-    XCpwm8c_WriteMaskMode(InstancePtr,1,MIN_MASK);
-    XCpwm8c_WriteCarrOnOff(InstancePtr,0,REG_ON);
-    XCpwm8c_WriteCarrOnOff(InstancePtr,1,REG_ON);
-    XCpwm8c_WriteCarrSel(InstancePtr,0,CARR_MASTER1);
-    XCpwm8c_WriteCarrSel(InstancePtr,1,CARR_MASTER1);
-    XCpwm8c_WriteDTimeOnOff(InstancePtr,0,REG_OFF);
-    XCpwm8c_WriteDTimeOnOff(InstancePtr,1,REG_OFF);
-    XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
-    XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
-    XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
-    XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
-    XCpwm8c_WriteIntMatrix(InstancePtr,1);
-    XCpwm8c_WritePwmOnOff(InstancePtr,REG_ON);
-    XCpwm8c_WriteIntAck(InstancePtr);
+	XCpwm8c_WriteCountMax(InstancePtr,0,2000);
+	XCpwm8c_WriteCountMax(InstancePtr,1,2000);
+	XCpwm8c_WriteCompare(InstancePtr,0,1000);
+	XCpwm8c_WriteCompare(InstancePtr,1,1000);
+	XCpwm8c_WriteCountMode(InstancePtr,0,COUNT_UP_DOWN);
+	XCpwm8c_WriteCountMode(InstancePtr,1,COUNT_UP_DOWN);
+	XCpwm8c_WriteMaskMode(InstancePtr,0,MIN_MASK);
+	XCpwm8c_WriteMaskMode(InstancePtr,1,MIN_MASK);
+	XCpwm8c_WriteCarrOnOff(InstancePtr,0,REG_ON);
+	XCpwm8c_WriteCarrOnOff(InstancePtr,1,REG_ON);
+	XCpwm8c_WriteCarrSel(InstancePtr,0,CARR_MASTER1);
+	XCpwm8c_WriteCarrSel(InstancePtr,1,CARR_MASTER1);
+	XCpwm8c_WriteDTimeOnOff(InstancePtr,0,REG_OFF);
+	XCpwm8c_WriteDTimeOnOff(InstancePtr,1,REG_OFF);
+	XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
+	XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
+	XCpwm8c_WriteLogicA(InstancePtr,0,LOGIC_NEG);
+	XCpwm8c_WriteLogicA(InstancePtr,1,LOGIC_POS);
+	XCpwm8c_WriteIntMatrix(InstancePtr,1);
+	XCpwm8c_WritePwmOnOff(InstancePtr,REG_ON);
+	XCpwm8c_WriteIntAck(InstancePtr);
 
-    *InstanceCfg=*ICfg;
-    //*InstancePtr=*IPtr;
+	*InstanceCfg=*ICfg;
+	//*InstancePtr=*IPtr;
 
-    return status;
+	return status;
 }
 
 void XCpwm8c_My_initlow(UINTPTR BaseAddress)

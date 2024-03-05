@@ -10,17 +10,22 @@
 #include "xclk_wiz.h"
 #include "xscugic.h"
 #include "xcpwm8c.h"
-//#include "xdec3lxnpc.h"
+#include "xdec3lxnpc.h"
 #include "xinterrupt_wrap.h"
 
 #define MY_GPIO_0_BASEADDR XPAR_XGPIO_0_BASEADDR
 #define MY_GPIOPS_0_BASEADDR XPAR_XGPIOPS_0_BASEADDR
 #define MY_CLKWIZ_0_BASEADDR XPAR_XCLK_WIZ_0_BASEADDR
 #define MY_CPWM8C_0_BASEADDR XPAR_AXI_CPWM8C_0_BASEADDR
+#define MY_SCUGIC_0_BASEADDR XPAR_XSCUGIC_0_BASEADDR
 
 void XGpiops_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir);
 
 int XGpio_My_Init(XGpio *InstancePtr,XGpio_Config *InstanceCfg, UINTPTR BaseAddr);
+
+int XClk_Wiz_My_Init(XClk_Wiz *InstancePtr,XClk_Wiz_Config *InstanceCfg, UINTPTR BaseAddr);
+
+int XGpioPs_My_Init(XGpioPs *InstancePtr,XGpioPs_Config *InstanceCfg, UINTPTR BaseAddr);
 
 void XGpio_My_Ch1enable(XGpio *InstancePtr, u32 input);
 
