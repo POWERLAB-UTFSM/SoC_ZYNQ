@@ -131,5 +131,5 @@ _My_IRQHandler(){
 
 	i_cnt=(i_cnt+1)%3;
 	
-	XGpiops_My_PwmWireack(&xgpiops_my_inst,54);
+	XGpioPs_My_PwmWireack(&xgpiops_my_inst,54);
 }
