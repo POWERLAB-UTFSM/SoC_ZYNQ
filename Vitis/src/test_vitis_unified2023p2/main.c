@@ -1,18 +1,32 @@
 #include <math.h>
 #include <xaxicdma.h>
+#include <xil_types.h>
 
 #include "hardware_func.h"
 
-#define XBUFFER_SIZE 300
+#define XBUFFER_SIZE 64
+#define BUFFER_BYTESIZE 1200
 
 /* Memory section definitions from linker*/
 extern UINTPTR __data_start;
 extern UINTPTR __data_end;
 
+//uint8_t* tx_buffer = (uint8_t*) 0x0010a79c;
+//uint8_t* rx_buffer = (uint8_t*) 0x0011a79c;
+uint8_t tx_buffer[XBUFFER_SIZE];
+uint8_t rx_buffer[XBUFFER_SIZE];
+
+
+/*
 static volatile double gv_sinans[1]={3.141592};
 static volatile double gv_sinarg[1]={3.141592};
 static volatile double gv_xbuffer[XBUFFER_SIZE]  = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
 static volatile double gv_xarg[1]={3.141592};
+*/
+//static volatile u8 SourBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
+//static volatile u8 DestBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
+
+
 
 /* Global driver intances*/
 XGpio xgpio_my_inst;
@@ -33,16 +47,25 @@ XCpwm8c_Config xcpwm8c_my_config;
 XAxiCdma xaxicdma_my_inst;
 XAxiCdma_Config xaxicdma_my_config;
 
+
 /* Global variables */
 u16 my_comp1=1000;
 u16 my_comp2=1000;
 u16 my_cmax=2000;
 u8 my_eventcount=0;
+/*
 XCpwm8c_onoff my_pwmonoff=REG_ON;
 XCpwm8c_countmode my_countmode=COUNT_UP_DOWN;
 XCpwm8c_maskmode my_maskmode=MIN_MASK;
 
-u32 i_cnt=0;
+UINTPTR data_addrstart;
+UINTPTR data_addrend;
+UINTPTR data_length;
+UINTPTR data_addrout;
+UINTPTR data_addrin;
+
+u32 i_cnt=0;*/
+u32 status_int=XST_FAILURE;
 
 /* Interrupt handler declaration*/
 void _My_IRQHandler();
@@ -54,6 +77,21 @@ int \
 main(){
    
 	u32 status= XST_SUCCESS;
+/*
+  data_addrstart = &__data_start;
+  data_addrend = &__data_end;
+  data_length = 32;
+  data_addrin = SourBuffer;
+  data_addrout = DestBuffer;*/
+
+  for(u32 i=0;i<XBUFFER_SIZE;i++)
+  {
+    tx_buffer[i]=i;    
+    rx_buffer[i]=0xFF;
+  }
+
+  u8* txBufferAddr = (u8*)&tx_buffer[0];
+  u8* rxBufferAddr = (u8*)&rx_buffer[0];
 
 	status = XGpio_My_Init(\
 		&xgpio_my_inst,\
@@ -61,11 +99,32 @@ main(){
 		MY_GPIO_0_BASEADDR\
 		);
 
+  xaxicdma_my_config  = *XAxiCdma_LookupConfig(MY_AXICDMA_0_BASEADDR);
+	status = XAxiCdma_CfgInitialize(&xaxicdma_my_inst,&xaxicdma_my_config,xaxicdma_my_config.BaseAddress);
+  if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+  XAxiCdma_IntrDisable(&xaxicdma_my_inst, XAXICDMA_XR_IRQ_ALL_MASK);
+
+  Xil_DCacheFlushRange( (u8)rxBufferAddr,XBUFFER_SIZE);
+/*
 	status = XAxiCdma_My_Init(\
 		&xaxicdma_my_inst,\
 		&xaxicdma_my_config,\
 		MY_AXICDMA_0_BASEADDR\
-		);
+		);*/
+  
+  
+    //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,(UINTPTR)SourBuffer,(UINTPTR)DestBuffer,32, NULL, NULL);
+  status_int = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) txBufferAddr, (UINTPTR) rxBufferAddr,XBUFFER_SIZE, NULL, NULL);
+   
+  
+  //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,data_addrin,data_addrout, data_length, NULL, NULL);
+  //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,data_addrin,data_addrout, data_length, NULL, NULL);
+  usleep(10);
+  XAxiCdma_Reset(&xaxicdma_my_inst);  
+  usleep(10); 
+  Xil_DCacheInvalidateRange( (u8)txBufferAddr,XBUFFER_SIZE);
 
 	status = XClk_Wiz_My_Init(\
 		&xclkwiz_my_inst,\
@@ -95,6 +154,11 @@ main(){
 		XINTR_IS_EDGE_TRIGGERED\
 		);
 
+  /*for(u32 i=0;i<XBUFFER_SIZE;i++)
+  {
+    gv_xbuffer[i]=(double)(i*i);
+  }*/
+
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -102,7 +166,7 @@ main(){
 	// Xil_SetTlbAttributes(MY_CPWM8C_0_BASEADDR,0xC02);
 	// mtcp(XREG_CP15_INVAL_UTLB_UNLOCKED, 0);
 	// dsb();
-    
+   
 	while(1){
 
 	}
@@ -128,8 +192,11 @@ _My_IRQHandler(){
 			XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
 			break;
 	}*/
-
-	i_cnt=(i_cnt+1)%3;
+/*
+  status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, 0x0010a720,0x00110880, data_length, NULL, NULL);
+  usleep(4);
+  XAxiCdma_Reset(&xaxicdma_my_inst);*/
+	//i_cnt=(i_cnt+1)%3;
 	
 	XGpioPs_My_PwmWireack(&xgpiops_my_inst,54);
 }
