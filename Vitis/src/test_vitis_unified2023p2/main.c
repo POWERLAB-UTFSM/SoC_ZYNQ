@@ -1,26 +1,20 @@
-#include <math.h>
-#include <xaxicdma.h>
+#include "hardware_func.h"
 #include <xil_types.h>
 
-#include "hardware_func.h"
-
-#define XBUFFER_SIZE 128
+#define XBUFFER_SIZE 8
 #define BUFFER_BYTESIZE 1200
-
-/* Memory section definitions from linker*/
-extern UINTPTR __data_start;
-extern UINTPTR __data_end;
-extern UINTPTR __data1_start;
-extern UINTPTR __data1_end;
 
 static volatile uint8_t* tx_buffer = (uint8_t*) 0x0010A768;
 static volatile uint8_t* rx_buffer = (uint8_t*) 0x00F00000;
+
+UINTPTR* txBufferAddr;
+UINTPTR* rxBufferAddr;
 //uint8_t tx_buffer[XBUFFER_SIZE];
 //uint8_t rx_buffer[XBUFFER_SIZE];
 
 //static volatile double gv_sinans[1]={3.141592};
 //static volatile double gv_sinarg[1]={3.141592};
-static volatile double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+static volatile double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0};
 //static volatile double gv_xarg[1]={3.141592};
 
 //static volatile u8 SourBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
@@ -61,9 +55,10 @@ UINTPTR data_addrend;
 UINTPTR data_length;
 UINTPTR data_addrout;
 UINTPTR data_addrin;
-
-u32 i_cnt=0;*/
+*/
+u64 i_cnt=0;
 u32 status_int=XST_FAILURE;
+u64 buff_size;
 
 /* Interrupt handler declaration*/
 void _My_IRQHandler();
@@ -73,10 +68,12 @@ void _My_IRQHandler();
 /*------------------------------------------------------------------------------------------*/
 int \
 main(){
+
    
 	u32 status= XST_SUCCESS;
 
   tx_buffer = (uint8_t*) &__data1_start;
+  buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
 /*
   data_addrstart = &__data_start;
   data_addrend = &__data_end;
@@ -84,14 +81,14 @@ main(){
   data_addrin = SourBuffer;
   data_addrout = DestBuffer;*/
 
-  for(u32 i=0;i<XBUFFER_SIZE;i++)
+  for(u32 i=0;i<buff_size;i++)
   {
     //tx_buffer[i]=i;    
     rx_buffer[i]=0x00;
   }
 
-  UINTPTR* txBufferAddr = (UINTPTR*)&tx_buffer[0];
-  UINTPTR* rxBufferAddr = (UINTPTR*)&rx_buffer[0];
+  txBufferAddr = (UINTPTR*)&tx_buffer[0];
+  rxBufferAddr = (UINTPTR*)&rx_buffer[0];
 
 	status = XGpio_My_Init(\
 		&xgpio_my_inst,\
@@ -111,7 +108,7 @@ main(){
 	// 	return XST_FAILURE;
 	// }
   XAxiCdma_IntrDisable(&xaxicdma_my_inst, XAXICDMA_XR_IRQ_ALL_MASK);
-
+/*
   Xil_DCacheFlushRange( (UINTPTR)txBufferAddr,XBUFFER_SIZE);
   Xil_DCacheFlushRange( (UINTPTR)rxBufferAddr,XBUFFER_SIZE);
 
@@ -120,7 +117,7 @@ main(){
   usleep(10);
   XAxiCdma_Reset(&xaxicdma_my_inst);  
   usleep(10); 
-  Xil_DCacheInvalidateRange( (UINTPTR)txBufferAddr,XBUFFER_SIZE);
+  Xil_DCacheInvalidateRange( (UINTPTR)txBufferAddr,XBUFFER_SIZE);*/
 
 	status = XClk_Wiz_My_Init(\
 		&xclkwiz_my_inst,\
@@ -192,7 +189,14 @@ _My_IRQHandler(){
   status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, 0x0010a720,0x00110880, data_length, NULL, NULL);
   usleep(4);
   XAxiCdma_Reset(&xaxicdma_my_inst);*/
-	//i_cnt=(i_cnt+1)%3;
 	
+  gv_xbuffer[0]=10.0*(double)i_cnt;
+  Xil_DCacheFlushRange( (UINTPTR)txBufferAddr,(u32)buff_size);
+  Xil_DCacheFlushRange( (UINTPTR)((u64)rxBufferAddr+(buff_size*i_cnt)),(u32)buff_size);
+  status_int = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) txBufferAddr, (UINTPTR)((u64)rxBufferAddr+(buff_size*i_cnt)),(u32)buff_size, NULL, NULL);
+  while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+  Xil_DCacheInvalidateRange( (UINTPTR)txBufferAddr,(u32)buff_size);
+  XAxiCdma_Reset(&xaxicdma_my_inst);
+  i_cnt=(i_cnt+1)%3;
 	XGpioPs_My_PwmWireack(&xgpiops_my_inst,54);
 }

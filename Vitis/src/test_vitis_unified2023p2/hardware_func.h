@@ -13,6 +13,8 @@
 #include "xdec3lxnpc.h"
 #include "xinterrupt_wrap.h"
 #include "xaxicdma.h"
+#include "xil_types.h"
+#include <math.h>
 
 #define MY_GPIO_0_BASEADDR XPAR_XGPIO_0_BASEADDR
 #define MY_GPIOPS_0_BASEADDR XPAR_XGPIOPS_0_BASEADDR
@@ -20,6 +22,12 @@
 #define MY_CPWM8C_0_BASEADDR XPAR_AXI_CPWM8C_0_BASEADDR
 #define MY_SCUGIC_0_BASEADDR XPAR_XSCUGIC_0_BASEADDR
 #define MY_AXICDMA_0_BASEADDR XPAR_XAXICDMA_0_BASEADDR
+
+/* Memory section definitions from linker*/
+extern UINTPTR __data_start;
+extern UINTPTR __data_end;
+extern UINTPTR __data1_start;
+extern UINTPTR __data1_end;
 
 /**
  * @brief 
