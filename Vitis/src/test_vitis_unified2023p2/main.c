@@ -4,29 +4,27 @@
 
 #include "hardware_func.h"
 
-#define XBUFFER_SIZE 64
+#define XBUFFER_SIZE 128
 #define BUFFER_BYTESIZE 1200
 
 /* Memory section definitions from linker*/
 extern UINTPTR __data_start;
 extern UINTPTR __data_end;
+extern UINTPTR __data1_start;
+extern UINTPTR __data1_end;
 
-//uint8_t* tx_buffer = (uint8_t*) 0x0010a79c;
-//uint8_t* rx_buffer = (uint8_t*) 0x0011a79c;
-uint8_t tx_buffer[XBUFFER_SIZE];
-uint8_t rx_buffer[XBUFFER_SIZE];
+static volatile uint8_t* tx_buffer = (uint8_t*) 0x0010A768;
+static volatile uint8_t* rx_buffer = (uint8_t*) 0x00F00000;
+//uint8_t tx_buffer[XBUFFER_SIZE];
+//uint8_t rx_buffer[XBUFFER_SIZE];
 
+//static volatile double gv_sinans[1]={3.141592};
+//static volatile double gv_sinarg[1]={3.141592};
+static volatile double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
+//static volatile double gv_xarg[1]={3.141592};
 
-/*
-static volatile double gv_sinans[1]={3.141592};
-static volatile double gv_sinarg[1]={3.141592};
-static volatile double gv_xbuffer[XBUFFER_SIZE]  = {1.0,1.0,1.0,1.0,1.0,1.0,1.0,1.0};
-static volatile double gv_xarg[1]={3.141592};
-*/
 //static volatile u8 SourBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
 //static volatile u8 DestBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
-
-
 
 /* Global driver intances*/
 XGpio xgpio_my_inst;
@@ -77,6 +75,8 @@ int \
 main(){
    
 	u32 status= XST_SUCCESS;
+
+  tx_buffer = (uint8_t*) &__data1_start;
 /*
   data_addrstart = &__data_start;
   data_addrend = &__data_end;
@@ -86,12 +86,12 @@ main(){
 
   for(u32 i=0;i<XBUFFER_SIZE;i++)
   {
-    tx_buffer[i]=i;    
-    rx_buffer[i]=0xFF;
+    //tx_buffer[i]=i;    
+    rx_buffer[i]=0x00;
   }
 
-  u8* txBufferAddr = (u8*)&tx_buffer[0];
-  u8* rxBufferAddr = (u8*)&rx_buffer[0];
+  UINTPTR* txBufferAddr = (UINTPTR*)&tx_buffer[0];
+  UINTPTR* rxBufferAddr = (UINTPTR*)&rx_buffer[0];
 
 	status = XGpio_My_Init(\
 		&xgpio_my_inst,\
@@ -99,32 +99,28 @@ main(){
 		MY_GPIO_0_BASEADDR\
 		);
 
-  xaxicdma_my_config  = *XAxiCdma_LookupConfig(MY_AXICDMA_0_BASEADDR);
-	status = XAxiCdma_CfgInitialize(&xaxicdma_my_inst,&xaxicdma_my_config,xaxicdma_my_config.BaseAddress);
-  if (status != XST_SUCCESS) {
-		return XST_FAILURE;
-	}
-  XAxiCdma_IntrDisable(&xaxicdma_my_inst, XAXICDMA_XR_IRQ_ALL_MASK);
-
-  Xil_DCacheFlushRange( (u8)rxBufferAddr,XBUFFER_SIZE);
-/*
 	status = XAxiCdma_My_Init(\
 		&xaxicdma_my_inst,\
 		&xaxicdma_my_config,\
 		MY_AXICDMA_0_BASEADDR\
-		);*/
-  
-  
-    //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,(UINTPTR)SourBuffer,(UINTPTR)DestBuffer,32, NULL, NULL);
+		);
+
+  // xaxicdma_my_config  = *XAxiCdma_LookupConfig(MY_AXICDMA_0_BASEADDR);
+	// status = XAxiCdma_CfgInitialize(&xaxicdma_my_inst,&xaxicdma_my_config,xaxicdma_my_config.BaseAddress);
+  // if (status != XST_SUCCESS) {
+	// 	return XST_FAILURE;
+	// }
+  XAxiCdma_IntrDisable(&xaxicdma_my_inst, XAXICDMA_XR_IRQ_ALL_MASK);
+
+  Xil_DCacheFlushRange( (UINTPTR)txBufferAddr,XBUFFER_SIZE);
+  Xil_DCacheFlushRange( (UINTPTR)rxBufferAddr,XBUFFER_SIZE);
+
   status_int = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) txBufferAddr, (UINTPTR) rxBufferAddr,XBUFFER_SIZE, NULL, NULL);
    
-  
-  //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,data_addrin,data_addrout, data_length, NULL, NULL);
-  //status_int=XAxiCdma_SimpleTransfer(&xaxicdma_my_inst,data_addrin,data_addrout, data_length, NULL, NULL);
   usleep(10);
   XAxiCdma_Reset(&xaxicdma_my_inst);  
   usleep(10); 
-  Xil_DCacheInvalidateRange( (u8)txBufferAddr,XBUFFER_SIZE);
+  Xil_DCacheInvalidateRange( (UINTPTR)txBufferAddr,XBUFFER_SIZE);
 
 	status = XClk_Wiz_My_Init(\
 		&xclkwiz_my_inst,\

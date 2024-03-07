@@ -80,7 +80,7 @@ XAxiCdma_My_Init(\
 		return XST_FAILURE;
 	}
 
-  XAxiCdma_IntrEnable(InstancePtr, XAXICDMA_XR_IRQ_ALL_MASK);
+  XAxiCdma_IntrDisable(InstancePtr, XAXICDMA_XR_IRQ_ALL_MASK);
 
   *InstanceCfg=*ICfg;
 }
