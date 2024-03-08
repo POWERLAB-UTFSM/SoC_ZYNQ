@@ -1,6 +1,7 @@
 #ifndef HARDWARE_FUNC_H /* prevent circular inclusions */
 #define HARDWARE_FUNC_H /* by using protection macros */
 
+/* Library headers*/
 #include "xparameters.h"
 #include "xcommon_drv_config.h"
 #include "xplatform_info.h"
@@ -16,6 +17,10 @@
 #include "xil_types.h"
 #include <math.h>
 
+/* Rx Buffer memory base address */
+#define MY_RX_BUFFER_BASEADDR 0x00F00000
+
+/* Hardware Memory Address Aliases (from "xparameters.h") */
 #define MY_GPIO_0_BASEADDR XPAR_XGPIO_0_BASEADDR
 #define MY_GPIOPS_0_BASEADDR XPAR_XGPIOPS_0_BASEADDR
 #define MY_CLKWIZ_0_BASEADDR XPAR_XCLK_WIZ_0_BASEADDR
@@ -23,11 +28,47 @@
 #define MY_SCUGIC_0_BASEADDR XPAR_XSCUGIC_0_BASEADDR
 #define MY_AXICDMA_0_BASEADDR XPAR_XAXICDMA_0_BASEADDR
 
-/* Memory section definitions from linker*/
+/* Memory section definitions from linker */
 extern UINTPTR __data_start;
 extern UINTPTR __data_end;
 extern UINTPTR __data1_start;
 extern UINTPTR __data1_end;
+
+/* Global driver intances */
+extern XGpio xgpio_my_inst;
+extern XGpio_Config xgpio_my_config;
+extern XGpioPs xgpiops_my_inst;
+extern XGpioPs_Config xgpiops_my_config;
+extern XClk_Wiz xclkwiz_my_inst;
+extern XClk_Wiz_Config xclkwiz_my_config;
+extern XScuGic xscugic_my_inst;
+extern XScuGic_Config xscugic_my_config;
+extern XCpwm8c xcpwm8c_my_inst;
+extern XCpwm8c_Config xcpwm8c_my_config;
+extern XAxiCdma xaxicdma_my_inst;
+extern XAxiCdma_Config xaxicdma_my_config;
+
+/* Buffer variables */
+extern volatile uint8_t* ___tx_buffer;
+extern volatile uint8_t* ___rx_buffer;
+
+extern UINTPTR* ___txBufferAddr;
+extern UINTPTR* ___rxBufferAddr;
+extern u64 ___buff_size;
+extern u64 ___i_cnt;
+extern u64 ___k_samp;
+
+/* Function declarations */
+
+int _HW_My_Init(void);
+
+void _Buffer_My_Init(void);
+
+u32 _Buffer_My_SimpleTransfer(void);
+
+void _My_XCpwm8c_IntAckGpioPs(void);
+
+int XScuGic_My_Init(XScuGic *InstancePtr,XScuGic_Config *InstanceCfg,UINTPTR BaseAddr);
 
 /**
  * @brief 
@@ -38,14 +79,6 @@ extern UINTPTR __data1_end;
  * @return int 
  */
 int XGpioPs_My_Init(XGpioPs *InstancePtr,XGpioPs_Config *InstanceCfg, UINTPTR BaseAddr);
-
-/**
- * @brief 
- * 
- * @param InstancePtr 
- * @param pin_dir 
- */
-void XGpioPs_My_PwmWireack(XGpioPs *InstancePtr,u32 pin_dir);
 
 /**
  * @brief 
@@ -114,7 +147,7 @@ int XClk_Wiz_My_Init(XClk_Wiz *InstancePtr,XClk_Wiz_Config *InstanceCfg, UINTPTR
  * @param Trigger 
  * @return int 
  */
-int XScugic_My_InitInterrupt(u32 IntrId,UINTPTR BaseAddress,XScuGic *IntInstance,XScuGic_Config *IntConfig,Xil_ExceptionHandler IntHandler,u32 Priority,u32 Trigger);
+int XScugic_My_InitInterrupt(u32 IntrId,XScuGic *IntInstance,Xil_ExceptionHandler IntHandler,u32 Priority,u32 Trigger);
 
 
 #endif /* end of inclusion protection macro */

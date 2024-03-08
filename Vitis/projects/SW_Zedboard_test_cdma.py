@@ -38,6 +38,8 @@ domain_standalone = platform.add_domain(cpu = 'ps7_cortexa9_1', os = 'standalone
 print("Configuring the domain 'domain_standalone'...")
 domain_standalone.set_lib('xilffs')
 domain_standalone.set_lib('xilrsa')
+domain_standalone.set_lib('libmetal')
+# domain_standalone.set_lib('openamp')
 
 print("Migrating BSP settings for the domain 'domain_standalone'")
 
@@ -51,7 +53,7 @@ app = client.create_app_component(name = 'app', platform = client.get_workspace(
 # Configuration options
 app.set_app_config(key='USER_COMPILE_DEBUG_LEVEL', values=['-g3'])
 app.set_app_config(key='USER_COMPILE_OTHER_FLAGS', values='"-fmessage-length=0 -MT"$@" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -DUSE_AMP=1"')
-app.set_app_config(key='USER_LINK_OTHER_FLAGS', values='"-mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none"')
+app.set_app_config(key='USER_LINK_OTHER_FLAGS', values='"-mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none -Wl,-Map,output.map"')
 app.set_app_config(key='USER_LINKER_SCRIPT', values=['../src/lscript.ld'])
 
 # Add symbolic links to sources
