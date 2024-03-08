@@ -1,5 +1,4 @@
 #include "hardware_func.h"
-#include <xil_types.h>
 
 #define XBUFFER_SIZE 8
 #define BUFFER_BYTESIZE 1200
@@ -15,6 +14,7 @@ UINTPTR* rxBufferAddr;
 //static volatile double gv_sinans[1]={3.141592};
 //static volatile double gv_sinarg[1]={3.141592};
 static volatile double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0};
+static volatile double gv_xbufferb[XBUFFER_SIZE] __attribute__((section (".dat1")));
 //static volatile double gv_xarg[1]={3.141592};
 
 //static volatile u8 SourBuffer[BUFFER_BYTESIZE] __attribute__ ((aligned (64)));
@@ -74,6 +74,8 @@ main(){
 
   tx_buffer = (uint8_t*) &__data1_start;
   buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
+
+  gv_xbufferb[0]=0;
 /*
   data_addrstart = &__data_start;
   data_addrend = &__data_end;

@@ -196,36 +196,36 @@ int XCpwm8c_Initialize(XCpwm8c *InstancePtr, UINTPTR BaseAddress);
 XCpwm8c_Config *XCpwm8c_LookupConfig(UINTPTR BaseAddress);
 #endif
 
-int XCpwm8c_CfgInitialize(XCpwm8c * InstancePtr, XCpwm8c_Config * Config, UINTPTR EffectiveAddr);
+int XCpwm8c_CfgInitialize(XCpwm8c * InstancePtr,const  XCpwm8c_Config * Config, UINTPTR EffectiveAddr);
 
-void XCpwm8c_WriteCountMax(XCpwm8c *InstancePtr, u16 Channel, u16 CountMaxim);
+void XCpwm8c_WriteCountMax(const XCpwm8c *InstancePtr, u16 Channel, u16 CountMaxim);
 
-void XCpwm8c_WriteCompare(XCpwm8c *InstancePtr, u16 Channel, u16 Compare);
+void XCpwm8c_WriteCompare(const XCpwm8c *InstancePtr, u16 Channel, u16 Compare);
 
-void XCpwm8c_WriteDeadTimeA(XCpwm8c *InstancePtr, u16 Channel, u8 DeadTime);
+void XCpwm8c_WriteDeadTimeA(const XCpwm8c *InstancePtr, u16 Channel, u8 DeadTime);
 
-void XCpwm8c_WriteDeadTimeB(XCpwm8c *InstancePtr, u16 Channel, u8 DeadTime);
+void XCpwm8c_WriteDeadTimeB(const XCpwm8c *InstancePtr, u16 Channel, u8 DeadTime);
 
-void XCpwm8c_WriteEventCount(XCpwm8c *InstancePtr, u16 Channel, u8 EventCount);
+void XCpwm8c_WriteEventCount(const XCpwm8c *InstancePtr, u16 Channel, u8 EventCount);
 
-void XCpwm8c_WriteCountMode(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_countmode CountMode);
+void XCpwm8c_WriteCountMode(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_countmode CountMode);
 
-void XCpwm8c_WriteMaskMode(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_maskmode MaskMode);
+void XCpwm8c_WriteMaskMode(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_maskmode MaskMode);
 
-void XCpwm8c_WriteDTimeOnOff(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_onoff DTimeOnOff);
+void XCpwm8c_WriteDTimeOnOff(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_onoff DTimeOnOff);
 
-void XCpwm8c_WriteLogicA(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_logic LogicA);
+void XCpwm8c_WriteLogicA(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_logic LogicA);
 
-void XCpwm8c_WriteLogicB(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_logic LogicB);
+void XCpwm8c_WriteLogicB(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_logic LogicB);
 
-void XCpwm8c_WriteCarrSel(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_carrsel CarrSel);
+void XCpwm8c_WriteCarrSel(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_carrsel CarrSel);
 
-void XCpwm8c_WriteCarrOnOff(XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_onoff CarrOnOff);
+void XCpwm8c_WriteCarrOnOff(const XCpwm8c *InstancePtr, u16 Channel, XCpwm8c_onoff CarrOnOff);
 
-void XCpwm8c_WritePwmOnOff(XCpwm8c *InstancePtr, XCpwm8c_onoff PwmOnOff);
+void XCpwm8c_WritePwmOnOff(const XCpwm8c *InstancePtr, XCpwm8c_onoff PwmOnOff);
 
-void XCpwm8c_WriteIntMatrix(XCpwm8c *InstancePtr, u8 IntMatrix);
+void XCpwm8c_WriteIntMatrix(const XCpwm8c *InstancePtr, u8 IntMatrix);
 
-void XCpwm8c_WriteIntAck(XCpwm8c *InstancePtr);
+void XCpwm8c_WriteIntAck(const XCpwm8c *InstancePtr);
 
 #endif // XCPWM8C_H

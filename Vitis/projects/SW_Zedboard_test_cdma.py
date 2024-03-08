@@ -50,7 +50,7 @@ app = client.create_app_component(name = 'app', platform = client.get_workspace(
 
 # Configuration options
 app.set_app_config(key='USER_COMPILE_DEBUG_LEVEL', values=['-g3'])
-app.set_app_config(key='USER_COMPILE_OTHER_FLAGS', values='"-fmessage-length=0 -MT"$@" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard"')
+app.set_app_config(key='USER_COMPILE_OTHER_FLAGS', values='"-fmessage-length=0 -MT"$@" -mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -DUSE_AMP=1"')
 app.set_app_config(key='USER_LINK_OTHER_FLAGS', values='"-mcpu=cortex-a9 -mfpu=vfpv3 -mfloat-abi=hard -Wl,-build-id=none"')
 app.set_app_config(key='USER_LINKER_SCRIPT', values=['../src/lscript.ld'])
 
