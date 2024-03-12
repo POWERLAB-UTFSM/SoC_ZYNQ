@@ -6,12 +6,12 @@
 /*------------------------------------------------------------------------------------------*/
 /* Local definitions */
 /*------------------------------------------------------------------------------------------*/
-#define XBUFFER_SIZE 128
+#define XBUFFER_SIZE 1
 
 /*------------------------------------------------------------------------------------------*/
 /* Sampled (Tx-Rx Buffer) variables (must be stored in memory section ".data1") */
 /*------------------------------------------------------------------------------------------*/
-double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0};
+//double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0};
 //double gv_xbufferb[XBUFFER_SIZE] __attribute__((section (".data1")));
 /*------------------------------------------------------------------------------------------*/
 
@@ -85,6 +85,7 @@ main(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_IRQHandler(){
+  _Buffer_My_Reset();
   /*
 	switch(i_cnt){
 		case 0:
@@ -97,10 +98,8 @@ _My_IRQHandler(){
 			XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
 			break;
 	}*/
-  //gv_xbuffer[0]=10.0;
 
   status_int = _Buffer_My_SimpleTransfer();
-	//_My_XCpwm8c_IntAckGpioPs();
   XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 

@@ -18,7 +18,7 @@
 #include <math.h>
 
 /* Rx Buffer memory base address */
-#define MY_RX_BUFFER_BASEADDR 0x00F00000
+#define MY_RX_BUFFER_BASEADDR 0x11000000
 
 /* Hardware Memory Address Aliases (from "xparameters.h") */
 #define MY_GPIO_0_BASEADDR XPAR_XGPIO_0_BASEADDR
@@ -54,9 +54,9 @@ extern volatile uint8_t* ___rx_buffer;
 
 extern UINTPTR* ___txBufferAddr;
 extern UINTPTR* ___rxBufferAddr;
-extern u64 ___buff_size;
-extern u64 ___i_cnt;
-extern u64 ___k_samp;
+extern u32 ___buff_size;
+extern u32 ___i_cnt;
+extern u32 ___k_samp;
 
 /* Function declarations */
 
@@ -65,6 +65,8 @@ int _HW_My_Init(void);
 void _Buffer_My_Init(void);
 
 u32 _Buffer_My_SimpleTransfer(void);
+
+u32 _Buffer_My_Reset(void);
 
 void _My_XCpwm8c_IntAckGpioPs(void);
 

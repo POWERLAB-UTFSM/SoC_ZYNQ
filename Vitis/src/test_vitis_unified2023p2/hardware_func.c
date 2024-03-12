@@ -1,5 +1,4 @@
 #include "hardware_func.h"
-#include <xstatus.h>
 
 /* Global driver intances*/
 XGpio xgpio_my_inst;
@@ -28,9 +27,9 @@ volatile uint8_t* ___rx_buffer = (uint8_t*) MY_RX_BUFFER_BASEADDR;
 UINTPTR* ___txBufferAddr;
 UINTPTR* ___rxBufferAddr;
 
-u64 ___buff_size;
-u64 ___i_cnt=0;
-u64 ___k_samp=3;
+u32 ___buff_size;
+u32 ___i_cnt  __attribute__((section (".data1"))) = 0;
+u32 ___k_samp __attribute__((section (".data1"))) = 3;
 
 void \
 _Buffer_My_Init(\
@@ -60,16 +59,34 @@ u32 _Buffer_My_SimpleTransfer(\
     return XST_SUCCESS;
 
   Xil_DCacheFlushRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-  Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(___buff_size*___i_cnt)),(u32)___buff_size);
-  status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
+  Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size);
+  status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
 
-  while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
-  Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-  XAxiCdma_Reset(&xaxicdma_my_inst);
+  // while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+  // Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+  // XAxiCdma_Reset(&xaxicdma_my_inst);
   ___i_cnt=(___i_cnt+1)%___k_samp;
 
   return status;
 }
+
+u32 _Buffer_My_Reset(\
+  void\
+)
+{
+  u32 status = XST_FAILURE;
+
+  if(___buff_size<=0)
+    return XST_SUCCESS;
+
+  while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+  Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+  XAxiCdma_Reset(&xaxicdma_my_inst);
+  // ___i_cnt=(___i_cnt+1)%___k_samp;
+
+  return status;
+}
+
 
 int _HW_My_Init(void)
 {
@@ -134,6 +151,8 @@ XScuGic_My_Init(\
 	}
 
   *InstanceCfg=*ICfg;
+
+  return status;
 }
 
 
@@ -203,6 +222,8 @@ XAxiCdma_My_Init(\
   XAxiCdma_IntrDisable(InstancePtr, XAXICDMA_XR_IRQ_ALL_MASK);
 
   *InstanceCfg=*ICfg;
+
+  return status;
 }
 
 void \
