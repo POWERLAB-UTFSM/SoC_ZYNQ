@@ -38,7 +38,8 @@ domain_standalone = platform.add_domain(cpu = 'ps7_cortexa9_1', os = 'standalone
 print("Configuring the domain 'domain_standalone'...")
 domain_standalone.set_lib('xilffs')
 domain_standalone.set_lib('xilrsa')
-domain_standalone.set_lib('libmetal')
+domain_standalone.set_config(option="proc",param="proc_extra_compiler_flags",value='"-g -Wall -Wextra -fno-tree-loop-distribute-patterns -DUSE_AMP=1"')
+# domain_standalone.set_lib('libmetal')
 # domain_standalone.set_lib('openamp')
 
 print("Migrating BSP settings for the domain 'domain_standalone'")
