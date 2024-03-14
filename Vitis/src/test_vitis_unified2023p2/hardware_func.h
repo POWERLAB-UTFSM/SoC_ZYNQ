@@ -18,7 +18,7 @@
 #include <math.h>
 
 /* Rx Buffer memory base address */
-#define MY_RX_BUFFER_BASEADDR 0x11000000
+#define MY_RX_BUFFER_OFFSET 0x00F00000
 
 /* Hardware Memory Address Aliases (from "xparameters.h") */
 #define MY_GPIO_0_BASEADDR XPAR_XGPIO_0_BASEADDR
@@ -33,6 +33,7 @@ extern UINTPTR __data_start;
 extern UINTPTR __data_end;
 extern UINTPTR __data1_start;
 extern UINTPTR __data1_end;
+extern UINTPTR _vector_table;
 
 /* Global driver intances */
 extern XGpio xgpio_my_inst;

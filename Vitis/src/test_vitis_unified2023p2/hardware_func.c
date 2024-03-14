@@ -22,7 +22,7 @@ XAxiCdma_Config xaxicdma_my_config;
 
 /* Buffer variables */
 volatile uint8_t* ___tx_buffer = (uint8_t*) 0x00100000;
-volatile uint8_t* ___rx_buffer = (uint8_t*) MY_RX_BUFFER_BASEADDR;
+volatile uint8_t* ___rx_buffer = (uint8_t*) 0x00100000;
 
 UINTPTR* ___txBufferAddr;
 UINTPTR* ___rxBufferAddr;
@@ -38,6 +38,7 @@ _Buffer_My_Init(\
 {
   ___tx_buffer = (uint8_t*) &__data1_start;
   ___buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
+  ___rx_buffer = (uint8_t*) (&__data1_end + 0x00F00000);
 
   for(u32 i=0;i<___buff_size;i++)
   {

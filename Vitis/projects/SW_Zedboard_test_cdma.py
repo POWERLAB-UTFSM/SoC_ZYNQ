@@ -83,6 +83,9 @@ jsonFile.close()
 linker = app.get_ld_script()
 # Regenerate ld file with default values
 linker.regenerate()
+# update a memory region
+linker.update_memory_region(name = 'ps7_ddr_0', base_address = '0x10000000', size = '0x10000000')
+
 
 # Creating system project : 'app_system'
 print("Creating system project 'app_system'")
