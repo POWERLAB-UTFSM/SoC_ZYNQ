@@ -34,6 +34,8 @@ extern UINTPTR __data_end;
 extern UINTPTR __data1_start;
 extern UINTPTR __data1_end;
 extern UINTPTR _vector_table;
+extern UINTPTR __eh_framehdr_start;
+extern UINTPTR __eh_framehdr_end;
 
 /* Global driver intances */
 extern XGpio xgpio_my_inst;

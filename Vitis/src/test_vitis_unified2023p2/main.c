@@ -100,6 +100,7 @@ _My_IRQHandler(){
 	}*/
 
   status_int = _Buffer_My_SimpleTransfer();
+  //_My_XCpwm8c_IntAckGpioPs();
   XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 
