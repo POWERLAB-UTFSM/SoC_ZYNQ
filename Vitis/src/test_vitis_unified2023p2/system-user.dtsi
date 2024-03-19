@@ -12,7 +12,7 @@
 	amba {
 		elf_ddr_0: ddr@0 {
 			compatible = "mmio-sram";
-			reg = <0x1d000000 0x02000000>;
+			reg = <0x1e000000 0x01000000>;
 		};
 	};
 	remoteproc0: remoteproc@0 {
