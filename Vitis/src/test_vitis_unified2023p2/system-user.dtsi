@@ -20,8 +20,8 @@
 		firmware = "firmware";
 		vring0 = <15>;
 		vring1 = <14>;
-		memory-region = <&rproc_0_reserved>, <&elf_ddr_0>;
-		/* srams = <&elf_ddr_0>;*/ 
+		/* memory-region = <&rproc_0_reserved>, <&elf_ddr_0>; */
+		srams = <&elf_ddr_0>;
 		interrupts = < 0 30 4 >;
 		interrupt-parent = <&intc>;
 	};

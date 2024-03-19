@@ -2,6 +2,7 @@
 /* Libraries */
 /*------------------------------------------------------------------------------------------*/
 #include "hardware_func.h"
+#include <xscugic.h>
 
 /*------------------------------------------------------------------------------------------*/
 /* Local definitions */
@@ -61,6 +62,8 @@ main(){
 		XINTERRUPT_DEFAULT_PRIORITY,\
 		XINTR_IS_EDGE_TRIGGERED\
 		);
+
+  
 
   XCpwm8c_3lxnpc_My_Init(&xcpwm8c_my_inst);
 

@@ -168,6 +168,8 @@ XScugic_My_InitInterrupt(\
 {
 	int status = XST_FAILURE;
 
+  XScuGic_InterruptMaptoCpu(IntInstance,1,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+
 	// set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a rising edge trigger 0x3.
 	XScuGic_SetPriorityTriggerType(\
 		IntInstance,\
@@ -187,6 +189,8 @@ XScugic_My_InitInterrupt(\
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
+
+  
 
 	// enable interrupts for IRQ_F2P[0:0]
 	XScuGic_Enable(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));

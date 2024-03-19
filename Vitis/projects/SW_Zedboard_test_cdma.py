@@ -84,7 +84,7 @@ linker = app.get_ld_script()
 # Regenerate ld file with default values
 linker.regenerate()
 # update a memory region
-linker.update_memory_region(name = 'ps7_ddr_0', base_address = '0x1e000000', size = '0x400000')
+linker.update_memory_region(name = 'ps7_ddr_0', base_address = '0x1e000000', size = '0x01000000')
 
 
 # Creating system project : 'app_system'
