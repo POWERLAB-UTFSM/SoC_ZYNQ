@@ -4,15 +4,15 @@
 		#address-cells = <1>;
 		#size-cells = <1>;
 		ranges;
-		rproc_0_reserved: rproc@1e000000 {
+		rproc_0_reserved: rproc@1f000000 {
 			no-map;
-			reg = <0x1e000000 0x01000000>;
+			reg = <0x1f000000 0x00100000>;
 		};
 	};
 	amba {
 		elf_ddr_0: ddr@0 {
 			compatible = "mmio-sram";
-			reg = <0x1e000000 0x01000000>;
+			reg = <0x1f000000 0x00100000>;
 		};
 	};
 	remoteproc0: remoteproc@0 {
@@ -20,9 +20,9 @@
 		firmware = "firmware";
 		vring0 = <15>;
 		vring1 = <14>;
-		/* memory-region = <&rproc_0_reserved>, <&elf_ddr_0>; */
+		memory-region = <&rproc_0_reserved>;
 		srams = <&elf_ddr_0>;
-		interrupts = < 0 30 4 >;
-		interrupt-parent = <&intc>;
+		/*interrupts = < 0 30 4 >;*/
+		interrupt-parent = <&intc>; 
 	};
 };
