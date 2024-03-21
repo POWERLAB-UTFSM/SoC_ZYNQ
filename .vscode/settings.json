@@ -1,4 +1,8 @@
 {
 	"makefile.makefilePath": "",
 	"makefile.makePath": "",
+	"files.associations": {
+		"*.tikz": "latex",
+		"xscugic.h": "c"
+	},
 }

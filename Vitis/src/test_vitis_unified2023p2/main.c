@@ -52,7 +52,7 @@ main(){
   //gv_xbuffer[0]=0;
 
   status = _HW_My_Init();
-  _Buffer_My_Init();
+  // _Buffer_My_Init();
 
 	status = XScugic_My_InitInterrupt(\
 		xcpwm8c_my_config.IntrId,\
@@ -66,6 +66,9 @@ main(){
 
   XCpwm8c_3lxnpc_My_Init(&xcpwm8c_my_inst);
 
+	_My_XCpwm8c_IntAckGpioPs();
+  XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
@@ -75,8 +78,8 @@ main(){
 	// dsb();
    
 	while(1){
-    //usleep(10);
-    //_My_XCpwm8c_IntAckGpioPs();
+    // usleep(10);
+    // _My_XCpwm8c_IntAckGpioPs();
 	}
 
 	return status;
@@ -88,7 +91,7 @@ main(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_IRQHandler(){
-  _Buffer_My_Reset();
+  // _Buffer_My_Reset();
   /*
 	switch(i_cnt){
 		case 0:
@@ -102,9 +105,9 @@ _My_IRQHandler(){
 			break;
 	}*/
 
-  status_int = _Buffer_My_SimpleTransfer();
-  //_My_XCpwm8c_IntAckGpioPs();
-  XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+  // status_int = _Buffer_My_SimpleTransfer();
+  _My_XCpwm8c_IntAckGpioPs();
+  //XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 
 /*------------------------------------------------------------------------------------------*/

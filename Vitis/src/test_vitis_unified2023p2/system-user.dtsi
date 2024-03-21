@@ -9,20 +9,24 @@
 			reg = <0x1f000000 0x00100000>;
 		};
 	};
-	amba {
+	/*amba {
 		elf_ddr_0: ddr@0 {
 			compatible = "mmio-sram";
 			reg = <0x1f000000 0x00100000>;
 		};
-	};
+	};*/
 	remoteproc0: remoteproc@0 {
 		compatible = "xlnx,zynq_remoteproc";
 		firmware = "firmware";
 		vring0 = <15>;
 		vring1 = <14>;
 		memory-region = <&rproc_0_reserved>;
-		srams = <&elf_ddr_0>;
+		/*srams = <&elf_ddr_0>;*/
 		/*interrupts = < 0 30 4 >;*/
 		interrupt-parent = <&intc>; 
 	};
+};
+/*DTG settings -> Kernel Bootargs extra -> "clk_ignore_unused" */
+&gpio0 {
+	status = "disabled";
 };

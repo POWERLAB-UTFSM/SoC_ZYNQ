@@ -20,73 +20,73 @@ XAxiCdma xaxicdma_my_inst;
 XAxiCdma_Config xaxicdma_my_config;
 
 
-/* Buffer variables */
-volatile uint8_t* ___tx_buffer = (uint8_t*) 0x00100000;
-volatile uint8_t* ___rx_buffer = (uint8_t*) 0x00100000;
+// /* Buffer variables */
+// volatile uint8_t* ___tx_buffer = (uint8_t*) 0x00100000;
+// volatile uint8_t* ___rx_buffer = (uint8_t*) 0x00100000;
 
-UINTPTR* ___txBufferAddr;
-UINTPTR* ___rxBufferAddr;
+// UINTPTR* ___txBufferAddr;
+// UINTPTR* ___rxBufferAddr;
 
-u32 ___buff_size;
-u32 ___i_cnt  __attribute__((section (".data1"))) = 0;
-u32 ___k_samp __attribute__((section (".data1"))) = 3;
+// u32 ___buff_size;
+// u32 ___i_cnt  __attribute__((section (".data1"))) = 0;
+// u32 ___k_samp __attribute__((section (".data1"))) = 3;
 
-void \
-_Buffer_My_Init(\
-  void\
-)
-{
-  ___tx_buffer = (uint8_t*) &__data1_start;
-  ___buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
-  ___rx_buffer = (uint8_t*) (&__data1_end + 0x00010000);
+// void \
+// _Buffer_My_Init(\
+//   void\
+// )
+// {
+//   ___tx_buffer = (uint8_t*) &__data1_start;
+//   ___buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
+//   ___rx_buffer = (uint8_t*) (&__data1_end + 0x00010000);
 
-  for(u32 i=0;i<___buff_size;i++)
-  {
-    //tx_buffer[i]=i;    
-    ___rx_buffer[i]=0x00;
-  }
+//   for(u32 i=0;i<___buff_size;i++)
+//   {
+//     //tx_buffer[i]=i;    
+//     ___rx_buffer[i]=0x00;
+//   }
 
-  ___txBufferAddr = (UINTPTR*)&___tx_buffer[0];
-  ___rxBufferAddr = (UINTPTR*)&___rx_buffer[0];
-}
+//   ___txBufferAddr = (UINTPTR*)&___tx_buffer[0];
+//   ___rxBufferAddr = (UINTPTR*)&___rx_buffer[0];
+// }
 
-u32 _Buffer_My_SimpleTransfer(\
-  void\
-)
-{
-  u32 status = XST_FAILURE;
+// u32 _Buffer_My_SimpleTransfer(\
+//   void\
+// )
+// {
+//   u32 status = XST_FAILURE;
 
-  if(___buff_size<=0)
-    return XST_SUCCESS;
+//   if(___buff_size<=0)
+//     return XST_SUCCESS;
 
-  Xil_DCacheFlushRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-  Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size);
-  status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
+//   Xil_DCacheFlushRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+//   Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size);
+//   status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
 
-  // while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
-  // Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-  // XAxiCdma_Reset(&xaxicdma_my_inst);
-  ___i_cnt=(___i_cnt+1)%___k_samp;
+//   // while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+//   // Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+//   // XAxiCdma_Reset(&xaxicdma_my_inst);
+//   ___i_cnt=(___i_cnt+1)%___k_samp;
 
-  return status;
-}
+//   return status;
+// }
 
-u32 _Buffer_My_Reset(\
-  void\
-)
-{
-  u32 status = XST_FAILURE;
+// u32 _Buffer_My_Reset(\
+//   void\
+// )
+// {
+//   u32 status = XST_FAILURE;
 
-  if(___buff_size<=0)
-    return XST_SUCCESS;
+//   if(___buff_size<=0)
+//     return XST_SUCCESS;
 
-  while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
-  Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-  XAxiCdma_Reset(&xaxicdma_my_inst);
-  // ___i_cnt=(___i_cnt+1)%___k_samp;
+//   while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+//   Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+//   XAxiCdma_Reset(&xaxicdma_my_inst);
+//   // ___i_cnt=(___i_cnt+1)%___k_samp;
 
-  return status;
-}
+//   return status;
+// }
 
 
 int _HW_My_Init(void)
@@ -167,6 +167,10 @@ XScugic_My_InitInterrupt(\
 )
 {
 	int status = XST_FAILURE;
+
+	Xil_ExceptionDisable();
+	XScuGic_Disconnect(IntInstance, XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+	XScuGic_Disable(IntInstance, XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
 
 	XScuGic_InterruptUnmapFromCpu(IntInstance, 0,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
   XScuGic_InterruptMaptoCpu(IntInstance,1,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
