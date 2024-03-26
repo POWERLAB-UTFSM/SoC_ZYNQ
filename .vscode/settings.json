@@ -3,6 +3,8 @@
 	"makefile.makePath": "",
 	"files.associations": {
 		"*.tikz": "latex",
-		"xscugic.h": "c"
+		"xscugic.h": "c",
+		"xil_types.h": "c",
+		"xplatform_info.h": "c"
 	},
 }

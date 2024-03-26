@@ -1,3 +1,4 @@
+
 /*------------------------------------------------------------------------------------------*/
 /* Libraries */
 /*------------------------------------------------------------------------------------------*/
@@ -6,12 +7,12 @@
 /*------------------------------------------------------------------------------------------*/
 /* Local definitions */
 /*------------------------------------------------------------------------------------------*/
-#define XBUFFER_SIZE 1
+#define XBUFFER_SIZE 50
 
 /*------------------------------------------------------------------------------------------*/
 /* Sampled (Tx-Rx Buffer) variables (must be stored in memory section ".data1") */
 /*------------------------------------------------------------------------------------------*/
-//double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0};
+double gv_xbuffer[XBUFFER_SIZE] __attribute__((section (".data1"))) = {1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,14.0,15.0,16.0,17.0,18.0,19.0,20.0};
 //double gv_xbufferb[XBUFFER_SIZE] __attribute__((section (".data1")));
 /*------------------------------------------------------------------------------------------*/
 
@@ -28,6 +29,8 @@ u32 status_int=XST_FAILURE;
 /* Interrupt handler declaratios */
 /*------------------------------------------------------------------------------------------*/
 void _My_IRQHandler();
+
+void _My_FIQHandler();
 
 /*------------------------------------------------------------------------------------------*/
 /* Local function declarations */
@@ -52,22 +55,26 @@ main(){
   //gv_xbuffer[0]=0;
 
   status = _HW_My_Init();
-  // _Buffer_My_Init();
+  //_Buffer_My_Init();
 
-	status = XScugic_My_InitInterrupt(\
+	/*status = XScugic_My_InitInterrupt(\
 		xcpwm8c_my_config.IntrId,\
-		&xscugic_my_inst,
+    &xscugic_my_inst,
 		&_My_IRQHandler,\
-		XINTERRUPT_DEFAULT_PRIORITY,\
-		XINTR_IS_EDGE_TRIGGERED\
-		);
+		0xF0U,\
+		XINTR_IS_LEVEL_TRIGGERED\
+		);*/
 
+  status = XScugic_My_InitFIQInterrupt(\
+    &xscugic_my_inst,
+		&_My_FIQHandler\
+  );
   
 
   XCpwm8c_3lxnpc_My_Init(&xcpwm8c_my_inst);
 
-	_My_XCpwm8c_IntAckGpioPs();
-  XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+	// _My_XCpwm8c_IntAckGpioPs();
+  // XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
@@ -91,6 +98,7 @@ main(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_IRQHandler(){
+  //XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
   // _Buffer_My_Reset();
   /*
 	switch(i_cnt){
@@ -107,6 +115,33 @@ _My_IRQHandler(){
 
   // status_int = _Buffer_My_SimpleTransfer();
   _My_XCpwm8c_IntAckGpioPs();
+	XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
+  //XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+}
+
+/*------------------------------------------------------------------------------------------*/
+/*  Interrupt  */
+/* _My_IRQHandler() */
+/*------------------------------------------------------------------------------------------*/
+void \
+_My_FIQHandler(){
+  //_Buffer_My_Reset();
+  /*
+	switch(i_cnt){
+		case 0:
+			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 0, my_comp1);
+			break;
+		case 1:
+			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 1, my_comp2);
+			break;
+		case 2:
+			XCpwm8c_WriteCountMax(&xcpwm8c_my_inst, 0, my_cmax);
+			break;
+	}*/
+
+  //status_int = _Buffer_My_SimpleTransfer();
+  _My_XCpwm8c_IntAckGpioPs();
+	XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
   //XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 

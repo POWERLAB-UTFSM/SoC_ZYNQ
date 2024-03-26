@@ -198,6 +198,8 @@ XCpwm8c_Config *XCpwm8c_LookupConfig(UINTPTR BaseAddress);
 
 int XCpwm8c_CfgInitialize(XCpwm8c * InstancePtr,const  XCpwm8c_Config * Config, UINTPTR EffectiveAddr);
 
+void XCpwm8c_WriteFullStatus(const XCpwm8c *InstancePtr);
+
 void XCpwm8c_WriteCountMax(const XCpwm8c *InstancePtr, u16 Channel, u16 CountMaxim);
 
 void XCpwm8c_WriteCompare(const XCpwm8c *InstancePtr, u16 Channel, u16 Compare);

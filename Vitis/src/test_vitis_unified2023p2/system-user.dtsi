@@ -6,7 +6,23 @@
 		ranges;
 		rproc_0_reserved: rproc@1f000000 {
 			no-map;
+			compatible = "shared-dma-pool";
 			reg = <0x1f000000 0x00100000>;
+		};
+		vdev0vring0: vdev0vring0@1f100000 {
+			no-map;
+			compatible = "shared-dma-pool";
+			reg = <0x1f100000 0x4000>;
+			};
+		vdev0vring1: vdev0vring1@1f104000 {
+			no-map;
+			compatible = "shared-dma-pool";
+			reg = <0x1f104000 0x4000>;
+			};
+		vdev0buffer: vdev0buffer@1f108000 {
+			no-map;
+			compatible = "shared-dma-pool";
+			reg = <0x1f108000 0x100000>;
 		};
 	};
 	/*amba {
@@ -20,9 +36,9 @@
 		firmware = "firmware";
 		vring0 = <15>;
 		vring1 = <14>;
-		memory-region = <&rproc_0_reserved>;
-		/*srams = <&elf_ddr_0>;*/
-		/*interrupts = < 0 30 4 >;*/
+		memory-region = <&rproc_0_reserved>, <&vdev0buffer>, <&vdev0vring0>, <&vdev0vring1>;
+		/* srams = <&elf_ddr_0>; */
+		/* interrupts = < 0 30 1 >; */
 		interrupt-parent = <&intc>; 
 	};
 };
@@ -30,3 +46,19 @@
 &gpio0 {
 	status = "disabled";
 };
+&axi_cpwm8c_0 {
+	/*interrupts = <0 30 4>;*/
+	status = "disabled";
+};
+&axi_dec3lxnpc_0 {
+	status = "disabled";
+};
+&axi_dec3lxnpc_1 {
+	status = "disabled";
+};
+&axi_cdma_0 {
+	status = "disabled";
+};
+/* &remoteproc0 {
+	interrupts = <0 30 4>;
+}; */

@@ -51,25 +51,25 @@ extern XCpwm8c_Config xcpwm8c_my_config;
 extern XAxiCdma xaxicdma_my_inst;
 extern XAxiCdma_Config xaxicdma_my_config;
 
-// /* Buffer variables */
-// extern volatile uint8_t* ___tx_buffer;
-// extern volatile uint8_t* ___rx_buffer;
+/* Buffer variables */
+extern volatile uint8_t* ___tx_buffer;
+extern volatile uint8_t* ___rx_buffer;
 
-// extern UINTPTR* ___txBufferAddr;
-// extern UINTPTR* ___rxBufferAddr;
-// extern u32 ___buff_size;
-// extern u32 ___i_cnt;
-// extern u32 ___k_samp;
+extern UINTPTR* ___txBufferAddr;
+extern UINTPTR* ___rxBufferAddr;
+extern u32 ___buff_size;
+extern u32 ___i_cnt;
+extern u32 ___k_samp;
 
 /* Function declarations */
 
 int _HW_My_Init(void);
 
-// void _Buffer_My_Init(void);
+void _Buffer_My_Init(void);
 
-// u32 _Buffer_My_SimpleTransfer(void);
+u32 _Buffer_My_SimpleTransfer(void);
 
-// u32 _Buffer_My_Reset(void);
+u32 _Buffer_My_Reset(void);
 
 void _My_XCpwm8c_IntAckGpioPs(void);
 
@@ -153,6 +153,8 @@ int XClk_Wiz_My_Init(XClk_Wiz *InstancePtr,XClk_Wiz_Config *InstanceCfg, UINTPTR
  * @return int 
  */
 int XScugic_My_InitInterrupt(u32 IntrId,XScuGic *IntInstance,Xil_ExceptionHandler IntHandler,u32 Priority,u32 Trigger);
+
+int XScugic_My_InitFIQInterrupt(XScuGic *IntInstance,Xil_ExceptionHandler IntFIQHandler);
 
 
 #endif /* end of inclusion protection macro */

@@ -20,8 +20,6 @@
 
 import PKG_pwm::*;
 
-
-
 module interrupt_matrix(
     input clk,
     input reset,
@@ -35,14 +33,6 @@ module interrupt_matrix(
 
     logic [`PWM_WIDTH-1:0] matrix_aux;
     logic [`PWM_WIDTH-1:0] result;
-    logic [3:0] cnt;
-    typedef enum {
-        S_ack,
-        S_int,
-        S_wait
-    } State_int;
-    
-    State_int state,state_next;
     
     always_comb begin
         if (reset) begin
@@ -61,44 +51,20 @@ module interrupt_matrix(
         end 
     endgenerate
     assign trigger_out = | result;
-
+	//assign interrupt_out = interrupt_in[7] & matrix_aux[7] | interrupt_in[6] & matrix_aux[6] | interrupt_in[5] & matrix_aux[5] | interrupt_in[4] & matrix_aux[4] | interrupt_in[3] & matrix_aux[3] | interrupt_in[2] & matrix_aux[2] | interrupt_in[1] & matrix_aux[1] | interrupt_in[0] & matrix_aux[0];
+    
     always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
-            state <= S_ack;
-            cnt=0;
+        if(reset==1) begin
+            interrupt_out <=0;
         end
         else begin
-            state <= state_next;
-            if(state==S_int) begin
-                cnt=cnt+1;
+            if(int_ack==1 || wire_ack==1) begin
+                interrupt_out<=0;
             end
-            else begin
-                cnt=0;
+            if(trigger_out==1) begin
+                interrupt_out <=1;
             end
         end
     end
-    
-
-    always_comb begin
-        state_next = state;
-        case (state)
-            S_ack: begin
-                interrupt_out = trigger_out;
-                state_next = trigger_out ? S_int : S_ack;
-            end
-            S_int: begin
-                interrupt_out = 1'b1;
-                state_next = (cnt==4'b1111) ? S_wait : ((int_ack==1 || wire_ack==1) ? S_ack: S_int);
-            end
-            S_wait: begin
-                interrupt_out = 1'b0;
-                state_next = (int_ack==1 || wire_ack==1) ? S_ack : S_wait;
-            end
-            default: begin
-                interrupt_out = 1'b0;
-                state_next = S_wait;
-            end
-        endcase
-  end
     
 endmodule

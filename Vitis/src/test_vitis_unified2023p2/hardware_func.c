@@ -1,3 +1,4 @@
+
 #include "hardware_func.h"
 
 /* Global driver intances*/
@@ -20,73 +21,73 @@ XAxiCdma xaxicdma_my_inst;
 XAxiCdma_Config xaxicdma_my_config;
 
 
-// /* Buffer variables */
-// volatile uint8_t* ___tx_buffer = (uint8_t*) 0x00100000;
-// volatile uint8_t* ___rx_buffer = (uint8_t*) 0x00100000;
+/* Buffer variables */
+volatile uint8_t* ___tx_buffer = (uint8_t*) 0x00100000;
+volatile uint8_t* ___rx_buffer = (uint8_t*) 0x00100000;
 
-// UINTPTR* ___txBufferAddr;
-// UINTPTR* ___rxBufferAddr;
+UINTPTR* ___txBufferAddr;
+UINTPTR* ___rxBufferAddr;
 
-// u32 ___buff_size;
-// u32 ___i_cnt  __attribute__((section (".data1"))) = 0;
-// u32 ___k_samp __attribute__((section (".data1"))) = 3;
+u32 ___buff_size;
+u32 ___i_cnt  __attribute__((section (".data1"))) = 0;
+u32 ___k_samp __attribute__((section (".data1"))) = 30;
 
-// void \
-// _Buffer_My_Init(\
-//   void\
-// )
-// {
-//   ___tx_buffer = (uint8_t*) &__data1_start;
-//   ___buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
-//   ___rx_buffer = (uint8_t*) (&__data1_end + 0x00010000);
+void \
+_Buffer_My_Init(\
+  void\
+)
+{
+  ___tx_buffer = (uint8_t*) &__data1_start;
+  ___buff_size = (u64)(&__data1_end)-(u64)(&__data1_start);
+  ___rx_buffer = (uint8_t*) (&__data1_end + 0x00010000);
 
-//   for(u32 i=0;i<___buff_size;i++)
-//   {
-//     //tx_buffer[i]=i;    
-//     ___rx_buffer[i]=0x00;
-//   }
+  for(u32 i=0;i<___buff_size;i++)
+  {
+    //tx_buffer[i]=i;    
+    ___rx_buffer[i]=0x00;
+  }
 
-//   ___txBufferAddr = (UINTPTR*)&___tx_buffer[0];
-//   ___rxBufferAddr = (UINTPTR*)&___rx_buffer[0];
-// }
+  ___txBufferAddr = (UINTPTR*)&___tx_buffer[0];
+  ___rxBufferAddr = (UINTPTR*)&___rx_buffer[0];
+}
 
-// u32 _Buffer_My_SimpleTransfer(\
-//   void\
-// )
-// {
-//   u32 status = XST_FAILURE;
+u32 _Buffer_My_SimpleTransfer(\
+  void\
+)
+{
+  u32 status = XST_FAILURE;
 
-//   if(___buff_size<=0)
-//     return XST_SUCCESS;
+  if(___buff_size<=0)
+    return XST_SUCCESS;
 
-//   Xil_DCacheFlushRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-//   Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size);
-//   status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
+  Xil_DCacheFlushRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+  Xil_DCacheFlushRange( (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size);
+  status = XAxiCdma_SimpleTransfer(&xaxicdma_my_inst, (UINTPTR) ___txBufferAddr, (UINTPTR)((u64)___rxBufferAddr+(u64)(___buff_size*___i_cnt)),(u32)___buff_size, NULL, NULL);
 
-//   // while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
-//   // Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-//   // XAxiCdma_Reset(&xaxicdma_my_inst);
-//   ___i_cnt=(___i_cnt+1)%___k_samp;
+  // while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+  // Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+  // XAxiCdma_Reset(&xaxicdma_my_inst);
+  ___i_cnt=(___i_cnt+1)%___k_samp;
 
-//   return status;
-// }
+  return status;
+}
 
-// u32 _Buffer_My_Reset(\
-//   void\
-// )
-// {
-//   u32 status = XST_FAILURE;
+u32 _Buffer_My_Reset(\
+  void\
+)
+{
+  u32 status = XST_FAILURE;
 
-//   if(___buff_size<=0)
-//     return XST_SUCCESS;
+  if(___buff_size<=0)
+    return XST_SUCCESS;
 
-//   while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
-//   Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
-//   XAxiCdma_Reset(&xaxicdma_my_inst);
-//   // ___i_cnt=(___i_cnt+1)%___k_samp;
+  while(XAxiCdma_IsBusy(&xaxicdma_my_inst)) {};
+  Xil_DCacheInvalidateRange( (UINTPTR)___txBufferAddr,(u32)___buff_size);
+  XAxiCdma_Reset(&xaxicdma_my_inst);
+  // ___i_cnt=(___i_cnt+1)%___k_samp;
 
-//   return status;
-// }
+  return status;
+}
 
 
 int _HW_My_Init(void)
@@ -156,6 +157,28 @@ XScuGic_My_Init(\
   return status;
 }
 
+int \
+XScugic_My_InitFIQInterrupt(\
+  XScuGic *IntInstance,\
+	Xil_ExceptionHandler IntFIQHandler\
+)
+{
+	int status = XST_FAILURE;
+
+	//Perform a self-test to ensure that the hardware was built correctly
+
+	status = XScuGic_SelfTest(IntInstance);
+	if (status != XST_SUCCESS) {
+		return XST_FAILURE;
+	}
+
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_FIQ_INT,(Xil_ExceptionHandler) IntFIQHandler,IntInstance);
+
+	Xil_ExceptionEnableMask(XIL_EXCEPTION_FIQ);
+
+	return XST_SUCCESS;
+}
+
 
 int \
 XScugic_My_InitInterrupt(\
@@ -172,8 +195,7 @@ XScugic_My_InitInterrupt(\
 	XScuGic_Disconnect(IntInstance, XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
 	XScuGic_Disable(IntInstance, XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
 
-	XScuGic_InterruptUnmapFromCpu(IntInstance, 0,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
-  XScuGic_InterruptMaptoCpu(IntInstance,1,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+	
 
 	// set the priority of IRQ_F2P[0:0] to 0xA0 (highest 0xF8, lowest 0x00) and a trigger for a rising edge trigger 0x3.
 	XScuGic_SetPriorityTriggerType(\
@@ -182,7 +204,21 @@ XScugic_My_InitInterrupt(\
 		Priority,\
 		Trigger);
 
-	// connect the interrupt service routine isr0 to the interrupt controller
+
+	// enable interrupts for IRQ_F2P[0:0]
+	XScuGic_Enable(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+
+  XScuGic_InterruptUnmapFromCpu(IntInstance, 0,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+  XScuGic_InterruptMaptoCpu(IntInstance,1,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
+
+	// initialize the exception table and register the interrupt controller handler with the exception table
+	Xil_ExceptionInit();
+	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntInstance);
+
+	// enable non-critical exceptions
+	Xil_ExceptionEnable();
+
+  // connect the interrupt service routine isr0 to the interrupt controller
 	status = XScuGic_Connect(\
 		IntInstance,\
 		XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId), \
@@ -194,18 +230,6 @@ XScugic_My_InitInterrupt(\
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
 	}
-
-  
-
-	// enable interrupts for IRQ_F2P[0:0]
-	XScuGic_Enable(IntInstance,XGet_IntrId(IntrId)+XGet_IntrOffset(IntrId));
-
-	// initialize the exception table and register the interrupt controller handler with the exception table
-	Xil_ExceptionInit();
-	Xil_ExceptionRegisterHandler(XIL_EXCEPTION_ID_INT, (Xil_ExceptionHandler)XScuGic_InterruptHandler, IntInstance);
-
-	// enable non-critical exceptions
-	Xil_ExceptionEnable();
 
 	return status;
 }
