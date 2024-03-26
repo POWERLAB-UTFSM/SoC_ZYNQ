@@ -1,3 +1,30 @@
+# Regeneración automatizada de proyectos en Vitis Unified 2023.2 desde script de Python
+
+## Requisitos
+- Vitis 2023.2 en adelante (incluyendo Vivado y Vitis Unified)
+
+## Ejecutar script
+
+1. Ejecutar script Python
+	```Powershell
+	> vitis -s <script_proyecto>.py
+	```
+	Creandose su proyecto (BSP y aplicaciones) en la carpeta [\workspace](./workspace/)
+	- Dependiendo del contenido del script, puede que necesite privilegios de administrador. Para ello (Windows), puede instalar [gsudo](https://github.com/gerardog/gsudo), y anteceder ``gsudo`` al comando anterior.
+	- Opcionalmente, puede crear un script interactivo con
+		```Powershell
+		> vitis -i
+		```
+
+1. Abrir el entorno de trabajo (workspace) Vitis Unified con
+	```Powershell
+	> vitis -w ./workspace
+	```
+
+## Más información
+
+- [Documentación Oficial - Vitis Scripting](https://github.com/Xilinx/Vitis-Tutorials/tree/2023.2/Embedded_Software/Feature_Tutorials/04-vitis_scripting_flows)
+
 # Regeneración automatizada de proyectos en Vitis desde script `.tcl`
 
 1. Ejecute el archivo `.bat` [_VITIS_PROJECT_GENERATOR](_VITIS_PROJECT_GENERATOR.bat). Desde Windows Powershell, ingrese:

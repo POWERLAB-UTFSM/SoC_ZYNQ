@@ -34,8 +34,10 @@ Compatible, según proyecto.
     * [projects](./Vivado/projects): Proyectos creados con Vivado.
     * [xsa_hardware](./Vivado/xsa_hardware): Archivos comprimidos con la descripción de hardware de un proyecto en Vivado para ser incluído en un proyecto de software Vitis.
 * [Vitis](Vitis): Carpeta con archivos para proyectos de desarrollo de software en Vitis.
+    * [drivers](./Vitis/drivers/): Carpeta con drivers personalizados (especialmente para IP cores personalizados incluídos en su hardware mediante Vivado).
     * [projects](./Vitis/projects/): Carpeta con proyectos de aplicación/plataforma de MCUs ZYNQ, autogenerables desde `.tcl`.
     * [src](./Vitis/src/): Códigos fuente en C para los distintos proyectos.
+    * [petalinux](./Vitis/petalinuxc/): Archivos de respaldo para desarrollar proyectos en Petalinux.
 
 ## Más información de interés:
 
@@ -44,3 +46,5 @@ Compatible, según proyecto.
     * [README: Creación de scripts `tcl` para configuración de SoCs ZYNQ](Vivado/sources/tcl/README.md)
     * [README: Creación e inclusión de IPs en proyectos de Vivado](./Vivado/ip_repo/README.md)
 * [README: Administración de proyectos de software en Vitis IDE](./Vitis/projects/README.md)
+    * [README: Creación de proyectos en Petalinux (incluyendo OpenAMP)](./Vitis/petalinux/README.md)
+    * [README: (Re)generación de proyectos en Vitis ](./Vitis/projects/README.md)
