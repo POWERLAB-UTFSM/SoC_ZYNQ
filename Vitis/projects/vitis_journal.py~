@@ -1,0 +1,39 @@
+#-----------------------------------------------------------------
+# Vitis v2024.1 (64-bit)
+# Start of session at: Fri May 31 18:41:08 2024
+# Current directory: E:\Repos\SoC_ZYNQ\Vitis\projects
+# Command line: vitis -i
+# Journal file: vitis_journal.py
+# Batch mode: $XILINX_VITIS/bin/vitis -new -s E:\Repos\SoC_ZYNQ\Vitis\projects\vitis_journal.py
+#-----------------------------------------------------------------
+
+#!/usr/bin/env python3
+import vitis
+import os
+import shutil
+path_workspace=os.path.normpath(os.getcwd() + '\\workspace')
+path_workspace
+#[Out]# 'E:\\Repos\\SoC_ZYNQ\\Vitis\\projects\\workspace'
+path_swrepo=os.path.normpath(os.getcwd() + os.sep + os.pardir + '\\drivers')
+file_hw='HW_Zedboard_test_cdma.xsa'
+path_hw=os.path.normpath(os.getcwd() + os.sep + os.pardir + os.sep + os.pardir + '\\Vivado\\xsa_hardware\\' + file_hw )
+if (os.path.isdir(path_workspace)):
+    shutil.rmtree(path_workspace)
+    print(f"Deleted workspace {path_workspace}")
+    
+client = vitis.create_client()   
+client.set_workspace(path_workspace)
+#[Out]# True
+print('Successfully created Vitis client on workspace {}'.format(client.get_workspace()))
+client.set_sw_repo(level='LOCAL',path=path_swrepo)
+client.set_embedded_sw_repo(level='LOCAL',path=path_swrepo)
+#[Out]# True
+platform = client.create_platform_component(name = 'pform', hw = path_hw)
+client.create_platform_component(name = 'pform', hw_design = path_hw)
+#[Out]# 'project_name': pform
+#[Out]# 'project_location': 'E:\Repos\SoC_ZYNQ\Vitis\projects\workspace\pform'
+platform
+platform =client.create_platform_component(name = 'pform', hw_design = path_hw)
+vitis.dispose()
+exit()
+vitis.dispose()

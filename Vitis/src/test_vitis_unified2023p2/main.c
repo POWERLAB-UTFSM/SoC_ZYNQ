@@ -59,22 +59,22 @@ main(){
 
 	/*status = XScugic_My_InitInterrupt(\
 		xcpwm8c_my_config.IntrId,\
-    &xscugic_my_inst,
+		&xscugic_my_inst,
 		&_My_IRQHandler,\
 		0xF0U,\
 		XINTR_IS_LEVEL_TRIGGERED\
 		);*/
 
-  status = XScugic_My_InitFIQInterrupt(\
-    &xscugic_my_inst,
+	status = XScugic_My_InitFIQInterrupt(\
+		&xscugic_my_inst,
 		&_My_FIQHandler\
-  );
-  
+	);
 
-  XCpwm8c_3lxnpc_My_Init(&xcpwm8c_my_inst);
+
+	XCpwm8c_3lxnpc_My_Init(&xcpwm8c_my_inst);
 
 	// _My_XCpwm8c_IntAckGpioPs();
-  // XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+	// XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 
 	if (status != XST_SUCCESS) {
 		return XST_FAILURE;
@@ -83,10 +83,10 @@ main(){
 	// Xil_SetTlbAttributes(MY_CPWM8C_0_BASEADDR,0xC02);
 	// mtcp(XREG_CP15_INVAL_UTLB_UNLOCKED, 0);
 	// dsb();
-   
+
 	while(1){
-    // usleep(10);
-    // _My_XCpwm8c_IntAckGpioPs();
+		// usleep(10);
+		// _My_XCpwm8c_IntAckGpioPs();
 	}
 
 	return status;
@@ -98,9 +98,9 @@ main(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_IRQHandler(){
-  //XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
-  // _Buffer_My_Reset();
-  /*
+	//XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
+	// _Buffer_My_Reset();
+	/*
 	switch(i_cnt){
 		case 0:
 			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 0, my_comp1);
@@ -113,10 +113,10 @@ _My_IRQHandler(){
 			break;
 	}*/
 
-  // status_int = _Buffer_My_SimpleTransfer();
-  _My_XCpwm8c_IntAckGpioPs();
+	// status_int = _Buffer_My_SimpleTransfer();
+	_My_XCpwm8c_IntAckGpioPs();
 	XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
-  //XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+	//XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 
 /*------------------------------------------------------------------------------------------*/
@@ -125,8 +125,8 @@ _My_IRQHandler(){
 /*------------------------------------------------------------------------------------------*/
 void \
 _My_FIQHandler(){
-  //_Buffer_My_Reset();
-  /*
+	//_Buffer_My_Reset();
+	/*
 	switch(i_cnt){
 		case 0:
 			XCpwm8c_WriteCompare(&xcpwm8c_my_inst, 0, my_comp1);
@@ -139,10 +139,10 @@ _My_FIQHandler(){
 			break;
 	}*/
 
-  //status_int = _Buffer_My_SimpleTransfer();
-  _My_XCpwm8c_IntAckGpioPs();
+	//status_int = _Buffer_My_SimpleTransfer();
+	_My_XCpwm8c_IntAckGpioPs();
 	XScuGic_CPUWriteReg(&xscugic_my_inst, XSCUGIC_EOI_OFFSET, XScuGic_CPUReadReg(&xscugic_my_inst, XSCUGIC_INT_ACK_OFFSET));
-  //XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
+	//XCpwm8c_WriteIntAck(&xcpwm8c_my_inst);
 }
 
 /*------------------------------------------------------------------------------------------*/
@@ -154,14 +154,14 @@ XCpwm8c_3lxnpc_My_Init(\
 	const XCpwm8c *InstancePtr\
 )
 {
-  XCpwm8c_WriteCountMax(InstancePtr,0,2000);
+	XCpwm8c_WriteCountMax(InstancePtr,0,2000);
 	XCpwm8c_WriteCountMax(InstancePtr,1,2000);
 	XCpwm8c_WriteCompare(InstancePtr,0,1000);
 	XCpwm8c_WriteCompare(InstancePtr,1,1000);
 	XCpwm8c_WriteCountMode(InstancePtr,0,COUNT_UP_DOWN);
 	XCpwm8c_WriteCountMode(InstancePtr,1,COUNT_UP_DOWN);
-  XCpwm8c_WriteEventCount(InstancePtr, 0, 0);
-  XCpwm8c_WriteEventCount(InstancePtr, 1, 0);
+	XCpwm8c_WriteEventCount(InstancePtr, 0, 0);
+	XCpwm8c_WriteEventCount(InstancePtr, 1, 0);
 	XCpwm8c_WriteMaskMode(InstancePtr,0,MIN_MASK);
 	XCpwm8c_WriteMaskMode(InstancePtr,1,MIN_MASK);
 	XCpwm8c_WriteCarrOnOff(InstancePtr,0,REG_ON);
