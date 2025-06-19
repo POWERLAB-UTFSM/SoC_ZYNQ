@@ -70,14 +70,14 @@ for src_item in os.listdir(path_src_main):
 # Editing launch configuration in 'launch.json'
 print("Editing launch configuration")
 import json
-with open(app.component_location + "\\_ide\\.theia\\launch.json", "r") as jsonFile:
-    jsonData = json.load(jsonFile)
+# with open(app.component_location + "\\_ide\\.theia\\launch.json", "r") as jsonFile:
+#     jsonData = json.load(jsonFile)
 
-jsonData["configurations"][0]['targetSetup']['zynqInitialization']['usingPs7Init']['ps7InitTclFile']='${workspaceFolder}\\app\\_ide\\psinit\\ps7_init.tcl'
+# jsonData["configurations"][0]['targetSetup']['zynqInitialization']['usingPs7Init']['ps7InitTclFile']='${workspaceFolder}\\app\\_ide\\psinit\\ps7_init.tcl'
 
-with open(app.component_location + "\\_ide\\.theia\\launch.json", 'w', encoding='utf-8') as jsonFile:
-    json.dump(jsonData, jsonFile)
-jsonFile.close()
+# with open(app.component_location + "\\_ide\\.theia\\launch.json", 'w', encoding='utf-8') as jsonFile:
+#     json.dump(jsonData, jsonFile)
+# jsonFile.close()
 
 # Get the linker script from the app component
 linker = app.get_ld_script()
