@@ -29,26 +29,21 @@ module pwm16bits_mask //#(parameter PWMWIDTH = 16)
 	output reg [31:0] mask_out
 );
 
-	reg write=0;
-	reg pwm_2_buffer;
-
 	wire intmask;
 
 	assign intmask = (conf_sync) ? intmask_ext : intmask_int;
+	//assign intmask = intmask_int;
 
 	initial begin
-		write<=0;
     mask_out<=0;
 	end
 
 	always @(posedge clk or posedge rst) begin
-		if(rst==1) begin
-			write<=0;
+		if(rst) begin
 			mask_out<=0;
 		end
 		else begin
-			if(intmask==1 || write==0) begin
-				write<=1;
+			if(intmask==1) begin
 				mask_out<=mask_in;
 			end
 		end

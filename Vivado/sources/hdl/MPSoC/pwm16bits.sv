@@ -22,10 +22,10 @@
 module pwm16bits //#(parameter PWMWIDTH = 16)
 (
 	input clk,ce,rst,
-	input [15:0] count_max,
-	input [15:0] init_carr,
-	input init_slope, //0=up, 1=down
-	input [1:0] count_mode, //00=no_count; 01=up; 10=down; 11=up_down
+	input [15:0] carrier_max,
+	input [15:0] carrier_init,
+	input carrier_initdir, //0=up, 1=down
+	input [1:0] carrier_mode, //00=no_count; 01=up; 10=down; 11=up_down
 	input [1:0] sync_mode,	//00=no_count; 01=min_count; 10=max_count; 11=minmax_count
 	input [3:0] event_count,
 	input [15:0] compare_1,
@@ -44,33 +44,22 @@ module pwm16bits //#(parameter PWMWIDTH = 16)
 	output wire pwm_2b
 );
 
-    wire [15:0] carrier;
-    wire [15:0] compare_1_masked;
-    wire [15:0] compare_2_masked;
-    wire [15:0] init_carr_masked;
-    wire [15:0] count_max_masked;
+	wire [15:0] carrier;
+	wire [15:0] compare_1_masked;
+	wire [15:0] compare_2_masked;
+	wire [15:0] carrier_init_masked;
+	wire [15:0] carrier_max_masked;
 
-	// pwm16bits_timernew  TIMER1 
-	// (
-	// 	.clk(clk),
-	// 	.ce(ce),
-	// 	.rst(rst),
-	// 	.count_max(count_max_masked),
-	// 	.init_carr(init_carr_masked),
-	// 	.init_slope(init_slope),
-	// 	.sync_ext(sync_ext),
-	// 	.count_mode(count_mode),
-	// 	.carrier(carrier)
-	// );
-
-	pwm16bits_timernew DUT3(
+	pwm16bits_timernew TIMER1(
 		.clk(clk),
-		.reset(rst),
-		.wavemax(count_max_masked),
-		.waveinit(init_carr_masked),
-		.dirinit(init_slope),
-		.wave_conf(count_mode),
-		.wave(carrier)
+		.ce(ce),
+		.rst(rst),
+		.carrier_max(carrier_max_masked),
+		.carrier_init(carrier_init_masked),
+		.carrier_initdir(carrier_initdir),
+		.carrier_mode(carrier_mode),
+		.sync_ext(sync_ext),
+		.carrier(carrier)
 		);
 
 	pwm16bits_eventcount  EVTCNT1 
@@ -78,23 +67,12 @@ module pwm16bits //#(parameter PWMWIDTH = 16)
 		.clk(clk),
 		.ce(ce),
 		.rst(rst),
-		.count_max(count_max_masked),
+		.carrier_max(carrier_max_masked),
 		.carrier(carrier),
 		.event_count(event_count),
 		.sync_mode(sync_mode),
 		.sync(sync)
 	);
-
-	// pwm16bits_syncsel SYNC1
-	// (
-	// 	.clk(clk),
-	// 	.ce(ce),
-	// 	.rst(rst),
-	// 	.sync_in_ext(sync_in),
-	// 	.sync_in_int(sync),
-	// 	.conf_sync(conf_sync),
-	// 	.sync_out(),
-	// );
 	
 	pwm16bits_mask  MASK1 
 	(
@@ -113,11 +91,11 @@ module pwm16bits //#(parameter PWMWIDTH = 16)
 		.clk(clk),
 		.ce(ce),
 		.rst(rst),
-		.mask_in({init_carr,count_max}),
+		.mask_in({carrier_init,carrier_max}),
 		.conf_sync(conf_sync_carr),
 		.intmask_int(sync),
 		.intmask_ext(sync_ext),
-		.mask_out({init_carr_masked,count_max_masked})
+		.mask_out({carrier_init_masked,carrier_max_masked})
 	);
 	
 	pwm16bits_compare2ch  CMP1 
