@@ -1,0 +1,10 @@
+
+
+OPTION psf_version = 2.1;
+
+BEGIN DRIVER AXI_CPWM_6b
+	OPTION supported_peripherals = (AXI_CPWM_6b);
+	OPTION copyfiles = all;
+	OPTION VERSION = 1.0;
+	OPTION NAME = AXI_CPWM_6b;
+END DRIVER
