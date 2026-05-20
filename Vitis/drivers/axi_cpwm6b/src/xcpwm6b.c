@@ -48,6 +48,8 @@ int XCpwm6b_CfgInitialize(XCpwm6b *InstancePtr,const XCpwm6b_Config *Config, UIN
     InstancePtr->dt_logic_2a = LOGIC_POS;
     InstancePtr->dt_logic_2b = LOGIC_POS;
 
+    InstancePtr->irq_enable = REG_OFF;
+    InstancePtr->irq_status = REG_OFF;
 	XCpwm6b_WriteFullStatus(InstancePtr);
     return XST_SUCCESS;
 }
@@ -87,8 +89,10 @@ void XCpwm6b_WriteFullStatus(XCpwm6b *InstancePtr)
     XCpwm6b_WriteDtLogic1B(InstancePtr, LOGIC_POS);
     XCpwm6b_WriteDtLogic2A(InstancePtr, LOGIC_POS);
     XCpwm6b_WriteDtLogic2B(InstancePtr, LOGIC_POS);
+    
+    /* -------- INTERRUPT MANAGEMENT -------- */
+    XCpwm6b_EnableInterrupt(InstancePtr, REG_OFF);
 }
-```
 
 
 /*************** CARRIER ***************/
@@ -204,7 +208,7 @@ void XCpwm6b_WriteCE(XCpwm6b *InstancePtr, XCpwm6b_onoff ce)
 }
 
 /*************** LOGIC ***************/
-void XCpwm6b_WriteLogicA(XCpwm6b *InstancePtr, XCpwm6b_onoff sig_pwm_1)
+void XCpwm6b_WriteLogicA(XCpwm6b *InstancePtr, XCpwm6b_logic sig_pwm_1)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -216,7 +220,7 @@ void XCpwm6b_WriteLogicA(XCpwm6b *InstancePtr, XCpwm6b_onoff sig_pwm_1)
     InstancePtr->sig_pwm_1 = sig_pwm_1;
 }
 
-void XCpwm6b_WriteLogicB(XCpwm6b *InstancePtr, XCpwm6b_onoff sig_pwm_2)
+void XCpwm6b_WriteLogicB(XCpwm6b *InstancePtr, XCpwm6b_logic sig_pwm_2)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -293,7 +297,7 @@ void XCpwm6b_WriteClkDivDTime(XCpwm6b *InstancePtr, u8 clkdiv_dtime)
 }
 
 /*************** DEADTIME LOGIC ***************/
-void XCpwm6b_WriteDtLogic1A(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_1a)
+void XCpwm6b_WriteDtLogic1A(XCpwm6b *InstancePtr, XCpwm6b_logic dt_logic_1a)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -305,7 +309,7 @@ void XCpwm6b_WriteDtLogic1A(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_1a)
     InstancePtr->dt_logic_1a = dt_logic_1a;
 }
 
-void XCpwm6b_WriteDtLogic1B(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_1b)
+void XCpwm6b_WriteDtLogic1B(XCpwm6b *InstancePtr, XCpwm6b_logic dt_logic_1b)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -317,7 +321,7 @@ void XCpwm6b_WriteDtLogic1B(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_1b)
     InstancePtr->dt_logic_1b = dt_logic_1b;
 }
 
-void XCpwm6b_WriteDtLogic2A(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_2a)
+void XCpwm6b_WriteDtLogic2A(XCpwm6b *InstancePtr, XCpwm6b_logic dt_logic_2a)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -329,7 +333,7 @@ void XCpwm6b_WriteDtLogic2A(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_2a)
     InstancePtr->dt_logic_2a = dt_logic_2a;
 }
 
-void XCpwm6b_WriteDtLogic2B(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_2b)
+void XCpwm6b_WriteDtLogic2B(XCpwm6b *InstancePtr, XCpwm6b_logic dt_logic_2b)
 {
 	Xil_AssertVoid(InstancePtr != NULL);
 	Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
@@ -340,4 +344,109 @@ void XCpwm6b_WriteDtLogic2B(XCpwm6b *InstancePtr, XCpwm6b_onoff dt_logic_2b)
 
     InstancePtr->dt_logic_2b = dt_logic_2b;
 }
-```
+
+/*************** INTERRUPT MANAGEMENT ***************/
+
+void XCpwm6b_EnableInterrupt(XCpwm6b *InstancePtr,
+                             XCpwm6b_onoff enable)
+{
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    WRITE_FIELD(InstancePtr->BaseAddr,
+                XCPWM6B_OFFSET_MODE,
+                XCPWM6B_MASK_IRQ_ENABLE,
+                XCPWM6B_SHIFT_IRQ_ENABLE,
+                enable);
+                
+    InstancePtr->irq_enable = enable;
+}
+
+u32 XCpwm6b_GetInterruptStatus(XCpwm6b *InstancePtr)
+{
+    u32 reg;
+    u32 status;
+
+    Xil_AssertNonvoid(InstancePtr != NULL);
+    Xil_AssertNonvoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    reg = Xil_In32(InstancePtr->BaseAddr + XCPWM6B_OFFSET_COMPARE);
+
+    status = (reg & XCPWM6B_MASK_IRQ_STATUS)
+             >> XCPWM6B_SHIFT_IRQ_STATUS;
+
+    InstancePtr->irq_status = status;
+
+    return status;
+}
+
+void XCpwm6b_ClearInterrupt(XCpwm6b *InstancePtr)
+{
+    u32 reg;
+
+    Xil_AssertVoid(InstancePtr != NULL);
+    Xil_AssertVoid(InstancePtr->IsReady == XIL_COMPONENT_IS_READY);
+
+    reg = Xil_In32(InstancePtr->BaseAddr + XCPWM6B_OFFSET_MODE);
+
+    reg |= XCPWM6B_MASK_IRQ_CLEAR;
+
+    Xil_Out32(InstancePtr->BaseAddr + XCPWM6B_OFFSET_MODE,
+              reg);
+
+    reg &= ~XCPWM6B_MASK_IRQ_CLEAR;
+
+    Xil_Out32(InstancePtr->BaseAddr + XCPWM6B_OFFSET_MODE,
+              reg);
+              
+    InstancePtr->irq_status = REG_OFF;
+}
+/*************** HARDWARE CONFIG ***************/
+
+XCpwm6b_Config XCpwm6b_ConfigTable[] =
+{
+    {
+#ifndef SDT
+        .DeviceId = 0,
+#else
+        .Name = "axi_cpwm6b_0",
+#endif
+        .BaseAddr = XPAR_AXI_CPWM_6B_0_BASEADDR,
+#ifdef SDT
+        .IntrId = 0,
+        .IntrParent = 0,
+#endif
+    }
+};
+
+#ifndef SDT
+XCpwm6b_Config *XCpwm6b_LookupConfig(u16 DeviceId)
+{
+	XCpwm6b_Config *CfgPtr = NULL;
+	u32 Index;
+
+	for (Index = 0U; Index < (u32)XPAR_XAXI_CPWM6B_NUM_INSTANCES; Index++) {
+		if (XCpwm6b_ConfigTable[Index].DeviceId == DeviceId) {
+			CfgPtr = &XCpwm6b_ConfigTable[Index];
+			break;
+		}
+	}
+
+	return CfgPtr;
+}
+#else
+XCpwm6b_Config *XCpwm6b_LookupConfig(UINTPTR BaseAddress)
+{
+	XCpwm6b_Config *CfgPtr = NULL;
+	u32 Index;
+
+	for (Index = (u32)0x0; XCpwm6b_ConfigTable[Index].Name != NULL; Index++) {
+		if ((XCpwm6b_ConfigTable[Index].BaseAddr == BaseAddress) || !BaseAddress) {
+			CfgPtr = &XCpwm6b_ConfigTable[Index];
+			break;
+		}
+	}
+
+	return CfgPtr;
+}
+#endif
