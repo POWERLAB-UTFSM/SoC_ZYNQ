@@ -5,15 +5,17 @@
 #include "xstatus.h"
 #include "xil_io.h"
 
+#define XPAR_XCPWM6B_NUM_INSTANCES 1
+
 /*************** OFFSETS (en bytes) ***************/
 #define XCPWM6B_OFFSET_CARRIER     0x00
 #define XCPWM6B_OFFSET_MODE        0x04
 #define XCPWM6B_OFFSET_COMPARE     0x08
-#define XCPWM6B_OFFSET_DEADTIME    0x14
+#define XCPWM6B_OFFSET_DEADTIME    0x0C
 
 /*************** MODE REGISTER (bits) ***************/
-#define XCPWM6B_MASK_COUNT_MODE    0x00000003  //position ou l'on ecrit dana le registre (valeur du bit)
-#define XCPWM6B_SHIFT_COUNT_MODE   0 // nombre de bits dont on se decale
+#define XCPWM6B_MASK_COUNT_MODE    0x00000003  //position ou l'on ecrit dans le registre (valeurs des bits ou l'on ecrit et donc quon remet a 0)
+#define XCPWM6B_SHIFT_COUNT_MODE   0 // nombre de bits dont on se decale pour ecrire
 
 #define XCPWM6B_MASK_SYNC_MODE     0x0000000C
 #define XCPWM6B_SHIFT_SYNC_MODE    2
@@ -38,6 +40,16 @@
 
 #define XCPWM6B_MASK_CE            0x00004000
 #define XCPWM6B_SHIFT_CE           14
+
+/*************** INTERRUPT REGISTER ***************/
+#define XCPWM6B_MASK_IRQ_ENABLE   0x00008000
+#define XCPWM6B_SHIFT_IRQ_ENABLE  15
+
+#define XCPWM6B_MASK_IRQ_CLEAR    0x00010000
+#define XCPWM6B_SHIFT_IRQ_CLEAR   16
+
+#define XCPWM6B_MASK_IRQ_STATUS   0x00020000
+#define XCPWM6B_SHIFT_IRQ_STATUS  17
 
 /*************** DEADTIME REGISTER ***************/
 #define XCPWM6B_MASK_DEADTIME      0x000000FF
@@ -142,6 +154,10 @@ typedef struct {
     XCpwm6b_logic dt_logic_1b;
     XCpwm6b_logic dt_logic_2a;
     XCpwm6b_logic dt_logic_2b;
+    
+    /* -------- IRQ -------- */
+    XCpwm6b_onoff irq_enable;
+    XCpwm6b_onoff irq_status;
 
 } XCpwm6b;
 
@@ -192,5 +208,8 @@ void XCpwm6b_WriteDtLogic1B(XCpwm6b*, XCpwm6b_logic);
 void XCpwm6b_WriteDtLogic2A(XCpwm6b*, XCpwm6b_logic);
 void XCpwm6b_WriteDtLogic2B(XCpwm6b*, XCpwm6b_logic);
 
+/* Interrupt management*/
+void XCpwm6b_EnableInterrupt(XCpwm6b*, XCpwm6b_onoff);
+u32  XCpwm6b_GetInterruptStatus(XCpwm6b*);
+void XCpwm6b_ClearInterrupt(XCpwm6b*);
 #endif
-```
