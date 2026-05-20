@@ -1,4 +1,3 @@
-
 `timescale 1 ns / 1 ps
 
 	module AXI_CPWM_6b #
@@ -16,6 +15,7 @@
 	(
 		// Users to add ports here
         output wire sync_event,
+		output wire interrupt,
 		output wire pwm_1a,
 		output wire pwm_1b,
 		output wire pwm_2a,
@@ -77,6 +77,7 @@
 		// ADDING CONNEXION POINTS
 		// =========================
 		.sync_event(sync_event),
+		.interrupt(interrupt),
 		.pwm_1a(pwm_1a),
 		.pwm_1b(pwm_1b),
 		.pwm_2a(pwm_2a),
