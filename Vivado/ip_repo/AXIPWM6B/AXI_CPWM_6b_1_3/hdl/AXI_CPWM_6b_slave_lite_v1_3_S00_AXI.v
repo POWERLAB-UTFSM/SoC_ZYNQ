@@ -1,7 +1,6 @@
-
 `timescale 1 ns / 1 ps
 
-	module AXI_CPWM_6b_slave_lite_v1_3_S00_AXI #
+    module AXI_CPWM_6b_slave_lite_v1_3_S00_AXI #
 	(
 		// Users to add parameters here
 
@@ -16,6 +15,7 @@
 	(
 		// Users to add ports here
         output wire sync_event,
+		output wire interrupt,
 		output wire pwm_1a,
 		output wire pwm_1b,
 		output wire pwm_2a,
@@ -125,6 +125,44 @@
 	wire        sig_pwm_2    = slv_reg1[12];
 	wire        mask_on      = slv_reg1[13];
 	wire 		ce 			 = slv_reg1[14];
+
+	//Interrupt management
+	wire 		irq_enable	 = slv_reg1[15];
+	wire irq_clear = slv_reg1[16];
+
+//	reg irq_clear_pulse; // The CPU never sees this reg, it is internal to the hardware. Used to build a fgpa flip-flop to have a proper interrupt acknowledge (pulse 1 cycle acknowledge)
+//	wire irq_clear = irq_clear_pulse;
+//	always @(posedge S_AXI_ACLK) // Fgpa flip-flop (1 cycle pulse interrupt acknowledge). The clear request is written on bit 16 of the slave_register 1 by the CPU
+//		begin
+//			if (!S_AXI_ARESETN)
+//			begin
+//				irq_clear_pulse <= 1'b0;
+//			end
+//			else
+//			begin
+//				irq_clear_pulse <= 1'b0;
+
+//				if (S_AXI_WVALID &&
+//					(axi_awaddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h1) &&
+//					S_AXI_WDATA[16])
+//				begin
+//					irq_clear_pulse <= 1'b1;
+//				end
+//			end
+//		end
+
+	wire [31:0] slv_reg1_read; 
+	//The interrupt status is written by the hardware and read by the software. Therefore, it cannot be implemented as "wire irq_status = slv_reg1[17]" because this would mean that the value is written by the software
+	assign slv_reg1_read = {
+    slv_reg1[31:18],
+    irq_status,
+    slv_reg1[16:0]
+	};
+
+    (* mark_debug = "true" *) wire debug_irq_clear;
+    (* mark_debug = "true" *) wire debug_irq_status;
+    assign debug_irq_clear  = irq_clear;
+    assign debug_irq_status = irq_status;
 
 	wire [15:0] compare_1 = slv_reg2[15:0];
 	wire [15:0] compare_2 = slv_reg2[31:16];
@@ -327,7 +365,7 @@
 	          end                                       
 	        end                                         
 	// Implement memory mapped register select and read logic generation
-	  assign S_AXI_RDATA = (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h0) ? slv_reg0 : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h1) ? slv_reg1 : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h2) ? slv_reg2 : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h3) ? slv_reg3 : 0; 
+	  assign S_AXI_RDATA = (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h0) ? slv_reg0 : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h1) ? slv_reg1_read : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h2) ? slv_reg2 : (axi_araddr[ADDR_LSB+OPT_MEM_ADDR_BITS:ADDR_LSB] == 2'h3) ? slv_reg3 : 0; 
 	// Add user logic here
     cpwm16b CPWM1(
 		.clk            (S_AXI_ACLK),
@@ -353,6 +391,10 @@
 		.dt_logic_2b    (dt_logic_2b),
 		.clkdiv_dtime   (clkdiv_dtime),
 		.sync     		(sync_event),
+		.irq_enable    (irq_enable),
+		.irq_clear     (irq_clear),
+		.irq_status    (irq_status),
+		.interrupt     (interrupt),
 		.pwm_1a      (pwm_1a),
 		.pwm_1b      (pwm_1b),
 		.pwm_2a      (pwm_2a),
